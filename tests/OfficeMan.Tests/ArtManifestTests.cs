@@ -90,7 +90,8 @@ public class RoomTests(ContentFixture fixture)
         var art = ArtManifest.Load(ContentDir);
         foreach (var room in RoomLayout.LoadAll(ContentDir).Values)
         {
-            Assert.True(File.Exists(art.Resolve(room.Image)), $"missing {room.Image}");
+            foreach (string? layer in new[] { room.Image, room.Emissive, room.Glow, room.Front })
+                if (layer is not null) Assert.True(File.Exists(art.Resolve(layer)), $"missing {layer}");
             foreach (var t in room.Things.Where(t => t.Sprite is not null))
                 Assert.True(art.Sprites.ContainsKey(t.Sprite!), $"room '{room.Id}': unknown sprite '{t.Sprite}'");
         }

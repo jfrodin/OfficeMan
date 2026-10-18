@@ -10,7 +10,49 @@ namespace OfficeMan.Core.Content;
 public sealed class RoomLayout
 {
     public string Id { get; set; } = "";
+    /// <summary>The unlit picture (albedo). Lights from <see cref="Lights"/> light it, and the people in it.</summary>
     public string Image { get; set; } = "";
+
+    /// <summary>What glows by itself (windows, lamps, screens); black elsewhere.</summary>
+    public string? Emissive { get; set; }
+
+    /// <summary>A blurred copy of the emissive layer: the bloom around glowing things.</summary>
+    public string? Glow { get; set; }
+
+    /// <summary>Things in front of the people (transparent elsewhere).</summary>
+    public string? Front { get; set; }
+
+    public float[] Ambient { get; set; } = { 0.45f, 0.45f, 0.45f };
+    public List<RoomLight> Lights { get; set; } = new();
+    public Mood Look { get; set; } = new();
+
+    /// <summary>A light: point, or a cone if <see cref="Dir"/> is set. Angles in degrees from the direction.</summary>
+    public sealed class RoomLight
+    {
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Radius { get; set; } = 80;
+        public float Intensity { get; set; } = 1;
+        public string Color { get; set; } = "ffffff";
+        public float[]? Dir { get; set; }
+        public float Inner { get; set; } = 20;
+        public float Outer { get; set; } = 40;
+
+        /// <summary>Presence condition, e.g. "time &gt; 16:00".</summary>
+        public string? When { get; set; }
+    }
+
+    /// <summary>The finishing pass: bloom, fog, exposure, saturation, vignette, grain.</summary>
+    public sealed class Mood
+    {
+        public float Bloom { get; set; } = 0.8f;
+        public float Fog { get; set; } = 0.1f;
+        public string FogColor { get; set; } = "9a8c7a";
+        public float Exposure { get; set; } = 1.15f;
+        public float Saturation { get; set; } = 1f;
+        public float Vignette { get; set; } = 0.42f;
+        public float Grain { get; set; } = 0.035f;
+    }
     public int Width { get; set; } = 480;
     public int Height { get; set; } = 270;
     public WalkArea Walk { get; set; } = new();

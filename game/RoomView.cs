@@ -7,22 +7,26 @@ using OfficeMan.Core.Content;
 namespace OfficeMan.Game;
 
 /// <summary>
-/// A walkable room rendered at its native pixel size and scaled up crisply. Holds Teo and the people
-/// and things present, moves Teo, and reports what he can reach.
+/// A walkable room. The room and its people are drawn unlit into a small viewport at the room's
+/// native pixel size; the room shader then lights it with the room's lights, adds glow, bloom, fog,
+/// a tone curve, vignette and grain, and shows it scaled up crisply.
 /// </summary>
-public partial class RoomView : SubViewportContainer
+public partial class RoomView : Control
 {
     private const float WalkSpeed = 74f;
-    private const int Scale = 4;
 
     private SubViewport _viewport = null!;
+    private TextureRect _screen = null!;
+    private ShaderMaterial _material = null!;
     private Sprite2D _background = null!;
+    private Sprite2D _front = null!;
     private Node2D _actors = null!;
     private Actor _teo = null!;
     private readonly List<(RoomLayout.RoomThing thing, Actor? actor)> _present = new();
     private RoomLayout _room = null!;
     private ArtManifest _art = null!;
     private Func<string, Texture2D> _texture = null!;
+    private Texture2D _shadow = null!;
     private double _clock;
 
     /// <summary>How drunk Teo is (0–4): he walks a little crooked.</summary>
@@ -37,32 +41,69 @@ public partial class RoomView : SubViewportContainer
     {
         _art = art;
         _texture = texture;
-        Stretch = true;
-        StretchShrink = Scale;
-        TextureFilter = TextureFilterEnum.Nearest;
         Size = new Vector2(1920, 1080);
         MouseFilter = MouseFilterEnum.Ignore;
 
-        _viewport = new SubViewport { Size = new Vector2I(480, 270), CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest };
+        _viewport = new SubViewport
+        {
+            Size = new Vector2I(480, 270),
+            TransparentBg = false,
+            RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
+            CanvasItemDefaultTextureFilter = Viewport.DefaultCanvasItemTextureFilter.Nearest,
+        };
         AddChild(_viewport);
         _background = new Sprite2D { Centered = false };
         _viewport.AddChild(_background);
         _actors = new Node2D { YSortEnabled = true };
         _viewport.AddChild(_actors);
-        _teo = new Actor(texture(art.Sprite("teo")));
+        _front = new Sprite2D { Centered = false, ZIndex = 100 };
+        _viewport.AddChild(_front);
+
+        _shadow = MakeShadow();
+        _teo = new Actor(texture(art.Sprite("teo")), _shadow);
         _actors.AddChild(_teo);
+
+        _material = new ShaderMaterial { Shader = GD.Load<Shader>("res://shaders/room.gdshader") };
+        _screen = new TextureRect
+        {
+            Texture = _viewport.GetTexture(),
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize,
+            StretchMode = TextureRect.StretchModeEnum.Scale,
+            TextureFilter = TextureFilterEnum.Nearest,
+            Size = new Vector2(1920, 1080),
+            Material = _material,
+            MouseFilter = MouseFilterEnum.Ignore,
+        };
+        AddChild(_screen);
     }
 
     public void Load(RoomLayout room, Func<string, bool> present)
     {
         _room = room;
+        _viewport.Size = new Vector2I(room.Width, room.Height);
         _background.Texture = _texture(_art.Resolve(room.Image));
+        _front.Texture = room.Front is null ? null : _texture(_art.Resolve(room.Front));
         _teo.Position = new Vector2(room.Spawn[0], room.Spawn[1]);
         _teo.FaceLeft = false;
+
+        var black = BlackTexture();
+        _material.SetShaderParameter("canvas_size", new Vector2(room.Width, room.Height));
+        _material.SetShaderParameter("emissive", room.Emissive is null ? black : _texture(_art.Resolve(room.Emissive)));
+        _material.SetShaderParameter("glow", room.Glow is null ? black : _texture(_art.Resolve(room.Glow)));
+        _material.SetShaderParameter("ambient", new Vector3(room.Ambient[0], room.Ambient[1], room.Ambient[2]));
+        var look = room.Look;
+        _material.SetShaderParameter("bloom", look.Bloom);
+        _material.SetShaderParameter("fog", look.Fog);
+        var fog = Color.FromHtml(look.FogColor);
+        _material.SetShaderParameter("fog_color", new Vector3(fog.R, fog.G, fog.B));
+        _material.SetShaderParameter("exposure", look.Exposure);
+        _material.SetShaderParameter("saturation", look.Saturation);
+        _material.SetShaderParameter("vignette", look.Vignette);
+        _material.SetShaderParameter("grain", look.Grain);
         Refresh(present);
     }
 
-    /// <summary>Re-evaluates who is in the room (time and events move people).</summary>
+    /// <summary>Re-evaluates who is in the room and which lights are on (time and events change both).</summary>
     public void Refresh(Func<string, bool> present)
     {
         foreach (var (_, actor) in _present) actor?.QueueFree();
@@ -73,11 +114,33 @@ public partial class RoomView : SubViewportContainer
             Actor? actor = null;
             if (thing.Sprite is not null)
             {
-                actor = new Actor(_texture(_art.Sprite(thing.Sprite))) { Position = new Vector2(thing.X, thing.Y), FaceLeft = thing.FaceLeft };
+                actor = new Actor(_texture(_art.Sprite(thing.Sprite)), _shadow) { Position = new Vector2(thing.X, thing.Y), FaceLeft = thing.FaceLeft };
                 _actors.AddChild(actor);
             }
             _present.Add((thing, actor));
         }
+
+        var lights = _room.Lights.Where(l => l.When is null || present(l.When)).Take(16).ToList();
+        var pos = new Vector4[16];
+        var col = new Vector4[16];
+        var dir = new Vector4[16];
+        for (int i = 0; i < lights.Count; i++)
+        {
+            var l = lights[i];
+            var c = Color.FromHtml(l.Color);
+            pos[i] = new Vector4(l.X, l.Y, l.Radius, l.Intensity);
+            col[i] = new Vector4(c.R, c.G, c.B, 0);
+            if (l.Dir is { Length: 2 } d)
+            {
+                var v = new Vector2(d[0], d[1]).Normalized();
+                dir[i] = new Vector4(v.X, v.Y, Mathf.Cos(Mathf.DegToRad(l.Inner)), Mathf.Cos(Mathf.DegToRad(l.Outer)));
+            }
+            else dir[i] = new Vector4(0, 0, 0, -2);
+        }
+        _material.SetShaderParameter("light_count", lights.Count);
+        _material.SetShaderParameter("light_pos", pos);
+        _material.SetShaderParameter("light_col", col);
+        _material.SetShaderParameter("light_dir", dir);
     }
 
     /// <summary>The closest person or thing within reach, if any.</summary>
@@ -103,7 +166,7 @@ public partial class RoomView : SubViewportContainer
         var t = _present.Select(x => x.thing).FirstOrDefault(x => x.AnchorId == anchor);
         if (t is null) return;
         float y = t.Wall ? _room.Walk.MinY + 4 : Math.Clamp(t.Y + 10, _room.Walk.MinY, _room.Walk.MaxY);
-        _teo.Position = new Vector2(Math.Clamp(t.X - 14, _room.Walk.MinX, _room.Walk.MaxX), y);
+        _teo.Position = new Vector2(Math.Clamp(t.X - 18, _room.Walk.MinX, _room.Walk.MaxX), y);
         _teo.FaceLeft = false;
     }
 
@@ -116,6 +179,7 @@ public partial class RoomView : SubViewportContainer
 
     public override void _Process(double delta)
     {
+        if (_room is null) return;
         _clock += delta;
         var dir = Vector2.Zero;
         if (Controllable)
@@ -136,7 +200,27 @@ public partial class RoomView : SubViewportContainer
         else _teo.Walking = false;
     }
 
-    /// <summary>A person on the floor: a sprite sheet with idle (0–1) and walk (2–5) frames, anchored at the feet.</summary>
+    private static Texture2D MakeShadow()
+    {
+        var img = Image.CreateEmpty(18, 5, false, Image.Format.Rgba8);
+        for (int y = 0; y < 5; y++)
+            for (int x = 0; x < 18; x++)
+            {
+                double dx = (x - 8.5) / 9.0, dy = (y - 2) / 2.5;
+                double d = dx * dx + dy * dy;
+                if (d < 1) img.SetPixel(x, y, new Color(0, 0, 0, (float)(0.45 * (1 - d * 0.6))));
+            }
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    private static Texture2D BlackTexture()
+    {
+        var img = Image.CreateEmpty(4, 4, false, Image.Format.Rgb8);
+        img.Fill(Colors.Black);
+        return ImageTexture.CreateFromImage(img);
+    }
+
+    /// <summary>A person on the floor: a sprite sheet with idle (0–1) and walk (2–5) frames, anchored at the feet, with a soft shadow.</summary>
     private partial class Actor : Sprite2D
     {
         private double _t;
@@ -146,13 +230,14 @@ public partial class RoomView : SubViewportContainer
 
         public bool FaceLeft { get => FlipH; set => FlipH = value; }
 
-        public Actor(Texture2D sheet)
+        public Actor(Texture2D sheet, Texture2D shadow)
         {
             Texture = sheet;
             Hframes = 6;
             Centered = true;
             Offset = new Vector2(0, -26);
             TextureFilter = TextureFilterEnum.Nearest;
+            AddChild(new Sprite2D { Texture = shadow, Position = new Vector2(0, 0), ShowBehindParent = true, TextureFilter = TextureFilterEnum.Nearest });
         }
 
         public override void _Process(double delta)

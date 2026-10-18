@@ -112,7 +112,11 @@ if (sets.Contains("game"))
     string rooms = Path.Combine(gameDir, "rooms"), sprites = Path.Combine(gameDir, "sprites");
     Directory.CreateDirectory(rooms);
     Directory.CreateDirectory(sprites);
-    Png.Save(OfficeRoom.Draw(), Path.Combine(rooms, "office.png"));
+    var office = OfficeRoom.Draw();
+    Png.Save(office.Albedo, Path.Combine(rooms, "office.png"));
+    Png.Save(office.Emissive, Path.Combine(rooms, "office_emissive.png"));
+    Png.Save(office.Glow, Path.Combine(rooms, "office_glow.png"));
+    Png.Save(office.Front, Path.Combine(rooms, "office_front.png"));
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
     foreach (var (name, image) in Placeholders.Scenes())
@@ -130,7 +134,7 @@ if (sets.Contains("sprites"))
     Png.Save(preview.Scaled(6), Path.Combine(outDir, "sprites_preview.png"));
 
     // The office with everyone in it, to judge scale.
-    var room = OfficeRoom.Draw();
+    var room = OfficeRoom.Draw().Albedo;
     foreach (var (person, x, y) in new[] { (PixelPeople.Magda, 96, 200), (PixelPeople.Teo, 200, 236), (PixelPeople.Kornel, 284, 204), (PixelPeople.Zdenka, 360, 202), (PixelPeople.Viktor, 440, 160) })
         room.Draw(PixelPeople.Frame(person, 0), x - PixelPeople.FrameW / 2, y - PixelPeople.FrameH);
     Png.Save(room.Scaled(4), Path.Combine(outDir, "office_preview.png"));
