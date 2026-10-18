@@ -19,7 +19,7 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 
 ## Commands
 
-- Play (window): `Play.bat`. Screenshot test: `Godot_v4.6-stable_mono_win64_console.exe --path game -- --seed N --shot <abs path.png> --steps N`. Look at one room at a time of day (no dialogue): `... --path game -- --room stairwell_night --at 23:00 --shot <abs path.png>`. Always review rooms visually after art changes (see design/visual_standard.md).
+- Play (window): `Play.bat`. Screenshot test: `Godot_v4.6-stable_mono_win64_console.exe --path game -- --seed N --shot <abs path.png> --steps N`. Look at one room at a time of day (no dialogue): `... --path game -- --room stairwell_night --at 23:00 --shot <abs path.png>`. Always review rooms visually after art changes (see design/visual_standard.md). `Review.bat` makes one sheet of every room and text mode: `art/out/review.png`.
 - Play (text): `dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug] [--fast]`
 - Simulate: `dotnet run --project tools/OfficeMan.Sim -- --runs 1000` (must report 0 crashes, 0 dead ends; check coverage)
 - Test: `dotnet test`

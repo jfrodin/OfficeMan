@@ -94,6 +94,12 @@ public partial class Main : Control
     public override void _Ready()
     {
         var args = OS.GetCmdlineUserArgs();
+        if (args.Length > 2 && args[0] == "--stitch")
+        {
+            Stitch(args[1], args[2..]);
+            GetTree().Quit();
+            return;
+        }
         _seed = (int)(Time.GetTicksUsec() % int.MaxValue);
         for (int i = 0; i < args.Length; i++)
         {
@@ -118,6 +124,24 @@ public partial class Main : Control
         LoadSettings();
         StartLife(_seed);
         if (_lookRoom is not null) LookAtRoom(_lookRoom);
+    }
+
+    /// <summary>Review aid: puts screenshots side by side, two to a row, each at half size.</summary>
+    private static void Stitch(string output, string[] inputs)
+    {
+        const int tw = 960, th = 540, cols = 2;
+        int rows = (inputs.Length + cols - 1) / cols;
+        var sheet = Image.CreateEmpty(tw * cols + 8 * (cols + 1), th * rows + 8 * (rows + 1), false, Image.Format.Rgb8);
+        sheet.Fill(new Color(0.08f, 0.08f, 0.09f));
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            var img = Image.LoadFromFile(inputs[i]);
+            if (img is null) continue;
+            img.Convert(Image.Format.Rgb8);
+            img.Resize(tw, th, Image.Interpolation.Lanczos);
+            sheet.BlitRect(img, new Rect2I(0, 0, tw, th), new Vector2I(8 + (i % cols) * (tw + 8), 8 + (i / cols) * (th + 8)));
+        }
+        sheet.SavePng(output);
     }
 
     /// <summary>Review aid: show one room, empty of dialogue, at a given time of day, and screenshot it.</summary>
