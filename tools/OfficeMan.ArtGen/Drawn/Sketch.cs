@@ -11,7 +11,7 @@ public readonly record struct Pt(double X, double Y)
 }
 
 /// <summary>Builds polylines from cubic Bézier segments, in drawing units.</summary>
-public sealed class PathBuilder
+public sealed class PathBuilder : IReadOnlyList<Pt>
 {
     private readonly List<Pt> _pts = new();
     private Pt _cur;
@@ -43,6 +43,11 @@ public sealed class PathBuilder
     }
 
     public List<Pt> Points => _pts.ToList();
+
+    public int Count => _pts.Count;
+    public Pt this[int index] => _pts[index];
+    public IEnumerator<Pt> GetEnumerator() => _pts.GetEnumerator();
+    System.Collections.IEnumerator System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 
     public static implicit operator List<Pt>(PathBuilder b) => b.Points;
 }
@@ -169,6 +174,25 @@ public sealed class Sketch
 
     public bool MultiplyMode { get; set; }
 
+    // ── View: zoom about a fixed point, so a drawing can be framed tighter without redrawing it ──
+    private double _zoom = 1;
+    private Pt _focus;
+
+    /// <summary>Scales everything drawn afterwards by <paramref name="zoom"/> about <paramref name="focus"/>.</summary>
+    public void SetView(double zoom, Pt focus)
+    {
+        _zoom = zoom;
+        _focus = focus;
+    }
+
+    private Pt ToCanvas(Pt p) => new((p.X - _focus.X) * _zoom + _focus.X, (p.Y - _focus.Y) * _zoom + _focus.Y);
+
+    private Pt ToDrawing(double x, double y) => new((x - _focus.X) / _zoom + _focus.X, (y - _focus.Y) / _zoom + _focus.Y);
+
+    private IReadOnlyList<Pt> View(IReadOnlyList<Pt> pts) => _zoom == 1 ? pts : pts.Select(ToCanvas).ToList();
+
+    private IReadOnlyList<Pt>? ViewOrNull(IReadOnlyList<Pt>? pts) => pts is null ? null : View(pts);
+
     private void Apply(int i, Rgb c, double a)
     {
         if (a <= 0) return;
@@ -179,6 +203,17 @@ public sealed class Sketch
     /// <summary>Fills a polygon. Optional clip polygon; optional per-point alpha (gradients, texture).</summary>
     public void Fill(IReadOnlyList<Pt> poly, Rgb color, double alpha = 1, IReadOnlyList<Pt>? clip = null,
         Func<double, double, double>? alphaAt = null)
+    {
+        Func<double, double, double>? at = alphaAt is null ? null : (x, y) =>
+        {
+            var d = ToDrawing(x, y);
+            return alphaAt(d.X, d.Y);
+        };
+        FillRaw(View(poly), color, alpha, ViewOrNull(clip), at);
+    }
+
+    private void FillRaw(IReadOnlyList<Pt> poly, Rgb color, double alpha, IReadOnlyList<Pt>? clip,
+        Func<double, double, double>? alphaAt)
     {
         double minX = poly.Min(p => p.X), maxX = poly.Max(p => p.X);
         double minY = poly.Min(p => p.Y), maxY = poly.Max(p => p.Y);
@@ -219,6 +254,10 @@ public sealed class Sketch
         double wobble = 0, int seed = 0, IReadOnlyList<Pt>? clip = null)
     {
         if (pts.Count < 2) return;
+        pts = View(pts);
+        clip = ViewOrNull(clip);
+        width *= _zoom;
+        wobble *= _zoom;
         var line = pts;
         if (wobble > 0)
         {
@@ -290,9 +329,16 @@ public sealed class Sketch
         Func<double, double, bool>? mask = null)
     {
         double a = angleDeg * Math.PI / 180, ca = Math.Cos(a), sa = Math.Sin(a);
-        Fill(poly, color, alpha, clip, (px, py) =>
+        spacing *= _zoom;
+        width *= _zoom;
+        wobble *= _zoom;
+        FillRaw(View(poly), color, alpha, ViewOrNull(clip), (px, py) =>
         {
-            if (mask is not null && !mask(px, py)) return 0;
+            if (mask is not null)
+            {
+                var dp = ToDrawing(px, py);
+                if (!mask(dp.X, dp.Y)) return 0;
+            }
             double u = px * ca + py * sa;
             double v = -px * sa + py * ca;
             if (wobble > 0) v += Noise.Fbm(u * 0.04, v * 0.02, seed) * wobble;
@@ -302,6 +348,84 @@ public sealed class Sketch
             if (gaps > 0 && Noise.Value(u * 0.08, Math.Floor(v / spacing) * 7.3, seed + 5) < gaps) cov *= 0.15;
             return cov;
         });
+    }
+
+    /// <summary>
+    /// Fills a polygon with a soft, blurred edge, like a brush loaded with paint. Used for
+    /// painterly shading: shapes are designed by hand, then their edges are melted.
+    /// </summary>
+    public void SoftFill(IReadOnlyList<Pt> poly, Rgb color, double alpha, double blur, IReadOnlyList<Pt>? clip = null)
+    {
+        poly = View(poly);
+        clip = ViewOrNull(clip);
+        blur *= _zoom;
+        int r = Math.Max(1, (int)(blur * Scale));
+        int x0 = Math.Max(0, (int)(poly.Min(p => p.X) * Scale) - r * 2), x1 = Math.Min(_w - 1, (int)(poly.Max(p => p.X) * Scale) + r * 2);
+        int y0 = Math.Max(0, (int)(poly.Min(p => p.Y) * Scale) - r * 2), y1 = Math.Min(_h - 1, (int)(poly.Max(p => p.Y) * Scale) + r * 2);
+        int bw = x1 - x0 + 1, bh = y1 - y0 + 1;
+        var m = Rasterise(poly, x0, y0, bw, bh);
+        var clipMask = clip is null ? null : Rasterise(clip, x0, y0, bw, bh);
+
+        // Three box-blur passes approximate a Gaussian.
+        var tmp = new float[bw * bh];
+        for (int pass = 0; pass < 3; pass++)
+        {
+            BoxBlur(m, tmp, bw, bh, r, horizontal: true);
+            BoxBlur(tmp, m, bw, bh, r, horizontal: false);
+        }
+
+        for (int y = 0; y < bh; y++)
+            for (int x = 0; x < bw; x++)
+            {
+                float a = m[y * bw + x];
+                if (a <= 0.002f) continue;
+                if (clipMask is not null && clipMask[y * bw + x] == 0) continue;
+                Apply((y0 + y) * _w + x0 + x, color, alpha * a);
+            }
+    }
+
+    /// <summary>Scanline-fills a polygon (canvas units) into a 0/1 mask covering a sub-rectangle.</summary>
+    private float[] Rasterise(IReadOnlyList<Pt> poly, int x0, int y0, int bw, int bh)
+    {
+        var m = new float[bw * bh];
+        var xs = new List<double>();
+        for (int y = 0; y < bh; y++)
+        {
+            double sy = (y0 + y + 0.5) / Scale;
+            xs.Clear();
+            for (int i = 0, j = poly.Count - 1; i < poly.Count; j = i++)
+            {
+                var a = poly[i];
+                var b = poly[j];
+                if ((a.Y <= sy && b.Y > sy) || (b.Y <= sy && a.Y > sy))
+                    xs.Add(a.X + (sy - a.Y) / (b.Y - a.Y) * (b.X - a.X));
+            }
+            xs.Sort();
+            for (int k = 0; k + 1 < xs.Count; k += 2)
+            {
+                int xa = Math.Max(0, (int)Math.Ceiling(xs[k] * Scale - 0.5) - x0);
+                int xb = Math.Min(bw - 1, (int)Math.Floor(xs[k + 1] * Scale - 0.5) - x0);
+                for (int x = xa; x <= xb; x++) m[y * bw + x] = 1;
+            }
+        }
+        return m;
+    }
+
+    private static void BoxBlur(float[] src, float[] dst, int w, int h, int r, bool horizontal)
+    {
+        int len = horizontal ? w : h, lines = horizontal ? h : w;
+        float inv = 1f / (2 * r + 1);
+        for (int l = 0; l < lines; l++)
+        {
+            float acc = 0;
+            int Index(int i) => horizontal ? l * w + Math.Clamp(i, 0, w - 1) : Math.Clamp(i, 0, h - 1) * w + l;
+            for (int i = -r; i <= r; i++) acc += src[Index(i)];
+            for (int i = 0; i < len; i++)
+            {
+                dst[Index(i)] = acc * inv;
+                acc += src[Index(i + r + 1)] - src[Index(i - r)];
+            }
+        }
     }
 
     public Canvas ToCanvas(double grain = 0, int seed = 1)

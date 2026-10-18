@@ -69,6 +69,24 @@ for (int i = 0; i < drawn.Length; i++)
 }
 Png.Save(drawnSheet, Path.Combine(outDir, "drawn_comparison.png"));
 
+
+// Character construction comparison: three ways of building Magda, three moods each.
+var moods = new[] { Mood.Happy, Mood.Irritated, Mood.Sad };
+void Row(string name, Func<Mood, Canvas> draw)
+{
+    var row = new Canvas(600 * 3 + 32, 760);
+    row.Fill(Rgb.Hex("101418"));
+    for (int i = 0; i < 3; i++)
+    {
+        var img = draw(moods[i]);
+        row.Draw(img, i * 616 + (600 - img.Width) / 2, (760 - img.Height) / 2);
+    }
+    Png.Save(row, Path.Combine(outDir, $"construct_{name}.png"));
+}
+Row("1_animation", CartoonMagda.Draw);
+Row("2_realism", RealistMagda.Draw);
+Row("3_pixel", m => PixelMagda.Draw(m).Scaled(8));
+
 static string FindRepoRoot()
 {
     for (var d = new DirectoryInfo(Directory.GetCurrentDirectory()); d is not null; d = d.Parent)
