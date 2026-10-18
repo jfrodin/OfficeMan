@@ -8,7 +8,7 @@ using OfficeMan.ArtGen.Sprites;
 
 // Generates art into art/out/. Every image is produced from code; nothing is loaded from disk.
 //   dotnet run --project tools/OfficeMan.ArtGen              everything
-//   dotnet run --project tools/OfficeMan.ArtGen -- cast      only the named set(s): pixel, styles, drawn, construct, cast, game
+//   dotnet run --project tools/OfficeMan.ArtGen -- cast      only the named set(s): pixel, styles, drawn, construct, cast, flat, game
 // The "game" set writes the temporary in-game art to art/game/ (committed; referenced by content/art.json).
 
 string outDir = Path.Combine(FindRepoRoot(), "art", "out");
@@ -74,6 +74,21 @@ if (sets.Contains("construct"))
 }
 
 // The cast in the mature animation style: neutral above, one distinctive expression below.
+// The cast in the flat style of art/reference/drawn_flat.png: a sheet, plus each portrait on its own.
+if (sets.Contains("flat"))
+{
+    var portraits = OfficeMan.ArtGen.Drawn.Flat.FlatCast.All().ToList();
+    string dir = Path.Combine(outDir, "flat");
+    Directory.CreateDirectory(dir);
+    foreach (var (name, mood, image) in portraits) Png.Save(image, Path.Combine(dir, $"{name}_{mood}.png"));
+    const int cols = 4;
+    int rows = (portraits.Count + cols - 1) / cols;
+    var sheet = new Canvas(616 * cols - 16, 776 * rows - 16);
+    sheet.Fill(dark);
+    for (int i = 0; i < portraits.Count; i++) sheet.Draw(portraits[i].image, i % cols * 616, i / cols * 776);
+    Png.Save(sheet.Scaled(1), Path.Combine(outDir, "flat_cast.png"));
+}
+
 if (sets.Contains("cast"))
 {
     var cast = new CastMember[] { new Magda(), new Viktor(), new Zdenka(), new Kornel() };
