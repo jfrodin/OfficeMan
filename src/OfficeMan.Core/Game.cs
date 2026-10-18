@@ -294,6 +294,7 @@ public sealed class Game : IConditionContext
             .ToList(),
         Clock = Teo.Clock(State),
         PhaseTitle = Content.Schedule.Get(State.PhaseId).Title,
+        PhaseId = State.PhaseId,
     };
 
     private Presentation HubPresentation(Phase phase) => new()
@@ -305,6 +306,7 @@ public sealed class Game : IConditionContext
             .ToList(),
         Clock = Teo.Clock(State),
         PhaseTitle = phase.Title,
+        PhaseId = phase.Id,
     };
 
     private Presentation EndPresentation() => new()

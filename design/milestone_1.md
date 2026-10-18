@@ -42,7 +42,7 @@ characters without the creator.
 
 Each step ends in something the creator can play.
 
-### Step 1: A playable window (Godot)
+### Step 1: A playable window (Godot) ✅ built 2026-10-18, awaiting the creator's playtest
 - One dialogue screen: location background, **large speaker portrait**, text box with reading pace and skip, choices, the hub menu, save/load and autosave.
 - **Portraits are data, not code.** Ink lines can carry a mood tag (`MAGDA: Oh. Okay. #mood:hurt`). A portrait manifest (`content/portraits.json`) maps *character + mood → image*, falling back to the character's neutral, then to a generic silhouette. Replacing art means replacing files; the dialogue system never changes.
 - Temporary art: the existing portraits (animation Magda, the four cast portraits), silhouettes for everyone else, Teo's flat as a background, plain titled panels for other locations.

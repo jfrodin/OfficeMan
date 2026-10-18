@@ -41,7 +41,7 @@ Magda laughs like he's done a bit at the Christmas party. Zdenka writes somethin
         ~ remember("magda", "joked_about_her")
         Nobody laughs. Magda laughs, after a second, the loudest of anyone, which is worse.
         Viktor looks at me like I've parked in his space.
-        VIKTOR: Let's be nice, Teo. It's a party.
+        VIKTOR: Let's be nice, Teo. It's a party. #mood:displeased
         He's right. That's the worst part. He's always right in public.
     - 1:
         ~ like("viktor", 1)
@@ -83,7 +83,7 @@ It's perfect. It's the most Kaslovian thing that's ever happened.
     ~ flag("magda_paid")
     ~ like("magda", 1)
     ~ remember("magda", "paid")
-    MAGDA: You're a sweetheart. I'm getting him a pen. A proper one. Heavy.
+    MAGDA: You're a sweetheart. I'm getting him a pen. A proper one. Heavy. #mood:happy
     He'll love it. He'll use it to sign things she isn't allowed to read.
 * [Put in two hundred.]
     ~ qadd("money", -200)
@@ -110,7 +110,7 @@ MAGDA: For tonight. Do you think Viktor likes red?
     - 0:
         ~ like("magda", -2)
         ~ remember("magda", "cruel_dress")
-        MAGDA: Oh. Okay. No, okay.
+        MAGDA: Oh. Okay. No, okay. #mood:sad
         She puts the phone away face down. Then she laughs at something on her screen that isn't there.
     - else:
         ~ like("magda", 1)
@@ -252,7 +252,7 @@ Oh no.
     ~ remember("kornel", "encouraged")
     ~ flag("kornel_encouraged")
     TEO: Can't wait.
-    KORNEL: Really?
+    KORNEL: Really? #mood:overjoyed
     He looks so happy that I have to look at the EU poster for a second. The family on the bridge looks back. They knew this would happen.
 * [Gently suggest he doesn't.]
     ~ temp r = check("kornel_talk", "tact")

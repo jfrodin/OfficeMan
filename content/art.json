@@ -1,0 +1,67 @@
+// Temporary art, mapped by speaker and mood. Replacing artwork means changing this file and the images:
+// the dialogue and the engine refer only to speakers (NAME: in ink), moods (#mood:x) and scenes (#scene:x).
+// Paths are relative to the repository root. Portrait lookup: mood → alias → neutral → first image → silhouette.
+{
+  "silhouette": "art/game/portraits/silhouette.png",
+  "portraits": {
+    "MAGDA": {
+      "images": {
+        "happy": "art/game/portraits/magda_happy.png",
+        "irritated": "art/game/portraits/magda_irritated.png",
+        "sad": "art/game/portraits/magda_sad.png"
+      },
+      "aliases": { "neutral": "happy", "laughing": "happy", "hopeful": "happy", "flirty": "happy",
+                   "hurt": "sad", "crying": "sad", "angry": "irritated", "sceptical": "irritated" }
+    },
+    "VIKTOR": {
+      "images": {
+        "neutral": "art/game/portraits/viktor_neutral.png",
+        "displeased": "art/game/portraits/viktor_displeased.png"
+      },
+      "aliases": { "angry": "displeased", "cold": "displeased", "smug": "neutral", "happy": "neutral" }
+    },
+    "ZDENKA": {
+      "images": {
+        "neutral": "art/game/portraits/zdenka_neutral.png",
+        "smile": "art/game/portraits/zdenka_smile.png"
+      },
+      "aliases": { "happy": "smile" }
+    },
+    "KORNEL": {
+      "images": {
+        "neutral": "art/game/portraits/kornel_neutral.png",
+        "overjoyed": "art/game/portraits/kornel_overjoyed.png"
+      },
+      "aliases": { "happy": "overjoyed" }
+    }
+  },
+  "scenes": {
+    "teo_flat": "art/game/scenes/teo_flat.png",
+    "stairwell": "art/game/scenes/stairwell.png",
+    "office": "art/game/scenes/office.png",
+    "terrace": "art/game/scenes/terrace.png",
+    "club": "art/game/scenes/club.png",
+    "river": "art/game/scenes/river.png",
+    "estate_night": "art/game/scenes/estate_night.png",
+    "car_night": "art/game/scenes/car_night.png",
+    "station": "art/game/scenes/station.png",
+    "magda_flat": "art/game/scenes/magda_flat.png",
+    "kornel_flat": "art/game/scenes/kornel_flat.png"
+  },
+  "phaseScenes": {
+    "home_morning": "teo_flat",
+    "stairwell_morning": "stairwell",
+    "office": "office",
+    "party": "terrace",
+    "night_club": "club",
+    "night_magda": "estate_night",
+    "night_ramona": "car_night",
+    "night_river": "river",
+    "night_kornel": "car_night",
+    "night_home": "stairwell",
+    "wed_wake": "teo_flat",
+    "wed_office": "office",
+    "wed_end": "office"
+  },
+  "defaultScene": "office"
+}

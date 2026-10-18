@@ -141,7 +141,7 @@ It's never one. It's never been one in the whole history of this country.
 She's wearing it. The red dress. She looks good, genuinely, in the way people look good when they're trying too hard and it's working anyway.
 {
 - remembers("magda", "kind_dress"):
-    MAGDA: You were right! Look! He looked at me! When I came in. He looked.
+    MAGDA: You were right! Look! He looked at me! When I came in. He looked. #mood:happy
 - remembers("magda", "honest_dress"):
     MAGDA: I wore it anyway. Like I said.
     MAGDA: He hasn't noticed. That's fine. It's early.
@@ -228,7 +228,7 @@ Ramona is at the bar with her back to all of it, which means she can see all of 
         ~ headline("Teo ruined Viktor's evening. On purpose.")
         {viktor_target()} looks at the bar. At the white dress. At the handbag. Something adds up.
         She excuses herself. Viktor watches her go, and then turns to me, smiling. That's the scary part. The smile.
-        VIKTOR: Good party, Teo?
+        VIKTOR: Good party, Teo? #mood:displeased
     }
 * [Leave him to it.]
     I go. Not my business. That's what I say about most things. It's on my headstone, probably. <i>Not My Business</i>.
@@ -260,7 +260,7 @@ Then she goes down the steps to the river walk, quickly, not running, because ru
 # duration: 30
 She's on a bench. Not the Innovation Bench. That doesn't exist yet. An old one, with a plaque for someone who died in 1991 and "loved this view."
 Her mascara has gone. Not dramatically. Just gone, like it gave up.
-MAGDA: Don't. I know. Don't.
+MAGDA: Don't. I know. Don't. #mood:sad
 MAGDA: Thirty-four tickets. I had a plan. I don't know what the plan was. Get drunk with him. And then.
 MAGDA: And then what, Magda? Then nothing. Then Wednesday.
 She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. That's the worst part about Magda: she always gets the joke, even when she's the joke.

@@ -6,9 +6,9 @@ public static class ContentLocator
     /// Finds the <c>content</c> directory by walking up from the working directory and the
     /// executable's directory. Lets tools run from anywhere inside the repository.
     /// </summary>
-    public static string Find()
+    public static string Find(params string[] extraStarts)
     {
-        foreach (string start in new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory })
+        foreach (string start in extraStarts.Concat(new[] { Directory.GetCurrentDirectory(), AppContext.BaseDirectory }))
         {
             for (var dir = new DirectoryInfo(start); dir is not null; dir = dir.Parent)
             {

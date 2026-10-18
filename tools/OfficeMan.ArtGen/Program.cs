@@ -6,11 +6,12 @@ using OfficeMan.ArtGen.Scenes;
 
 // Generates art into art/out/. Every image is produced from code; nothing is loaded from disk.
 //   dotnet run --project tools/OfficeMan.ArtGen              everything
-//   dotnet run --project tools/OfficeMan.ArtGen -- cast      only the named set(s): pixel, styles, drawn, construct, cast
+//   dotnet run --project tools/OfficeMan.ArtGen -- cast      only the named set(s): pixel, styles, drawn, construct, cast, game
+// The "game" set writes the temporary in-game art to art/game/ (committed; referenced by content/art.json).
 
 string outDir = Path.Combine(FindRepoRoot(), "art", "out");
 Directory.CreateDirectory(outDir);
-var sets = args.Length == 0 ? new HashSet<string> { "pixel", "styles", "drawn", "construct", "cast" } : args.ToHashSet();
+var sets = args.Length == 0 ? new HashSet<string> { "pixel", "styles", "drawn", "construct", "cast", "game" } : args.ToHashSet();
 var dark = Rgb.Hex("101418");
 
 var expressions = new[]
@@ -86,6 +87,27 @@ if (sets.Contains("cast"))
         sheet.Draw(distinct, i * 616, 776);
     }
     Png.Save(sheet, Path.Combine(outDir, "cast_sheet.png"));
+}
+
+// Temporary in-game art: portraits as cards, location backdrops at 1920×1080.
+if (sets.Contains("game"))
+{
+    string gameDir = Path.Combine(FindRepoRoot(), "art", "game");
+    string portraits = Path.Combine(gameDir, "portraits"), scenes = Path.Combine(gameDir, "scenes");
+    Directory.CreateDirectory(portraits);
+    Directory.CreateDirectory(scenes);
+
+    foreach (var mood in new[] { Mood.Happy, Mood.Irritated, Mood.Sad })
+        Png.Save(CartoonMagda.Draw(mood), Path.Combine(portraits, $"magda_{mood.ToString().ToLowerInvariant()}.png"));
+    foreach (var member in new CastMember[] { new Viktor(), new Zdenka(), new Kornel() })
+        foreach (var rig in new[] { member.Neutral, member.Distinct })
+            Png.Save(member.Draw(rig), Path.Combine(portraits, $"{member.Name}_{rig.Name}.png"));
+    Png.Save(Placeholders.Silhouette(), Path.Combine(portraits, "silhouette.png"));
+
+    Png.Save(TeoFlat.Draw().Scaled(6), Path.Combine(scenes, "teo_flat.png"));
+    foreach (var (name, image) in Placeholders.Scenes())
+        Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
+    Console.WriteLine($"Wrote game art to {gameDir}");
 }
 
 Console.WriteLine($"Wrote art to {outDir}");

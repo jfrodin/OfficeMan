@@ -53,5 +53,8 @@ public sealed class Presentation
     public required IReadOnlyList<ChoiceView> Choices { get; init; }
     public required string Clock { get; init; }
     public string PhaseTitle { get; init; } = "";
+
+    /// <summary>The phase this decision belongs to; front ends map it to a location backdrop.</summary>
+    public string PhaseId { get; init; } = "";
     public IReadOnlyList<string> Headlines { get; init; } = Array.Empty<string>();
 }

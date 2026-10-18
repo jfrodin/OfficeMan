@@ -36,6 +36,7 @@
 # phase: wed_wake
 # kind: scene
 # when: slept_at == 2
+# scene: magda_flat
 I wake up on the eleventh floor. The sun comes through a net curtain with a pattern of swans.
 { is("slept_with_magda"):
     -> morning_after
@@ -82,6 +83,7 @@ MAGDA: I didn't know how you take it. I put sugar. Everyone wants sugar, they ju
 # phase: wed_wake
 # kind: scene
 # when: slept_at == 3
+# scene: kornel_flat
 I wake up under a sheet with hospital corners. There's a bucket at my feet that says <i>BUCKET</i>.
 { hangover() >= 3:
     I've used the bucket. Someone has emptied the bucket. Someone has washed the bucket and put it back. The note is new. It says <i>BUCKET (CLEAN)</i>.
@@ -108,6 +110,7 @@ They're not wrong. They're perfect. They're the best eggs I've ever had and I wa
 # phase: wed_wake
 # kind: scene
 # when: slept_at == 4
+# scene: station
 I wake up on a plastic mattress in a room with eight beds, seven men and one drain in the middle of the floor.
 The man in the next bed is wearing a suit and one shoe. He nods at me, like we're on a business trip.
 MAN: First time?
@@ -277,7 +280,7 @@ Zdenka doesn't call me over. She just looks at me until I'm there.
 - else:
     ZDENKA: You were looking at me. Last night. When I was folding the napkin.
     TEO: Was I?
-    ZDENKA: People don't look at me. It's one of the good things about being me.
+    ZDENKA: People don't look at me. It's one of the good things about being me. #mood:smile
     She smiles. It's the first time I've seen it. I'd prefer not to see it again.
 }
 -> DONE
