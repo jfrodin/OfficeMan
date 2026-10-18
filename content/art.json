@@ -63,5 +63,17 @@
     "wed_office": "office",
     "wed_end": "office"
   },
-  "defaultScene": "office"
+  "defaultScene": "office",
+  // Phases that are played as walkable rooms (content/rooms/<id>.json). Others show their scene picture.
+  "phaseRooms": {
+    "office": "office",
+    "wed_office": "office"
+  },
+  "sprites": {
+    "teo": "art/game/sprites/teo.png",
+    "magda": "art/game/sprites/magda.png",
+    "zdenka": "art/game/sprites/zdenka.png",
+    "kornel": "art/game/sprites/kornel.png",
+    "viktor": "art/game/sprites/viktor.png"
+  }
 }

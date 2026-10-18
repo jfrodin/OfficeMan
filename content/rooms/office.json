@@ -1,0 +1,29 @@
+// The Permits Section. Picture: art/game/rooms/office.png (480×270), drawn by tools/OfficeMan.ArtGen/Rooms/OfficeRoom.cs.
+// Things with an anchor offer the storylets tagged "# where: <anchor>". "look" is what Teo thinks when there's nothing to do.
+{
+  "id": "office",
+  "image": "art/game/rooms/office.png",
+  "walk": { "minX": 10, "maxX": 382, "minY": 184, "maxY": 262 },
+  "spawn": [22, 200],
+  "things": [
+    { "id": "door", "name": "The door", "x": 18, "y": 190 },
+    { "id": "printer", "name": "The printer", "x": 52, "y": 190, "look": "One of the two printers in this building that work. Today it isn't." },
+    { "id": "magda", "name": "Magda", "sprite": "magda", "x": 96, "y": 200,
+      "look": "Magda is blowing up another balloon. Nobody asked for balloons." },
+    { "id": "kornel_hovering", "anchor": "kornel", "name": "Kornel", "sprite": "kornel", "x": 214, "y": 216,
+      "faceLeft": true, "when": "day == 0 and time < 11:15" },
+    { "id": "desk", "name": "Your desk", "x": 191, "y": 190 },
+    { "id": "trolley", "name": "The file trolley", "x": 240, "y": 190,
+      "look": "The trolley is where files go to wait. Some wait so long they become history." },
+    { "id": "kornel", "name": "Kornel", "sprite": "kornel", "x": 284, "y": 204, "when": "not (day == 0 and time < 11:15)",
+      "look": "Kornel is lining up his pens. He catches me looking and waves, like we're at an airport." },
+    { "id": "poster", "name": "The EU poster", "x": 318, "y": 186, "wall": true,
+      "look": "A smiling family on a bridge we haven't built yet. Co-financed by the European Union." },
+    { "id": "clock", "name": "The clock", "x": 356, "y": 186, "wall": true,
+      "look": "The clock says {clock}. It feels later. It always feels later." },
+    { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka", "x": 360, "y": 202, "faceLeft": true,
+      "look": "Zdenka is measuring something. She doesn't look up. She knows it's me from the footsteps." },
+    { "id": "viktor", "name": "Viktor's office", "sprite": "viktor", "x": 446, "y": 160, "faceLeft": true,
+      "look": "Viktor's door stays open, so we can all see him being busy." }
+  ]
+}

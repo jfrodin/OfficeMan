@@ -115,6 +115,7 @@ sealed partial class TextUi
         {
             if (line.Kind == LineKind.Header)
             {
+                if (line.Tags.Contains("title:")) continue; // untitled phase: nothing to announce
                 Pause(HeaderPauseMs);
                 Console.WriteLine();
                 Console.WriteLine($"{Bold}{Yellow}── {line.Text} ──{Reset}");

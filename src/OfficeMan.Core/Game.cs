@@ -20,7 +20,7 @@ public sealed class Game : IConditionContext
 
     private static readonly HashSet<string> MetadataTagKeys = new(StringComparer.OrdinalIgnoreCase)
     {
-        "phase", "kind", "choice", "when", "window", "at", "chance", "priority", "weight", "duration", "repeat", "max",
+        "phase", "kind", "choice", "when", "window", "at", "chance", "priority", "weight", "duration", "repeat", "max", "where",
     };
 
     private readonly Story _story;
@@ -190,8 +190,11 @@ public sealed class Game : IConditionContext
 
         State.PhaseEntered = true;
         State.Set("_phase_complete", 0);
-        if (!string.IsNullOrEmpty(phase.Title))
-            _pending.Add(new StoryLine($"{phase.Title} · {Teo.Clock(State)}", Array.Empty<string>(), LineKind.Header));
+        // Every arrival is marked in the text, so front ends switch place exactly where the story does.
+        _pending.Add(new StoryLine(
+            string.IsNullOrEmpty(phase.Title) ? Teo.DayPart(State) : $"{phase.Title} · {Teo.Clock(State)}",
+            new[] { "enter:" + phase.Id, "title:" + phase.Title, "daypart:" + Teo.DayPart(State) },
+            LineKind.Header));
     }
 
     private void LeavePhase(Phase phase)
@@ -293,6 +296,7 @@ public sealed class Game : IConditionContext
             .Select((c, i) => new ChoiceView(i, c.text.Trim(), c.tags ?? new List<string>()))
             .ToList(),
         Clock = Teo.Clock(State),
+        When = Teo.DayPart(State),
         PhaseTitle = Content.Schedule.Get(State.PhaseId).Title,
         PhaseId = State.PhaseId,
     };
@@ -302,12 +306,32 @@ public sealed class Game : IConditionContext
         Kind = PresentationKind.Hub,
         Lines = TakePending(),
         Choices = _hubOptions
-            .Select((s, i) => new ChoiceView(i, s.ChoiceText, s.Kind == StoryletKind.Exit ? new[] { "exit" } : Array.Empty<string>()))
+            .Select((s, i) => new ChoiceView(i, s.ChoiceText, HubTags(s)))
             .ToList(),
         Clock = Teo.Clock(State),
+        When = Teo.DayPart(State),
         PhaseTitle = phase.Title,
         PhaseId = phase.Id,
     };
+
+    private static IReadOnlyList<string> HubTags(Storylet s)
+    {
+        var tags = new List<string>();
+        if (s.Kind == StoryletKind.Exit) tags.Add("exit");
+        if (s.Where is not null) tags.Add("where:" + s.Where);
+        return tags;
+    }
+
+    private readonly Dictionary<string, Condition> _conditionCache = new();
+
+    /// <summary>Evaluates a condition expression against the current world (e.g. who is in a room).</summary>
+    public bool Evaluate(string expression)
+    {
+        if (string.IsNullOrWhiteSpace(expression)) return true;
+        if (!_conditionCache.TryGetValue(expression, out var c))
+            _conditionCache[expression] = c = Condition.Parse(expression);
+        return c.IsTrue(this);
+    }
 
     private Presentation EndPresentation() => new()
     {
@@ -315,6 +339,7 @@ public sealed class Game : IConditionContext
         Lines = TakePending(),
         Choices = Array.Empty<ChoiceView>(),
         Clock = Teo.Clock(State),
+        When = Teo.DayPart(State),
         Headlines = State.Headlines.ToList(),
     };
 

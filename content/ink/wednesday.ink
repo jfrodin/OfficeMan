@@ -167,6 +167,7 @@ Zdenka has been here since six.
 === wed_magda
 # phase: wed_office
 # kind: hub
+# where: magda
 # choice: Magda's desk.
 # duration: 15
 The balloons are deflating. Somebody, probably Magda, has tied the saddest one to her monitor.
@@ -207,6 +208,7 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
 === wed_kornel
 # phase: wed_office
 # kind: hub
+# where: kornel
 # choice: Kornel.
 # duration: 15
 {
@@ -255,6 +257,7 @@ He's seen the video. He's seen who sent the laughing emoji.
 === wed_zdenka
 # phase: wed_office
 # kind: hub
+# where: zdenka
 # choice: Zdenka wants a word.
 # when: file_seen or file_buried or remembers(zdenka, asked_to_bury) or saw_zdenka_napkin
 # duration: 15
@@ -359,6 +362,7 @@ Reception calls. There's a man asking for "Mr Permit."
 === wed_desk
 # phase: wed_office
 # kind: exit
+# where: desk
 # choice: Sit down at your desk and open your email.
 # window: 09:30-11:30
 # duration: 5

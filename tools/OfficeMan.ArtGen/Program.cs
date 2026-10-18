@@ -2,7 +2,9 @@
 using OfficeMan.ArtGen.Drawn.Cast;
 using OfficeMan.ArtGen.Portraits;
 using OfficeMan.ArtGen.Raster;
+using OfficeMan.ArtGen.Rooms;
 using OfficeMan.ArtGen.Scenes;
+using OfficeMan.ArtGen.Sprites;
 
 // Generates art into art/out/. Every image is produced from code; nothing is loaded from disk.
 //   dotnet run --project tools/OfficeMan.ArtGen              everything
@@ -105,9 +107,33 @@ if (sets.Contains("game"))
     Png.Save(Placeholders.Silhouette(), Path.Combine(portraits, "silhouette.png"));
 
     Png.Save(TeoFlat.Draw().Scaled(6), Path.Combine(scenes, "teo_flat.png"));
+
+    // Walkable rooms (native pixel size; the game scales them) and sprite sheets.
+    string rooms = Path.Combine(gameDir, "rooms"), sprites = Path.Combine(gameDir, "sprites");
+    Directory.CreateDirectory(rooms);
+    Directory.CreateDirectory(sprites);
+    Png.Save(OfficeRoom.Draw(), Path.Combine(rooms, "office.png"));
+    foreach (var person in PixelPeople.All)
+        Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");
+}
+
+// Pixel people: a preview sheet (all frames, ×8) for checking the sprites.
+if (sets.Contains("sprites"))
+{
+    var people = PixelPeople.All.ToList();
+    var preview = new Canvas(PixelPeople.FrameW * PixelPeople.Frames, PixelPeople.FrameH * people.Count);
+    preview.Fill(Rgb.Hex("8a8478"));
+    for (int i = 0; i < people.Count; i++) preview.Draw(PixelPeople.Sheet(people[i]), 0, i * PixelPeople.FrameH);
+    Png.Save(preview.Scaled(6), Path.Combine(outDir, "sprites_preview.png"));
+
+    // The office with everyone in it, to judge scale.
+    var room = OfficeRoom.Draw();
+    foreach (var (person, x, y) in new[] { (PixelPeople.Magda, 96, 200), (PixelPeople.Teo, 200, 236), (PixelPeople.Kornel, 284, 204), (PixelPeople.Zdenka, 360, 202), (PixelPeople.Viktor, 440, 160) })
+        room.Draw(PixelPeople.Frame(person, 0), x - PixelPeople.FrameW / 2, y - PixelPeople.FrameH);
+    Png.Save(room.Scaled(4), Path.Combine(outDir, "office_preview.png"));
 }
 
 Console.WriteLine($"Wrote art to {outDir}");

@@ -151,7 +151,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[AGREED 2026-10-18]** Narration: Office Man's inner monologue.
 - **[AGREED 2026-10-18]** Opening: a Tuesday with the office summer party that evening. The Boss scheduled it on a weekday so nobody would drink. Everyone gets hammered anyway.
 - **[AGREED 2026-10-18]** Gameplay format, modelled on the creator's earlier prototype *Deadhouse* (`E:\Dev\RPG`): a **pixel-art world with direct control** (arrows/WASD/controller), side-on view with depth, small pixel characters visible in the scene, walk up to people and objects and interact. Spoken lines float above characters. **Conversations open over the live scene**: a large illustrated portrait bottom-left, text and choices bottom-right. No combat. (A visual-novel-style dialogue screen was built first by mistake; it is being rearranged into this.)
-- **[OPEN]** Does time pass in real time while walking, or only when Teo does something? (Assistant recommends: only when he does something.)
+- **[PREFERENCE 2026-10-18]** No visible clock. Time exists in the engine (events need it) but is felt, not read: the world changes (light, people leaving), Teo's monologue notices, clocks are objects you can look at, and arrival cards say "Tuesday · evening". Time moves only when Teo does something; walking is free. Proposed by the assistant after the creator asked whether time needs displaying; pending objection.
 
 ## 9. Visual direction
 

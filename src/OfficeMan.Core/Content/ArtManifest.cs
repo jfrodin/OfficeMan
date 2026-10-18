@@ -13,6 +13,16 @@ public sealed class ArtManifest
     public Dictionary<string, string> Scenes { get; set; } = new();
     public Dictionary<string, string> PhaseScenes { get; set; } = new();
     public string DefaultScene { get; set; } = "";
+    public Dictionary<string, string> PhaseRooms { get; set; } = new();
+    public Dictionary<string, string> Sprites { get; set; } = new();
+
+    /// <summary>The walkable room for a phase, or null if the phase is shown as a scene picture.</summary>
+    public string? RoomFor(string phaseId) => PhaseRooms.TryGetValue(phaseId, out var r) ? r : null;
+
+    public string Sprite(string name) => Abs(Sprites[name]);
+
+    /// <summary>Resolves a repository-relative path.</summary>
+    public string Resolve(string relative) => Abs(relative);
 
     /// <summary>Repository root that relative paths resolve against.</summary>
     public string Root { get; private set; } = "";
@@ -61,7 +71,7 @@ public sealed class ArtManifest
 
     /// <summary>Every image file the manifest refers to.</summary>
     public IEnumerable<string> AllFiles() =>
-        Portraits.Values.SelectMany(p => p.Images.Values).Concat(Scenes.Values).Append(Silhouette).Select(Abs);
+        Portraits.Values.SelectMany(p => p.Images.Values).Concat(Scenes.Values).Concat(Sprites.Values).Append(Silhouette).Select(Abs);
 
     private string Abs(string relative) => Path.GetFullPath(Path.Combine(Root, relative));
 }

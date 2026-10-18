@@ -15,7 +15,17 @@ A narrative adventure about an ordinary life in a city that can turn absurd with
 ## Play the prototype
 
 **In a window:** double-click `Play.bat` (needs Godot 4.6 .NET; edit the path at the top of the file if Godot
-lives elsewhere). Click or Space to continue, 1–9 to choose, F5 quick save, F9 quick load. Every choice autosaves.
+lives elsewhere).
+
+| | Keyboard | Controller |
+|---|---|---|
+| Walk | Arrows / WASD | Left stick / d-pad |
+| Interact, continue | E / Enter / Space | A |
+| Choose | 1–9, mouse, or arrows + Enter | d-pad + A |
+| Back out of a menu | Esc | B |
+| Quick save / load | F5 / F9 | |
+
+Every choice autosaves. The office is walkable; other places are still shown as pictures with a list of choices.
 
 **In the terminal** (fast for testing):
 
@@ -55,7 +65,8 @@ dotnet test
 | `src/OfficeMan.Core` | The life engine: world state, director, conditions, checks, saves |
 | `src/OfficeMan.Cli` | Text front end |
 | `game/` | Godot 4.6 (C#) front end: the dialogue screen. Not in the .sln; build with `dotnet build` inside `game/` |
-| `content/art.json` | Which image is used for each speaker + mood and each location (temporary art in `art/game/`) |
+| `content/art.json` | Which image is used for each speaker + mood, each location, and which phases are walkable rooms |
+| `content/rooms/*.json` | Walkable rooms: picture, walkable floor, and the people and things in them (anchors for `# where:`) |
 | `tools/OfficeMan.Sim` | Headless life simulator |
 | `tools/OfficeMan.ArtGen` | Code-built pixel art (art direction test) |
 | `tests/OfficeMan.Tests` | Unit and content tests |

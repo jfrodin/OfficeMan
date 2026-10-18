@@ -52,6 +52,9 @@ public sealed class Presentation
     public required IReadOnlyList<StoryLine> Lines { get; init; }
     public required IReadOnlyList<ChoiceView> Choices { get; init; }
     public required string Clock { get; init; }
+
+    /// <summary>"Tuesday · evening": how the time is shown to the player.</summary>
+    public string When { get; init; } = "";
     public string PhaseTitle { get; init; } = "";
 
     /// <summary>The phase this decision belongs to; front ends map it to a location backdrop.</summary>

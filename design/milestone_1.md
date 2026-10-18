@@ -42,7 +42,7 @@ characters without the creator.
 
 Each step ends in something the creator can play.
 
-### Step 1: A playable window (Godot) — REVISED 2026-10-18
+### Step 1: A playable window (Godot) — REVISED 2026-10-18 · first walkable room done
 
 The first build was a visual-novel-style dialogue screen. The creator wants a **walkable pixel world** like
 *Deadhouse*. Step 1 becomes:
@@ -54,6 +54,14 @@ The first build was a visual-novel-style dialogue screen. The creator wants a **
 - Floating spoken lines above characters.
 - Conversations over the live scene: portrait bottom-left, text and choices bottom-right (Deadhouse layout).
 - Code-built pixel sprites: Teo with a walk cycle, the cast with idle poses.
+
+**Done (2026-10-18):** the office is walkable (Tuesday and Wednesday) with Teo, Magda, Kornel, Zdenka and Viktor as
+pixel sprites; things to look at; interaction prompts; conversations over the live scene (portrait bottom-left,
+words and choices bottom-right); keyboard and controller. Story moves between places mid-conversation are marked
+in the text, so the scene switches exactly where the story does.
+
+**Still to do in Step 1:** walkable flat, stairwell and terrace (the party); floating spoken lines; sprites for
+Ramona, Stojan, Laci and the outsiders.
 
 The original Step 1 notes below still describe the conversation layer, which is kept.
 

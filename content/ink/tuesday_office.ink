@@ -66,6 +66,7 @@ Magda laughs like he's done a bit at the Christmas party. Zdenka writes somethin
 === magda_gift
 # phase: office
 # kind: hub
+# where: magda
 # choice: Magda is collecting the gift money.
 # window: 08:30-14:30
 # duration: 15
@@ -131,6 +132,7 @@ MAGDA: For tonight. Do you think Viktor likes red?
 === zdenka_file
 # phase: office
 # kind: hub
+# where: zdenka
 # choice: Go and see Zdenka.
 # duration: 15
 Zdenka's desk has nothing on it except one file, one pen and a ruler. The ruler is metal. I've never seen her use it to measure anything.
@@ -198,6 +200,7 @@ She says it the way other people say <i>looks like rain</i>.
 === petrovici_file
 # phase: office
 # kind: hub
+# where: trolley
 # choice: Find the Petrovici file on the trolley.
 # when: knows_file && stojan_promise
 # duration: 20
@@ -229,6 +232,7 @@ And there's the bus stop.
 === kornel_desk
 # phase: office
 # kind: hub
+# where: kornel
 # choice: Kornel is hovering near your desk.
 # window: 08:30-11:15
 # duration: 15
@@ -279,6 +283,7 @@ Oh no.
 === work_permits
 # phase: office
 # kind: hub
+# where: desk
 # choice: Do some actual work.
 # max: 2
 # duration: 60
@@ -377,6 +382,7 @@ VIKTOR: You'd be doing me a favour. And I remember favours, Teo.
 === lunch
 # phase: office
 # kind: hub
+# where: door
 # choice: Get some lunch.
 # window: 12:00-14:00
 # duration: 45
@@ -402,6 +408,7 @@ Lunch.
 === office_leave
 # phase: office
 # kind: exit
+# where: door
 # choice: Leave for the party.
 # window: 15:45-16:30
 # duration: 30
@@ -433,6 +440,7 @@ MAGDA: Come on, come on, the city is paying!
 === look_busy
 # phase: office
 # kind: hub
+# where: desk
 # choice: Look busy.
 # repeat
 # duration: 45

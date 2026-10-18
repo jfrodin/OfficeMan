@@ -53,3 +53,46 @@ public class ArtManifestTests
         Assert.EndsWith("viktor_neutral.png", Art.Portrait("VIKTOR", "bored")); // unknown mood → neutral
     }
 }
+
+/// <summary>Rooms must contain every anchor the story places in them.</summary>
+[Collection("content")]
+public class RoomTests(ContentFixture fixture)
+{
+    private static readonly string ContentDir = ContentLocator.Find();
+
+    [Fact]
+    public void EveryAnchorInARoomPhaseExistsInThatRoom()
+    {
+        var art = ArtManifest.Load(ContentDir);
+        var rooms = RoomLayout.LoadAll(ContentDir);
+        foreach (var s in fixture.Content.Storylets.Where(s => s.Where is not null))
+            foreach (string phase in s.Phases)
+            {
+                string? roomId = art.RoomFor(phase);
+                if (roomId is null) continue;
+                Assert.True(rooms.ContainsKey(roomId), $"room '{roomId}' missing");
+                Assert.True(rooms[roomId].Things.Any(t => t.AnchorId == s.Where), $"storylet '{s.Id}': no '{s.Where}' in room '{roomId}'");
+            }
+    }
+
+    [Fact]
+    public void HubStoryletsInRoomPhasesAllHaveAnAnchor()
+    {
+        var art = ArtManifest.Load(ContentDir);
+        foreach (var s in fixture.Content.Storylets.Where(s => s.Kind is StoryletKind.Hub or StoryletKind.Exit))
+            foreach (string phase in s.Phases.Where(p => art.RoomFor(p) is not null))
+                Assert.True(s.Where is not null, $"storylet '{s.Id}' in walkable phase '{phase}' has no '# where:'");
+    }
+
+    [Fact]
+    public void RoomImagesAndSpritesExist()
+    {
+        var art = ArtManifest.Load(ContentDir);
+        foreach (var room in RoomLayout.LoadAll(ContentDir).Values)
+        {
+            Assert.True(File.Exists(art.Resolve(room.Image)), $"missing {room.Image}");
+            foreach (var t in room.Things.Where(t => t.Sprite is not null))
+                Assert.True(art.Sprites.ContainsKey(t.Sprite!), $"room '{room.Id}': unknown sprite '{t.Sprite}'");
+        }
+    }
+}

@@ -27,6 +27,7 @@ public enum StoryletKind
 /// # phase: office            phase id(s), comma-separated
 /// # kind: hub                scene | enter | hub | exit | interrupt | timeout
 /// # choice: Talk to Magda    hub menu text
+/// # where: magda             the person or thing in the room it belongs to (walkable front ends)
 /// # when: drunk >= 2         eligibility condition (see Condition)
 /// # window: 08:30-12:00      time of day it is available
 /// # at: 18:00                interrupt: earliest time it may fire
@@ -44,6 +45,9 @@ public sealed class Storylet
     public required IReadOnlyList<string> Phases { get; init; }
     public StoryletKind Kind { get; init; } = StoryletKind.Hub;
     public string ChoiceText { get; init; } = "";
+
+    /// <summary>Anchor in the room (a person or object id) where this situation is offered.</summary>
+    public string? Where { get; init; }
     public Condition When { get; init; } = Condition.Always;
     public int? WindowStart { get; init; }
     public int? WindowEnd { get; init; }
@@ -103,6 +107,7 @@ public sealed class Storylet
             Phases = phase.Split(',', StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries),
             Kind = kind,
             ChoiceText = Get("choice"),
+            Where = tags.TryGetValue("where", out var where) ? where : null,
             When = when,
             WindowStart = windowStart,
             WindowEnd = windowEnd,

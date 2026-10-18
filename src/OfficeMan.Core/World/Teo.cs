@@ -95,6 +95,24 @@ public static class Teo
         s.AwakeSince = s.AbsoluteMinute;
     }
 
+    /// <summary>How the time of day feels, for arrival cards: no exact clock is ever shown to the player.</summary>
+    public static string DayPart(WorldState s)
+    {
+        int m = s.Minute % 1440;
+        string part = m switch
+        {
+            < 5 * 60 => "the small hours",
+            < 12 * 60 => "morning",
+            < 14 * 60 => "lunchtime",
+            < 17 * 60 => "afternoon",
+            < 21 * 60 => "evening",
+            _ => "night",
+        };
+        string[] days = { "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday", "Monday" };
+        int dayIndex = s.Day + s.Minute / 1440;
+        return $"{days[dayIndex % 7]} · {part}";
+    }
+
     public static string Clock(WorldState s)
     {
         int m = s.Minute % 1440;

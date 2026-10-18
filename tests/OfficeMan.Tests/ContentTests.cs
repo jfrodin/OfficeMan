@@ -3,13 +3,17 @@ using OfficeMan.Core.Content;
 
 namespace OfficeMan.Tests;
 
-/// <summary>Loads the real game content once and plays it.</summary>
+/// <summary>Loads the real game content once. The ink compiler isn't thread-safe, so all users share it.</summary>
 public class ContentFixture
 {
     public ContentBundle Content { get; } = ContentBundle.Load(ContentLocator.Find());
 }
 
-public class ContentTests(ContentFixture fixture) : IClassFixture<ContentFixture>
+[CollectionDefinition("content")]
+public class ContentCollection : ICollectionFixture<ContentFixture>;
+
+[Collection("content")]
+public class ContentTests(ContentFixture fixture)
 {
     private readonly ContentBundle _content = fixture.Content;
 
