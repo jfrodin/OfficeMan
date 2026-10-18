@@ -1,6 +1,6 @@
 # Who Teo is: traits and conditions
 
-**Status: PROPOSAL for the trait design session (2026-10-18).** Nothing here is decided.
+**Status: MOSTLY AGREED (2026-10-18).** Tensions, hidden presentation and Teo's baseline agreed (see `GAME_VISION.md` §7). "Candour" is renamed **Honesty**. Starting-value approach proposed; fifth trait open.
 
 ## The idea in one line
 

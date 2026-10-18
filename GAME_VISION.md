@@ -134,8 +134,11 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[REQUIRED]** Influences can change him temporarily or permanently.
 - **[EXAMPLE]** Alcohol raises confidence and lowers coordination and judgment. Humiliation lowers confidence for a long time. Repeated social success changes how he approaches people. Stress, fatigue, illness or intoxication change available choices. Major life events permanently change his personality.
 - **[REQUIRED]** The system should make players understand him as a person, not optimise him as numbers.
-- **[OPEN]** Are attributes fully hidden, indirectly communicated or partly visible?
-- **[OPEN]** Are starting characteristics fixed or slightly randomised?
+- **[AGREED 2026-10-18]** Personality is a set of two-sided tensions, not scores: both ends help and hurt, so there is no "maxed" Teo. Working set: **Nerve** (bold ↔ careful), **Warmth** (open ↔ closed), **Appetite** (hungry ↔ held back), **Honesty** (blunt ↔ smooth). Names use plain English. Details: `design/traits_proposal.md`.
+- **[AGREED 2026-10-18]** Hidden: no numbers on screen. Personality shows through Teo's inner voice, which choices appear and how they're worded, what people say, and hindsight lines naming causes.
+- **[AGREED 2026-10-18]** Teo's baseline: careful, open, held back, smooth, a man who lets life happen to him. He starts tired and jaded from government work.
+- **[PREFERENCE]** Starting values: the creator's baseline Teo, nudged a step or two at random per life, then shaped slowly by how the player plays (roleplay through play, no character-creation screen). Pending the creator's final confirmation.
+- **[OPEN]** A fifth trait (first candidate: Pride, can't lose face ↔ can laugh at himself), only if playtesting shows a gap.
 
 ## 8. Gameplay and interaction
 
@@ -229,7 +232,7 @@ Discovery round 2 started 2026-10-18.
 2. **Attribute visibility.** Leaning towards indirect communication; the inner monologue is a natural channel for it. Deliberately not settled; to be found through prototyping.
 3. **Setting details.** A fictional Eastern European country? Proposed satire rule: people are never the punchline for being from here, only for who they are.
 4. **Prototype cast.** Boss, Secretary, Veteran, Awkward Colleague, Boss's Wife. Possibly someone from outside work.
-5. **Trait system.** Proposal in `design/traits_proposal.md` (four two-sided tensions, conditions, no visible numbers). Awaiting the design session.
+5. **Trait system.** Tensions agreed; starting-value approach proposed (baseline + small random nudge + drift through play). Fifth trait open.
 
 ## Decision log
 
@@ -265,3 +268,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Magda: younger than first sketched, two children by different men, low self-esteem, seeks validation through sex; darker side developed later. | §5 |
 | 2026-10-18 | Magda is 21; her children are 5 and 2 and live with their fathers. | §5 |
 | 2026-10-18 | Milestone 1 (`design/milestone_1.md`) approved. | Current priority |
+| 2026-10-18 | Traits are two-sided tensions (Nerve, Warmth, Appetite, Honesty), hidden; Teo's baseline is careful, open, held back, smooth, tired and jaded. | §7 |
