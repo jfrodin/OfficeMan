@@ -67,6 +67,7 @@ Magda laughs like he's done a bit at the Christmas party. Zdenka writes somethin
 # phase: office
 # kind: hub
 # choice: Magda is collecting the gift money.
+# window: 08:30-14:30
 # duration: 15
 Magda's desk is a shrine to the party. Balloons. A clipboard. A tin that says <i>GIFT</i> in glitter glue.
 MAGDA: Teo! You're the last one. Well. You and Zdenka, and Zdenka said no in a way I didn't like.
@@ -229,6 +230,7 @@ And there's the bus stop.
 # phase: office
 # kind: hub
 # choice: Kornel is hovering near your desk.
+# window: 08:30-11:15
 # duration: 15
 Kornel is forty-one and dresses like a man who's been told what a weekend is but has never been on one.
 {

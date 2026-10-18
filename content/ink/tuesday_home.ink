@@ -55,8 +55,19 @@ I have a ficus.
 The ficus is dying. We understand each other.
 * [Get up.]
     -> get_up
-* [Check phone.]
+* {not phone} [Check phone.]
     -> phone
+* {phone} [Check phone again.]
+    -> phone_again
+
+= phone_again
+{ q("kornel_taxi") == 1:
+    One new message. Kornel: <i>Cost breakdown attached.</i> It's a PDF. It has a logo. He's made a logo.
+- else:
+    Nothing new. Just the time, which has got later without asking me.
+}
+* [Get up.]
+    -> get_up
 
 = get_up
 { played("wake") == 0 && mood() < 0:

@@ -4,17 +4,20 @@ using OfficeMan.Core;
 using OfficeMan.Core.Content;
 
 // Text-only player for the prototype.
-//   dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug]
+//   dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug] [--fast]
 // During play: a number picks a choice; s = save, l = load, d = toggle debug, q = quit.
+// Text types out at reading pace; any key shows the rest of the passage at once. --fast turns that off.
 
 Console.OutputEncoding = Encoding.UTF8;
 
 int seed = Environment.TickCount & 0x7fffffff;
 bool debug = false;
+bool fast = false;
 for (int i = 0; i < args.Length; i++)
 {
     if (args[i] == "--seed" && i + 1 < args.Length) seed = int.Parse(args[++i]);
     else if (args[i] == "--debug") debug = true;
+    else if (args[i] == "--fast") fast = true;
 }
 
 ContentBundle content;
@@ -30,10 +33,11 @@ catch (ContentException e)
 
 string savePath = Path.Combine(AppContext.BaseDirectory, "saves", "slot1.json");
 var game = Game.New(content, seed);
-var ui = new TextUi();
+var ui = new TextUi { Animate = !fast && !Console.IsInputRedirected && !Console.IsOutputRedirected };
 
 Console.WriteLine();
 ui.Dim($"THE MISADVENTURES OF OFFICE MAN — prototype · life #{seed}");
+if (ui.Animate) ui.Dim("(Press any key to show text instantly.)");
 Console.WriteLine();
 
 while (true)
@@ -94,15 +98,28 @@ sealed partial class TextUi
     private const string Yellow = "\u001b[33m";
     private const string Cyan = "\u001b[36m";
 
+    // Reading pace: per visible character, plus a breath between lines.
+    private const int CharDelayMs = 12;
+    private const int LinePauseMs = 280;
+    private const int HeaderPauseMs = 500;
+
+    /// <summary>Type text out at reading pace. Off when input or output is redirected.</summary>
+    public bool Animate { get; init; }
+
+    private bool _skipping;
+
     public void Show(Presentation view)
     {
+        _skipping = false;
         foreach (var line in view.Lines)
         {
             if (line.Kind == LineKind.Header)
             {
+                Pause(HeaderPauseMs);
                 Console.WriteLine();
                 Console.WriteLine($"{Bold}{Yellow}── {line.Text} ──{Reset}");
                 Console.WriteLine();
+                Pause(HeaderPauseMs);
                 continue;
             }
 
@@ -158,7 +175,7 @@ sealed partial class TextUi
     private static string Markup(string text) =>
         ItalicTag().Replace(text, m => $"{Italic}{m.Groups[1].Value}{Reset}");
 
-    private static void Write(string text, int indent)
+    private void Write(string text, int indent)
     {
         // Word-wrap by visible length (ANSI codes don't count).
         var words = text.Split(' ');
@@ -169,7 +186,8 @@ sealed partial class TextUi
             int len = AnsiCode().Replace(word, "").Length;
             if (visible + len + 1 > Width && visible > indent)
             {
-                Console.WriteLine(line.ToString());
+                TypeOut(line.ToString());
+                Console.WriteLine();
                 int hang = indent == 0 ? 0 : indent + 4;
                 line.Clear().Append(new string(' ', hang));
                 visible = hang;
@@ -178,8 +196,59 @@ sealed partial class TextUi
             line.Append(word);
             visible += len;
         }
-        Console.WriteLine(line.ToString());
+        TypeOut(line.ToString());
         Console.WriteLine();
+        Console.WriteLine();
+        Pause(LinePauseMs);
+    }
+
+    /// <summary>Writes text a character at a time; escape codes are written whole.</summary>
+    private void TypeOut(string text)
+    {
+        if (!Animate || _skipping)
+        {
+            Console.Write(text);
+            return;
+        }
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (text[i] == '\u001b')
+            {
+                int end = text.IndexOf('m', i);
+                Console.Write(text[i..(end + 1)]);
+                i = end;
+                continue;
+            }
+            Console.Write(text[i]);
+            if (SkipRequested())
+            {
+                Console.Write(text[(i + 1)..]);
+                return;
+            }
+            if (text[i] != ' ') Thread.Sleep(CharDelayMs);
+        }
+    }
+
+    private void Pause(int ms)
+    {
+        if (!Animate || _skipping) return;
+        var until = DateTime.UtcNow.AddMilliseconds(ms);
+        while (DateTime.UtcNow < until)
+        {
+            if (SkipRequested()) return;
+            Thread.Sleep(15);
+        }
+    }
+
+    /// <summary>Any key press skips to the end of the passage. The key is swallowed.</summary>
+    private bool SkipRequested()
+    {
+        while (Console.KeyAvailable)
+        {
+            Console.ReadKey(intercept: true);
+            _skipping = true;
+        }
+        return _skipping;
     }
 
     [GeneratedRegex("<i>(.*?)</i>")]

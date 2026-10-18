@@ -20,6 +20,7 @@ dotnet run --project src/OfficeMan.Cli -- --seed 42 --debug
 ```
 
 Type a number to choose. `s` saves, `l` loads, `d` toggles the debug view (Teo's hidden state and recent checks), `q` quits.
+Text types out at reading pace; press any key to show the rest of a passage at once, or start with `--fast` to turn it off.
 
 The same seed with the same choices always produces the same life; that includes the luck.
 
