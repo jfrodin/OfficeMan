@@ -15,14 +15,16 @@ namespace OfficeMan.Game;
 /// </summary>
 /// <remarks>
 /// Controls: arrows/WASD/stick to walk, E/Enter/Space (pad A) to interact or continue, number keys,
-/// mouse or d-pad + A to choose, Esc (pad B) to back out of a menu, F5 quick save, F9 quick load.
-/// Command line (after --): --seed N, --shot path.png --steps N (play N steps automatically, then screenshot).
+/// mouse or d-pad + A to choose, Esc (pad B) to back out of a menu, Esc (pad Start) for the pause menu,
+/// F5 quick save, F9 quick load.
+/// Command line (after --): --seed N, --shot path.png --steps N (play N steps automatically, then screenshot),
+/// --menu main|settings|load (open the pause menu before the screenshot), --room id --at HH:MM (one room, no dialogue).
 /// </remarks>
 public partial class Main : Control
 {
-    private enum Mode { Talking, Choosing, Walking, Ending }
+    private enum Mode { Talking, Choosing, Walking, Ending, Menu }
 
-    private const double CharsPerSecond = 55;
+    private double _cps = 55;   // characters per second, from the text speed setting
     private const int BodySize = 30;
     private const float PortraitW = 250, PortraitH = 270, BarMinHeight = 210;
     private static readonly Color Accent = new(1f, 0.78f, 0.55f), Spoken = new(0.98f, 0.95f, 0.9f), Thought = new(0.78f, 0.82f, 0.9f);
@@ -86,6 +88,7 @@ public partial class Main : Control
     private int _autoChoices;
     private string? _shotPath;
     private string? _lookRoom;
+    private string? _shotMenu;
     private int _lookAt = -1;
 
     public override void _Ready()
@@ -98,6 +101,7 @@ public partial class Main : Control
             else if (args[i] == "--shot" && i + 1 < args.Length) _shotPath = args[++i];
             else if (args[i] == "--steps" && i + 1 < args.Length) _autoSteps = int.Parse(args[++i]);
             else if (args[i] == "--room" && i + 1 < args.Length) _lookRoom = args[++i];
+            else if (args[i] == "--menu" && i + 1 < args.Length) _shotMenu = args[++i];
             else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
         }
 
@@ -110,6 +114,8 @@ public partial class Main : Control
 
         Controls.Register();
         BuildUi();
+        BuildMenu();
+        LoadSettings();
         StartLife(_seed);
         if (_lookRoom is not null) LookAtRoom(_lookRoom);
     }
@@ -585,6 +591,7 @@ public partial class Main : Control
     {
         if (e.IsActionPressed("quicksave")) { Save("quicksave"); Toast("Saved"); return; }
         if (e.IsActionPressed("quickload")) { if (Load("quicksave")) Toast("Loaded"); return; }
+        if (MenuInput(e)) { GetViewport().SetInputAsHandled(); return; }
 
         switch (_mode)
         {
@@ -606,9 +613,10 @@ public partial class Main : Control
 
     public override void _Process(double delta)
     {
-        if (_typing)
+        LayoutMenu();
+        if (_typing && _mode != Mode.Menu)
         {
-            _typed += delta * CharsPerSecond;
+            _typed += delta * _cps;
             _typingLabel.VisibleCharacters = (int)_typed;
             if (_typed >= _typingLabel.GetTotalCharacterCount())
             {
@@ -706,6 +714,12 @@ public partial class Main : Control
         if (_typing) Continue();
         _autoSteps = -1;
         GD.Print($"shot: mode {_mode}");
+        if (_shotMenu is not null)
+        {
+            OpenMenu();
+            if (_shotMenu == "settings") ShowSettingsMenu();
+            else if (_shotMenu == "load") ShowLoadMenu();
+        }
         GetTree().CreateTimer(0.4).Timeout += () =>
         {
             GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
@@ -736,6 +750,13 @@ public partial class Main : Control
 
     private void AddChoice(string text, Action onPressed)
     {
+        var b = MakeButton(text);
+        b.Pressed += onPressed;
+        _choices.AddChild(b);
+    }
+
+    private static Button MakeButton(string text)
+    {
         var b = new Button { Text = text, Alignment = HorizontalAlignment.Left, FocusMode = FocusModeEnum.All, SizeFlagsHorizontal = SizeFlags.ExpandFill, ClipText = false, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         b.AddThemeFontSizeOverride("font_size", 27);
         b.AddThemeColorOverride("font_color", new Color(0.93f, 0.9f, 0.84f));
@@ -747,8 +768,7 @@ public partial class Main : Control
         b.AddThemeStyleboxOverride("hover", hot);
         b.AddThemeStyleboxOverride("focus", hot);
         b.AddThemeStyleboxOverride("pressed", hot);
-        b.Pressed += onPressed;
-        _choices.AddChild(b);
+        return b;
     }
 
     private void ClearChoices()

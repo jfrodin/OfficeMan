@@ -334,9 +334,12 @@ public partial class RoomView : Control
             Texture = sheet;
             Hframes = 6;
             Centered = true;
-            Offset = new Vector2(0, -26);
+            // Anchored at the feet whatever the frame size. Someone lying down (a frame wider than tall) casts no foot shadow.
+            int frameW = sheet.GetWidth() / 6, frameH = sheet.GetHeight();
+            Offset = new Vector2(0, -frameH / 2);
             TextureFilter = TextureFilterEnum.Nearest;
-            AddChild(new Sprite2D { Texture = shadow, Position = new Vector2(0, 0), ShowBehindParent = true, TextureFilter = TextureFilterEnum.Nearest });
+            if (frameH > frameW)
+                AddChild(new Sprite2D { Texture = shadow, Position = new Vector2(0, 0), ShowBehindParent = true, TextureFilter = TextureFilterEnum.Nearest });
         }
 
         public override void _Process(double delta)

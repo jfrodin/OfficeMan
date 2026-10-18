@@ -28,7 +28,6 @@ public static class FlatRoom
     private static readonly Ramp Laminate = Ramp.Of("5a5446", "746c5a", "8e866e", "a89f84", "c0b89a");
     private static readonly Ramp Metal = Ramp.Of("26282c", "393d42", "52575d", "6e747a", "8e949a", "b4b8bc");
     private static readonly Ramp Fridge = Ramp.Of("6a6656", "848070", "9e9a88", "b6b29e", "ccc8b2");
-    private static readonly Ramp Blanket = Ramp.Of("3a2416", "52341e", "6a4628", "845a32", "a0703e", "bc8a50");
     private static readonly Ramp Sheet = Ramp.Of("4a4c56", "62646e", "7c7e88", "9a9ba2", "b8b8b8");
     private static readonly Ramp Curtain = Ramp.Of("3a2a2e", "4e3a3e", "644c50", "7a6064");
     private static readonly Ramp Leaf = Ramp.Of("12180c", "1c2612", "283618", "38441e", "4c5226", "60602c");
@@ -146,6 +145,22 @@ public static class FlatRoom
         a.FillRect(127, 90, 128, 118, Cream, (x, y) => 0.25, 0);
         a.FillRect(128, 92, 132, 120, Cream, (x, y) => 0.18, 0);                      // the gap behind the crooked door
         a.FillRect(132, 92, 166, 121, Cream, (x, y) => 0.5 - (x - 132) / 200.0, 0);
+        // On top of the cupboards: a moving box never unpacked, the big pot, an unlabelled bottle.
+        var card = Ramp.Of("3a2a1a", "54402a", "6e5638", "8a6e48", "a08458");
+        a.FillRect(92, 70, 118, 89, card, (x, y) => 0.55 - (x > 114 ? 0.15 : 0) + (y == 70 ? 0.2 : 0), 0);
+        a.FillRect(92, 76, 118, 77, card, (x, y) => 0.3, 0);                            // tape
+        a.FillRect(98, 81, 110, 81, Metal, (x, y) => 0.25, 0);                          // a word in marker
+        a.FillRect(100, 83, 106, 83, Metal, (x, y) => 0.25, 0);
+        a.FillRect(130, 79, 152, 89, Metal, (x, y) => 0.55 - (x > 148 ? 0.15 : 0) + (y == 79 ? 0.2 : 0), 0);
+        a.FillRect(127, 81, 129, 82, Metal, (x, y) => 0.4, 0);
+        a.FillRect(153, 81, 155, 82, Metal, (x, y) => 0.4, 0);
+        a.FillRect(158, 74, 162, 89, Glass, (x, y) => 0.55 + (x == 159 ? 0.25 : 0), 0);
+        a.FillRect(159, 70, 161, 73, Glass, (x, y) => 0.5, 0);
+        a.FillRect(159, 69, 161, 69, Rug, (x, y) => 0.6, 0);
+        // The smoke alarm on the ceiling, its battery hanging out on two wires.
+        a.FillRect(56, Ceil, 64, Ceil + 2, Fridge, (x, y) => 0.6, 0);
+        a.Paint(58, Ceil + 3, Metal, 0.3, 0); a.Paint(59, Ceil + 4, Metal, 0.3, 0); a.Paint(59, Ceil + 5, Metal, 0.3, 0);
+        a.FillRect(58, Ceil + 6, 61, Ceil + 9, Envelope, (x, y) => 0.4, 0);
         // The fridge, with last month's calendar.
         a.FillRect(174, 120, 198, Base, Fridge, (x, y) => 0.55 - (x > 194 ? 0.12 : 0), 0);
         a.FillRect(174, 140, 198, 141, Fridge, (x, y) => 0.3, 0);
@@ -218,7 +233,7 @@ public static class FlatRoom
 
     private static void Bed(SceneCanvas a)
     {
-        // A single bed along the wall: frame, mattress, and Teo under the blanket, still.
+        // A single bed along the wall: frame, mattress, pillow. Teo and his blanket are a sprite (teo_bed).
         a.FillRect(334, 156, 398, Base, Wood, (x, y) => 0.38 - (y > 172 ? 0.1 : 0), 0);
         a.FillRect(336, 176, 340, Base, Wood, (x, y) => 0.2, 0);
         a.FillRect(392, 176, 396, Base, Wood, (x, y) => 0.2, 0);
@@ -226,15 +241,6 @@ public static class FlatRoom
         a.FillRect(330, 152, 330 + 2, 166, Wood, (x, y) => 0.3, 0);                          // footboard
         a.FillRect(334, 150, 396, 157, Sheet, (x, y) => 0.55, 0);
         a.FillRect(378, 141, 396, 151, Sheet, (x, y) => 0.75 - (y - 141) / 40.0, 0);          // pillow
-        a.FillRect(380, 140, 386, 144, Wood, (x, y) => 0.12, 0);                             // his hair on the pillow
-        // The blanket over the shape of a man who doesn't want to get up.
-        for (int x = 334; x < 384; x++)
-        {
-            double hump = Math.Max(0, Math.Sin((x - 334) / 50.0 * Math.PI)) * 9 + (x > 362 ? 3 : 0);
-            int top = 150 - (int)hump;
-            for (int y = top; y < 160; y++) a.Paint(x, y, Blanket, 0.5 + (y == top ? 0.18 : 0) - (y - top) / 60.0, 0);
-        }
-        for (int x = 334; x < 384; x++) a.Paint(x, 160 + (x / 6 % 2), Blanket, 0.35, 0);
         // The pale patch where a picture used to hang, and the nail.
         a.FillRect(346, 70, 382, 102, Paper, (x, y) => 0.68, 0);
         a.Paint(364, 66, Metal, 0.8, 0);

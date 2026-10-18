@@ -224,12 +224,15 @@ public static class OfficeRoom
 
         // Teo: a monitor, a pile, a mug.
         Monitor(a, e, 172);
+        Keyboard(a, 168);
+        a.Paint(172, 150, Paper, 0.85, 0); a.Paint(172, 151, Paper, 0.85, 0);           // the mug's handle
         a.FillRect(198, 142, 214, 154, Paper, (x, y) => 0.6 + ((y - 128) % 2) * 0.12, 0);
         a.FillRect(204, 138, 216, 142, Paper, (x, y) => 0.5, 0);
         a.FillRect(166, 148, 171, 154, Paper, (x, y) => 0.85, 0);
 
         // Kornel: a monitor, stacks squared to the edge, a pen pot.
         Monitor(a, e, 252);
+        Keyboard(a, 254);
         a.FillRect(280, 146, 296, 154, Paper, (x, y) => 0.8, 0);
         a.FillRect(282, 144, 294, 146, Paper, (x, y) => 0.9, 0);
         a.FillRect(244, 146, 249, 154, Metal, (x, y) => 0.6, 0);
@@ -264,12 +267,29 @@ public static class OfficeRoom
         a.FillRect(x0 + 4, 152, x0 + 20, 154, Fabric, (x, y) => 0.55, 0);
     }
 
+    /// <summary>An office chair in side view, pulled out, facing the desk on its left.</summary>
     private static void Chair(SceneCanvas a, int x)
     {
-        a.FillRect(x, 146, x + 12, 162, Fabric, (xx, y) => 0.55 - (y - 146) / 80.0, 0);
-        a.FillRect(x - 2, 162, x + 14, 166, Fabric, (xx, y) => 0.45, 0);
-        a.FillRect(x + 5, 166, x + 7, 176, Metal, (xx, y) => 0.4, 0);
-        a.FillRect(x - 1, 176, x + 13, 178, Metal, (xx, y) => 0.3, 0);
+        // Backrest: a padded oval on a curved stem.
+        a.FillRect(x + 9, 141, x + 13, 157, Fabric, (xx, y) => (xx == x + 9 ? 0.75 : 0.55) - (y - 141) / 90.0 + (y == 141 ? 0.15 : 0), 0);
+        a.FillRect(x + 10, 140, x + 12, 140, Fabric, (xx, y) => 0.6, 0);
+        a.FillRect(x + 11, 157, x + 12, 162, Metal, (xx, y) => 0.45, 0);
+        // Seat cushion, armrest.
+        a.FillRect(x, 160, x + 12, 163, Fabric, (xx, y) => y == 160 ? 0.8 : 0.5, 0);
+        a.FillRect(x + 1, 164, x + 11, 164, Fabric, (xx, y) => 0.3, 0);
+        a.FillRect(x + 2, 154, x + 9, 155, Metal, (xx, y) => 0.55, 0);
+        a.FillRect(x + 8, 155, x + 9, 159, Metal, (xx, y) => 0.4, 0);
+        // Gas lift, five-star base, castors.
+        a.FillRect(x + 5, 165, x + 6, 172, Metal, (xx, y) => 0.6 + (xx == x + 5 ? 0.15 : 0), 0);
+        a.FillRect(x - 1, 173, x + 13, 174, Metal, (xx, y) => 0.35, 0);
+        foreach (int cx in new[] { x - 1, x + 6, x + 12 }) a.FillRect(cx, 175, cx + 1, 176, Fabric, (xx, y) => 0.3, 0);
+    }
+
+    private static void Keyboard(SceneCanvas a, int x0)
+    {
+        a.FillRect(x0, 152, x0 + 18, 153, Metal, (x, y) => y == 152 ? 0.75 : 0.45, 0);
+        for (int x = x0 + 1; x < x0 + 18; x += 2) a.Paint(x, 152, Metal, 0.95, 0);
+        a.FillRect(x0 + 22, 152, x0 + 24, 153, Metal, (x, y) => 0.7, 0);                // the mouse
     }
 
     private static void FloorThings(SceneCanvas a)

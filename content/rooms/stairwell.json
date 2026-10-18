@@ -15,6 +15,6 @@
     { "x": 326, "y": 70, "radius": 230, "intensity": 0.6, "color": "b8c8dc", "dir": [-0.3, 1], "inner": 25, "outer": 55 }
   ],
   "things": [
-    { "id": "stojan", "name": "Stojan", "sprite": "stojan", "x": 372, "y": 206, "faceLeft": true, "smoke": [9, -27] }
+    { "id": "stojan", "name": "Stojan", "sprite": "stojan", "x": 372, "y": 206, "faceLeft": true, "smoke": [9, -43] }
   ]
 }

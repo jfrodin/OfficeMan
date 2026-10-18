@@ -47,8 +47,32 @@ public static class StairwellRoom
         Sign(a);
         StojansDoor(a, e, night);
         Bulb(a, e);
+        Bicycle(f);
 
         return new RoomLayers(a.Render(), e, Glow(e), f);
+    }
+
+    /// <summary>Someone's bicycle, parked in the foreground where everyone has to squeeze past it.</summary>
+    private static void Bicycle(Canvas f)
+    {
+        var frame = Rgb.Hex("1c1e22"); var tyre = Rgb.Hex("121214"); var lit = Rgb.Hex("34383e");
+        void Px(int x, int y, Rgb c) { if (f.InBounds(x, y)) f[x, y] = c; }
+        void Line(int x0, int y0, int x1, int y1, Rgb c)
+        {
+            int n = Math.Max(Math.Abs(x1 - x0), Math.Abs(y1 - y0));
+            for (int i = 0; i <= n; i++) { Px(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n, c); Px(x0 + (x1 - x0) * i / n, y0 + (y1 - y0) * i / n + 1, c); }
+        }
+        foreach (var (cx, cy) in new[] { (424, 258), (472, 258) })
+            for (int a = 0; a < 360; a++)
+            {
+                double t = a * Math.PI / 180;
+                for (double r = 15.5; r <= 18; r += 0.5) Px(cx + (int)Math.Round(Math.Cos(t) * r), cy + (int)Math.Round(Math.Sin(t) * r), tyre);
+            }
+        Line(424, 258, 444, 236, frame); Line(444, 236, 466, 236, frame); Line(466, 236, 472, 258, frame);
+        Line(424, 258, 448, 258, frame); Line(448, 258, 444, 236, frame); Line(448, 258, 466, 236, frame);
+        Line(442, 236, 440, 228, frame); Line(436, 227, 446, 227, lit);                 // saddle
+        Line(466, 236, 468, 224, frame); Line(464, 223, 474, 223, lit);                 // handlebar
+        for (int x = 436; x <= 446; x++) Px(x, 226, lit);
     }
 
     private static void Shell(SceneCanvas a)

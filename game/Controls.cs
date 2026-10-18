@@ -13,6 +13,7 @@ public static class Controls
         Bind("move_down", Key.Down, Key.S, JoyButton.DpadDown, JoyAxis.LeftY, 1);
         Bind("interact", new[] { Key.E, Key.Enter, Key.KpEnter, Key.Space }, JoyButton.A);
         Bind("cancel", new[] { Key.Escape, Key.Backspace }, JoyButton.B);
+        Bind("menu", new[] { Key.Escape }, JoyButton.Start);
         Bind("quicksave", new[] { Key.F5 }, null);
         Bind("quickload", new[] { Key.F9 }, null);
     }

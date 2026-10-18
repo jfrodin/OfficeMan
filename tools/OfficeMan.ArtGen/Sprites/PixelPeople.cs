@@ -13,15 +13,15 @@ public sealed record PersonSpec(
     TopStyle Top, string TopColor, string TopShade,
     string Bottom, string BottomShade, string Shoes,
     int Build = 6, int Height = 2, bool Glasses = false, bool Earrings = false, bool Belly = false,
-    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null);
+    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null, bool Cigarette = false);
 
 /// <summary>
-/// Pixel people for the walkable world: 28×52 frames, facing right (flip for left).
+/// Pixel people for the walkable world: 28×60 frames, people 47-52 px tall (about 30 px per metre), facing right (flip for left).
 /// Frames: idle 0-1, walk 2-5. The sheet is one row.
 /// </summary>
 public static class PixelPeople
 {
-    public const int FrameW = 28, FrameH = 52, Frames = 6;
+    public const int FrameW = 28, FrameH = 60, Frames = 6;
     private static readonly Rgb Outline = Rgb.Hex("231a1e");
 
     public static readonly PersonSpec Teo = new("teo", "e8b896", "c98e72", HairStyle.Messy, "3a2a24", "241814",
@@ -41,7 +41,7 @@ public static class PixelPeople
 
     /// <summary>The neighbour: big, bald with a grey fringe, a moustache, a white vest, sweatpants and slippers.</summary>
     public static readonly PersonSpec Stojan = new("stojan", "d9a07e", "b07658", HairStyle.Bald, "8a847c", "5e5a54",
-        TopStyle.Vest, "e8e4d8", "b8b2a2", "5a5e66", "3e424a", "6a3a2a", Build: 9, Height: 3, Belly: true, Moustache: "4a3a30");
+        TopStyle.Vest, "e8e4d8", "b8b2a2", "5a5e66", "3e424a", "6a3a2a", Build: 9, Height: 3, Belly: true, Moustache: "4a3a30", Cigarette: true);
 
     public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor, Stojan };
 
@@ -67,8 +67,8 @@ public static class PixelPeople
         int bob = frame == 1 || phase is 1 or 3 ? 1 : 0;          // breathe / step down
         int legStride = !walking ? 0 : phase switch { 0 => 2, 2 => -2, _ => 0 };
 
-        const int cx = 13, foot = 51;
-        int legLen = 15 + p.Height / 2, torsoLen = 14 + (p.Height + 1) / 2;
+        const int cx = 13, foot = 59;
+        int legLen = 18 + p.Height / 2, torsoLen = 17 + (p.Height + 1) / 2;
         int hip = foot - legLen, shoulder = hip - torsoLen + bob;
         int headBottom = shoulder - 2, headTop = headBottom - 10;
         int w = p.Build;
@@ -98,7 +98,7 @@ public static class PixelPeople
             case TopStyle.Cardigan:
                 Rect(cx + 1, shoulder + 1, cx + 2, hip, p.TopShade);  // open front
                 Rect(cx - w + 1, hip - 1, cx + w - 1, hip, p.TopShade);
-                for (int y = hip + 1; y <= hip + 5; y++) Rect(cx - w + 1, y, cx + w - 1 + (p.Belly ? 1 : 0), y, p.Bottom); // skirt
+                for (int y = hip + 1; y <= hip + 6; y++) Rect(cx - w + 1, y, cx + w - 1 + (p.Belly ? 1 : 0), y, p.Bottom); // skirt
                 break;
             case TopStyle.ShirtTie:
                 Rect(cx + 1, shoulder + 1, cx + 1, shoulder + 9, p.Accent ?? "8a6a3a");
@@ -157,6 +157,11 @@ public static class PixelPeople
         DrawHair(p, Px, Rect, hx, headTop, headBottom);
         if (p.Moustache is not null) Rect(hx + 1, eyeY + 3, hx + 4, eyeY + 3, p.Moustache);
         if (p.Top is TopStyle.Vest) Rect(cx - w - 1 + swing, shoulder + 4, cx - w + 1 + swing, hip + 1, p.SkinShade); // far arm, bare
+        if (p.Cigarette)
+        {
+            Rect(hx + 5, eyeY + 4, hx + 7, eyeY + 4, "ece6da");   // in the corner of the mouth
+            Px(hx + 8, eyeY + 4, "e0602a");
+        }
 
         // Outline everything from outside.
         var mask = new Canvas(FrameW, FrameH);

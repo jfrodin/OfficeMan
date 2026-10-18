@@ -126,6 +126,7 @@ if (sets.Contains("game"))
     }
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
+    Png.Save(LyingPerson.Sheet(PixelPeople.Teo), Path.Combine(sprites, "teo_bed.png"));
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");
