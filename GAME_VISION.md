@@ -114,7 +114,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **The Neighbours.** The family next door: a man, his wife, their daughter. On Tuesday Office Man meets the man in the stairwell. The man has built something without a permit, knows where Office Man works, and asks a favour. The wife and daughter are only heard through the wall.
 - **The Boss's Wife.** About 50, same as the Boss. Used to be attractive; age has worked against her. They have money, and she has become a typical Eastern European new-money woman who overcompensates. She knows about his affairs very well, and swallows her pride with money and handbags.
 - **The Boss.** About 50. Good-looking and knows it, "big dick aura". Married. Constantly sleeps around. Thinks nobody knows; everybody knows. Really great at his job, a genuinely good boss. Macho. Thinks his wife is too old.
-- **The Secretary (Magda).** Younger than first sketched (**[OPEN]** exact age). Two children, by different men. Overweight. Desperate for attention: low self-esteem, and she seeks gratification through sex. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat"). Her darker personality will be developed much more later in the game.
+- **The Secretary (Magda).** 21. Two children, aged 5 and 2, by different men; both live with their fathers. This is the root of her darker personality and angst. Overweight. Desperate for attention: low self-esteem, and she seeks gratification through sex. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat"). Her darker personality will be developed much more later in the game.
   - **[REQUIRED]** We never make fun of her. We laugh with her, and we feel for her tragic life.
 
 ## 6. Dialogue and narrative systems
@@ -219,7 +219,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 
 Measured against *No Optimal Life*: after a disaster, the player should want to continue out of curiosity, not reload.
 Target: the first playable prototype, one day with few locations and characters but genuinely different outcomes.
-Proposed plan: `design/milestone_1.md`. The story and cast are not expanded without the creator.
+Plan: `design/milestone_1.md` (approved 2026-10-18). The story and cast are not expanded without the creator.
 
 ## Open questions
 
@@ -229,9 +229,7 @@ Discovery round 2 started 2026-10-18.
 2. **Attribute visibility.** Leaning towards indirect communication; the inner monologue is a natural channel for it. Deliberately not settled; to be found through prototyping.
 3. **Setting details.** A fictional Eastern European country? Proposed satire rule: people are never the punchline for being from here, only for who they are.
 4. **Prototype cast.** Boss, Secretary, Veteran, Awkward Colleague, Boss's Wife. Possibly someone from outside work.
-5. **Magda's age and children.** Younger than 52 (exact age open); two children by different men. Content lines to update once decided: `tuesday_party.ink` (her son and daughter abroad), `tuesday_night.ink` (graduation/wedding photos), `wednesday.ink` (two "fifty-two" lines, the mugs).
-6. **Trait system.** The prototype uses PROVISIONAL placeholder traits (nerve, tact, judgment, restraint) and fixed starting values. To be designed together.
-7. **Milestone 1.** Proposal in `design/milestone_1.md`, awaiting approval.
+5. **Trait system.** Proposal in `design/traits_proposal.md` (four two-sided tensions, conditions, no visible numbers). Awaiting the design session.
 
 ## Decision log
 
@@ -265,3 +263,5 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Art: animation-inspired approach preferred (more mature). Portrait development paused; references preserved in `art/reference/`. | §9 |
 | 2026-10-18 | Priority shifts to the narrative simulation and a playable one-day prototype. | Current priority |
 | 2026-10-18 | Magda: younger than first sketched, two children by different men, low self-esteem, seeks validation through sex; darker side developed later. | §5 |
+| 2026-10-18 | Magda is 21; her children are 5 and 2 and live with their fathers. | §5 |
+| 2026-10-18 | Milestone 1 (`design/milestone_1.md`) approved. | Current priority |

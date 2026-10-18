@@ -95,7 +95,7 @@ At the door of Block C, she stops. Keys in her hand. All of them.
 
 = up_together
 We go up. Eleven floors, because it's an even day.
-Her flat is small and very clean and full of photos of her kids at every age except now.
+Her flat is small and very clean. There are two children's drawings on the fridge, and no children.
 We're kind to each other. It isn't love, and it isn't nothing. It's two people being less alone for a few hours, which is most of what anyone gets.
 Afterwards she cries a little, and laughs at herself for crying, and I hold her, and I think about Viktor, which is the most disgusting thought I've ever had, and I put it away.
 ~ qset("slept_at", AT_MAGDAS)
@@ -107,7 +107,7 @@ Afterwards she cries a little, and laughs at herself for crying, and I hold her,
 
 = tea
 Eleven floors, because it's an even day.
-She makes tea. She shows me the photos. Her son at his graduation in Dublin, which she didn't go to because of the flights. Her daughter's wedding, which she did.
+She makes tea. She shows me videos on her phone. Her son's fifth birthday, at his dad's, which she watched on a video call. Her daughter asleep in a car seat in someone else's car.
 At some point I'm asleep on her sofa, and at some point she puts a blanket on me that smells of fabric softener and somebody else's life.
 ~ qset("slept_at", AT_MAGDAS)
 ~ remember("magda", "tea")

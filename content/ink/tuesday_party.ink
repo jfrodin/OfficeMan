@@ -157,7 +157,7 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
     ~ have_drink(1)
     ~ like("magda", 1)
     ~ remember("magda", "drank_together")
-    We drink. She tells me about her son, who's in Dublin and doesn't call, and her daughter, who's in Graz and calls too much.
+    We drink. She shows me photos of her kids. A boy of five, a girl of two, two different fathers. Both kids live with their dads. She says it fast, the way you pull off a plaster, and then she orders another one.
     MAGDA: You're nice to talk to, Teo. You don't do anything with your face.
     I think it's a compliment. In this country, it's the best one.
 * [Ask her to dance. #bold]

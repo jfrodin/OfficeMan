@@ -47,13 +47,13 @@ She drew a little balloon next to the x.
 
 = morning_after
 Magda's already up. I can hear her in the kitchen, humming. Humming is the worst possible sound. Humming means hope.
-She comes in with two coffees in mugs that say <i>WORLD'S BEST MUM</i> and <i>DUBLIN</i>.
+She comes in with two coffees in mugs. One says <i>WORLD'S BEST MUM</i>. The other has a cartoon dog on it.
 MAGDA: I didn't know how you take it. I put sugar. Everyone wants sugar, they just don't say.
 * [Kiss her good morning. #kind]
     ~ remember("magda", "morning_kiss")
     ~ like("magda", 2)
     ~ flag("magda_hopeful")
-    She goes pink. At fifty-two. It's the best and worst thing I've ever caused.
+    She goes pink. Twenty-one, two kids, and she goes pink. It's the best and worst thing I've ever caused.
 * [Say this was a mistake. #cautious]
     ~ temp r = check("magda_mistake", "tact")
     { r:
@@ -67,7 +67,7 @@ MAGDA: I didn't know how you take it. I put sugar. Everyone wants sugar, they ju
     - else:
         ~ remember("magda", "gentle_mistake")
         ~ like("magda", -1)
-        MAGDA: I know. I know, darling. I'm fifty-two, not stupid.
+        MAGDA: I know. I know, Teo. I'm twenty-one, not stupid.
         MAGDA: It was nice though. Wasn't it? Let's just say it was nice.
         TEO: It was nice.
         It was. That's the problem with it.

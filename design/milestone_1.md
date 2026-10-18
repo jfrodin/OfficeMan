@@ -1,6 +1,6 @@
 # Milestone 1: A Tuesday worth replaying
 
-**Status: PROPOSAL (2026-10-18), awaiting the creator's approval.**
+**Status: APPROVED (2026-10-18).**
 
 **Goal:** one day in Teo's life that the creator can play in a proper window and evaluate as a narrative
 simulation. Five playthroughs should feel like five different Tuesdays, and a disaster should make you want to see
@@ -91,6 +91,6 @@ Each step ends in something the creator can play.
 ## 4. Needs the creator
 
 1. **Approve this milestone** (or change the order). I'd start with Step 1 so every later playtest is in a real window.
-2. **Trait design session** (before Step 2): I'll bring a short proposal; you shape it.
-3. **Magda's new age and her children** (see `GAME_VISION.md`): four lines in the content currently fix her at 52 with grown children abroad and will be rewritten once decided.
+2. **Trait design session** (before Step 2): proposal in `design/traits_proposal.md`.
+3. ~~Magda's new age~~: decided (21; children 5 and 2 with their fathers). Content updated.
 4. **Playtests** after Steps 1, 3 and 5.
