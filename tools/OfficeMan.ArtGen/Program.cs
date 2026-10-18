@@ -1,4 +1,5 @@
-﻿using OfficeMan.ArtGen.Portraits;
+﻿using OfficeMan.ArtGen.Drawn;
+using OfficeMan.ArtGen.Portraits;
 using OfficeMan.ArtGen.Raster;
 using OfficeMan.ArtGen.Scenes;
 
@@ -49,9 +50,29 @@ for (int i = 0; i < styles.Length; i++)
 Png.Save(compare, Path.Combine(outDir, "style_comparison.png"));
 Console.WriteLine($"Wrote art to {outDir}");
 
+// Drawn styles: one authored drawing of Magda, three ways of putting it on paper.
+var drawing = new MagdaDrawing(crushed);
+var drawn = new (string name, Canvas image)[]
+{
+    ("pixel", MagdaPortrait.Draw(crushed).Scaled(5)),
+    ("flat", DrawnStyles.Flat(drawing)),
+    ("ink", DrawnStyles.Ink(drawing)),
+    ("pencil", DrawnStyles.Pencil(drawing)),
+};
+var drawnSheet = new Canvas(600 * drawn.Length + 16 * (drawn.Length - 1), 760);
+drawnSheet.Fill(Rgb.Hex("101418"));
+for (int i = 0; i < drawn.Length; i++)
+{
+    Png.Save(drawn[i].image, Path.Combine(outDir, $"drawn_{drawn[i].name}.png"));
+    int ox = i * 616 + (600 - drawn[i].image.Width) / 2, oy = (760 - drawn[i].image.Height) / 2;
+    drawnSheet.Draw(drawn[i].image, ox, oy);
+}
+Png.Save(drawnSheet, Path.Combine(outDir, "drawn_comparison.png"));
+
 static string FindRepoRoot()
 {
     for (var d = new DirectoryInfo(Directory.GetCurrentDirectory()); d is not null; d = d.Parent)
         if (File.Exists(Path.Combine(d.FullName, "OfficeMan.sln"))) return d.FullName;
     return Directory.GetCurrentDirectory();
 }
+
