@@ -67,16 +67,16 @@ Characters without portrait art speak in the bar with their name only, never beh
 
 **Resolutions.** The game renders at 1920×1080 and scales (checked at 1024×768, 1280×720, 1600×900, 2560×1080). Other aspect ratios get black bars. Body text is about 16 px high at 1024 wide: readable, but the smallest sensible window.
 
-## Where the scenes stand (2026-10-18)
+## Where the scenes stand (2026-10-18, second pass)
 
-Checked by screenshot (`--room <id> --at HH:MM`), not only by tests.
+Checked by screenshot. `Review.bat` puts every room and text mode on one sheet: `art/out/review.png`.
 
 | Scene | Meets the standard | Still open |
 |---|---|---|
-| Flat (dawn) | Side-on, wall base 178, bed/counter/door to scale, dawn key light from the window, storytelling objects (clock 06:47, dishes, diploma in the wardrobe, envelopes by the door) | Teo is not shown in his own flat yet (wakes in bed: needs a lying-down sprite). Upper wall still a little empty. |
-| Stairwell (day, night) | Same camera and scale as the office, two doors, stairs to the half-landing, bulb that flickers, Stojan present as a sprite with smoke; night has TV light under his door; terrazzo floor in tiles like the office | Floor in the lower third is plain; no foreground element. |
-| Office | Door now 66 px; desks lowered to 24 px; dithering removed from walls and floor | Desk clutter still tiny blocks; the chairs read as dark rectangles. |
+| Flat (dawn) | Side-on, to scale, dawn key light, storytelling objects (clock 06:47, dishes, envelopes, diploma in the wardrobe, a moving box and an unlabelled bottle on the cupboards, the smoke alarm with its battery out). Teo is in bed as a sprite, breathing. | Teo in bed is small and simple at this scale. |
+| Stairwell (day, night) | Same camera and scale as the office; doors, stairs, flickering bulb, Stojan smoking (sprite with cigarette and smoke); TV light under his door at night; tiled terrazzo; a neighbour's bicycle in the foreground. | |
+| Office | Door 66 px, desks 24 px, no dithering, real office chairs, keyboards. | Some desk props are still small blocks. |
 
-Known deviation: the people sprites are **~44-46 px**, not 50. Next to a 66 px door they look slightly short. Fixing it means a taller sprite frame for everyone at once; until then it is applied the same everywhere, so scenes stay consistent with each other.
+People are now **47-52 px** tall (frame 28×60), which matches the standard next to 66 px doors.
 
 Screens emit light on top of everything in the frame except people and the foreground: the shader compares the frame with the room's own albedo and holds back emissive light wherever something stands in front.
