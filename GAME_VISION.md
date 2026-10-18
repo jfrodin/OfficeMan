@@ -150,7 +150,8 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[AGREED 2026-10-18]** Time structure: hybrid. 3–4 chapters years apart, each a few days played in detail. Between chapters, a playable "years pass" sequence of quick moments and small choices. A life can end in any chapter.
 - **[AGREED 2026-10-18]** Narration: Office Man's inner monologue.
 - **[AGREED 2026-10-18]** Opening: a Tuesday with the office summer party that evening. The Boss scheduled it on a weekday so nobody would drink. Everyone gets hammered anyway.
-- **[OPEN]** Exact gameplay format (exploration, interaction model).
+- **[AGREED 2026-10-18]** Gameplay format, modelled on the creator's earlier prototype *Deadhouse* (`E:\Dev\RPG`): a **pixel-art world with direct control** (arrows/WASD/controller), side-on view with depth, small pixel characters visible in the scene, walk up to people and objects and interact. Spoken lines float above characters. **Conversations open over the live scene**: a large illustrated portrait bottom-left, text and choices bottom-right. No combat. (A visual-novel-style dialogue screen was built first by mistake; it is being rearranged into this.)
+- **[OPEN]** Does time pass in real time while walking, or only when Teo does something? (Assistant recommends: only when he does something.)
 
 ## 9. Visual direction
 
@@ -268,4 +269,5 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Magda: younger than first sketched, two children by different men, low self-esteem, seeks validation through sex; darker side developed later. | §5 |
 | 2026-10-18 | Magda is 21; her children are 5 and 2 and live with their fathers. | §5 |
 | 2026-10-18 | Milestone 1 (`design/milestone_1.md`) approved. | Current priority |
+| 2026-10-18 | Gameplay format: Deadhouse-style walkable pixel world with direct control; conversations as portrait + dialogue overlays. | §8 |
 | 2026-10-18 | Traits are two-sided tensions (Nerve, Warmth, Appetite, Honesty), hidden; Teo's baseline is careful, open, held back, smooth, tired and jaded. | §7 |

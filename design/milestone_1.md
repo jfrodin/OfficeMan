@@ -42,7 +42,22 @@ characters without the creator.
 
 Each step ends in something the creator can play.
 
-### Step 1: A playable window (Godot) ✅ built 2026-10-18, awaiting the creator's playtest
+### Step 1: A playable window (Godot) — REVISED 2026-10-18
+
+The first build was a visual-novel-style dialogue screen. The creator wants a **walkable pixel world** like
+*Deadhouse*. Step 1 becomes:
+
+- Pixel rooms at about 480×270, scaled up crisply: Teo's flat, the stairwell, the office and the terrace first.
+  Night locations can stay short conversation scenes for now.
+- Teo walks with arrows/WASD/controller; people and objects in the room are interactable (prompt + E / A button).
+- Hub storylets are anchored to people and things in the room; exits are doors; interrupts happen in the room.
+- Floating spoken lines above characters.
+- Conversations over the live scene: portrait bottom-left, text and choices bottom-right (Deadhouse layout).
+- Code-built pixel sprites: Teo with a walk cycle, the cast with idle poses.
+
+The original Step 1 notes below still describe the conversation layer, which is kept.
+
+#### Original Step 1 (conversation layer, built)
 - One dialogue screen: location background, **large speaker portrait**, text box with reading pace and skip, choices, the hub menu, save/load and autosave.
 - **Portraits are data, not code.** Ink lines can carry a mood tag (`MAGDA: Oh. Okay. #mood:hurt`). A portrait manifest (`content/portraits.json`) maps *character + mood → image*, falling back to the character's neutral, then to a generic silhouette. Replacing art means replacing files; the dialogue system never changes.
 - Temporary art: the existing portraits (animation Magda, the four cast portraits), silhouettes for everyone else, Teo's flat as a background, plain titled panels for other locations.
