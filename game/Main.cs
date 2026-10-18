@@ -23,6 +23,13 @@ public partial class Main : Control
     private enum Mode { Talking, Choosing, Walking, Ending }
 
     private const double CharsPerSecond = 55;
+    private const int BodySize = 30;
+    private const float PortraitW = 250, PortraitH = 270, BarMinHeight = 210;
+    private static readonly Color Accent = new(1f, 0.78f, 0.55f), Spoken = new(0.98f, 0.95f, 0.9f), Thought = new(0.78f, 0.82f, 0.9f);
+    /// <summary>The part of a 600×760 portrait shown in the bar: head and shoulders.</summary>
+    private static readonly Rect2 PortraitCrop = new(40, 100, 520, 562);
+    /// <summary>How far the camera may rise to keep people clear of the bar (screen pixels).</summary>
+    private const float MaxLift = 120;
 
     private ContentBundle _content = null!;
     private ArtManifest _art = null!;
@@ -38,13 +45,21 @@ public partial class Main : Control
     private PanelContainer _panel = null!;
     private Label _speaker = null!;
     private RichTextLabel _text = null!;
-    private VBoxContainer _choices = null!;
+    private GridContainer _choices = null!;
     private Label _more = null!;
     private PanelContainer _heard = null!;
     private Label _heardWho = null!;
     private RichTextLabel _heardText = null!;
+    private MarginContainer _barMargin = null!;
+    private PanelContainer _note = null!;
+    private RichTextLabel _noteText = null!;
     private RichTextLabel _typingLabel = null!;
     private string? _listener;   // who Teo is talking to: their portrait stays up (dimmed) during narration
+    private string? _focus;      // whoever spoke to Teo last in this conversation: the camera keeps them in view
+    private bool _conversing;    // someone has spoken since Teo last walked: thoughts stay in the bar
+    private string _heardFrom = "";
+    private float _liftTarget;
+    private string _lastNote = "";
     private PanelContainer _arrival = null!;
     private Label _arrivalText = null!;
     private VBoxContainer _prompt = null!;
@@ -109,6 +124,9 @@ public partial class Main : Control
         _roomView.Load(_rooms[id], _game.Evaluate);
         _panel.Visible = false;
         _choices.Visible = false;
+        _note.Visible = false;
+        _heard.Visible = false;
+        _dim.Visible = false;
         _arrival.Visible = false;
         SetPortrait(null);
         GetTree().CreateTimer(0.8).Timeout += () =>
@@ -136,49 +154,72 @@ public partial class Main : Control
         AddChild(_roomView);
         _roomView.Init(_art, TextureFor);
 
-        _dim = new ColorRect { Color = new Color(0, 0, 0, 0.28f), MouseFilter = MouseFilterEnum.Ignore };
+        _dim = new ColorRect { Color = new Color(0, 0, 0, 0.18f), MouseFilter = MouseFilterEnum.Ignore };
         _dim.SetAnchorsPreset(LayoutPreset.FullRect);
         AddChild(_dim);
 
-        // Portrait: bottom-left, over the scene.
-        const float ph = 640, pw = ph * 600 / 760f;
-        _portraitCard = new PanelContainer { Position = new Vector2(36, 1080 - 36 - ph - 10), Size = new Vector2(pw + 10, ph + 10), MouseFilter = MouseFilterEnum.Ignore, Visible = false };
-        _portraitCard.AddThemeStyleboxOverride("panel", Box(new Color(0.08f, 0.07f, 0.08f, 0.92f), 6, 3, new Color(0.9f, 0.85f, 0.78f, 0.85f)));
-        _portrait = new TextureRect { ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(pw, ph), MouseFilter = MouseFilterEnum.Ignore };
-        _portraitCard.AddChild(_portrait);
-        AddChild(_portraitCard);
+        // Three ways text appears, one typography:
+        //  conversation  the bar along the bottom: portrait, name, words, choices;
+        //  observation   a compact note low in the frame, for Teo's thoughts when nobody is talking to him;
+        //  overheard     a small caption placed towards where the sound comes from.
 
-        // Words and choices: bottom-right.
-        _panel = new PanelContainer { Position = new Vector2(620, 600), CustomMinimumSize = new Vector2(1264, 170), MouseFilter = MouseFilterEnum.Ignore };
-        _panel.AddThemeStyleboxOverride("panel", Box(new Color(0.06f, 0.05f, 0.07f, 0.9f), 10, 2, new Color(1, 1, 1, 0.14f), 34, 24));
+        // The conversation bar, full width, growing upwards with its content.
+        _panel = new PanelContainer { MouseFilter = MouseFilterEnum.Ignore, Visible = false };
+        var bar = new StyleBoxFlat { BgColor = new Color(0.045f, 0.04f, 0.055f, 0.96f), BorderColor = new Color(1f, 0.85f, 0.65f, 0.18f) };
+        bar.BorderWidthTop = 2;
+        _panel.AddThemeStyleboxOverride("panel", bar);
+        _barMargin = new MarginContainer { MouseFilter = MouseFilterEnum.Ignore };
+        _barMargin.AddThemeConstantOverride("margin_top", 26);
+        _barMargin.AddThemeConstantOverride("margin_bottom", 30);
+        _barMargin.AddThemeConstantOverride("margin_right", 150);
         var box = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
         box.AddThemeConstantOverride("separation", 10);
-        _speaker = MakeLabel(28, new Color(1f, 0.78f, 0.55f));
-        _text = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, CustomMinimumSize = new Vector2(1190, 60), MouseFilter = MouseFilterEnum.Ignore };
-        _text.AddThemeFontSizeOverride("normal_font_size", 30);
-        _text.AddThemeFontSizeOverride("italics_font_size", 30);
-        _choices = new VBoxContainer();
-        _choices.AddThemeConstantOverride("separation", 6);
+        _speaker = MakeLabel(BodySize - 2, Accent);
+        _text = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, MouseFilter = MouseFilterEnum.Ignore };
+        _text.AddThemeFontSizeOverride("normal_font_size", BodySize);
+        _text.AddThemeFontSizeOverride("italics_font_size", BodySize);
+        // Choices: one column for one or two, two columns from three up, so the bar stays low.
+        _choices = new GridContainer { Columns = 1 };
+        _choices.AddThemeConstantOverride("h_separation", 12);
+        _choices.AddThemeConstantOverride("v_separation", 4);
         box.AddChild(_speaker);
         box.AddChild(_text);
         box.AddChild(_choices);
-        _panel.AddChild(box);
+        _barMargin.AddChild(box);
+        _panel.AddChild(_barMargin);
         AddChild(_panel);
 
-        _more = MakeLabel(24, new Color(1, 1, 1, 0.55f));
+        // The portrait stands in the bar's left end and rises a little above it: head and shoulders only.
+        _portraitCard = new PanelContainer { Size = new Vector2(PortraitW + 6, PortraitH + 6), MouseFilter = MouseFilterEnum.Ignore, Visible = false };
+        _portraitCard.AddThemeStyleboxOverride("panel", Box(new Color(0.08f, 0.07f, 0.08f, 1f), 4, 3, new Color(1f, 0.85f, 0.65f, 0.55f)));
+        _portrait = new TextureRect { ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered, CustomMinimumSize = new Vector2(PortraitW, PortraitH), MouseFilter = MouseFilterEnum.Ignore };
+        _portraitCard.AddChild(_portrait);
+        AddChild(_portraitCard);
+
+        // Observations: a compact note, centred low in the frame, no portrait, no name.
+        _note = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
+        _note.AddThemeStyleboxOverride("panel", Box(new Color(0.03f, 0.03f, 0.045f, 0.78f), 6, 0, default, 30, 16));
+        _noteText = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, AutowrapMode = TextServer.AutowrapMode.WordSmart, MouseFilter = MouseFilterEnum.Ignore };
+        _noteText.AddThemeFontSizeOverride("normal_font_size", BodySize - 2);
+        _noteText.AddThemeFontSizeOverride("italics_font_size", BodySize - 2);
+        _noteText.AddThemeColorOverride("default_color", Thought);
+        _note.AddChild(_noteText);
+        AddChild(_note);
+
+        _more = MakeLabel(22, new Color(1, 1, 1, 0.5f));
         _more.Text = "▼";
-        _more.Position = new Vector2(1846, 1004);
         AddChild(_more);
 
-        // Overheard speech: a compact caption at the top, no portrait, no dialogue panel.
+        // Overheard speech: a small caption, no box behind the words, placed towards the sound.
         _heard = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
-        _heard.AddThemeStyleboxOverride("panel", Box(new Color(0.04f, 0.04f, 0.05f, 0.72f), 8, 0, default, 26, 14));
+        _heard.AddThemeStyleboxOverride("panel", Box(new Color(0.03f, 0.03f, 0.04f, 0.55f), 6, 0, default, 20, 10));
         var heardBox = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
-        _heardWho = MakeLabel(20, new Color(0.7f, 0.76f, 0.86f, 0.9f));
+        heardBox.AddThemeConstantOverride("separation", 2);
+        _heardWho = MakeLabel(19, new Color(0.7f, 0.76f, 0.86f, 0.85f));
         _heardText = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, AutowrapMode = TextServer.AutowrapMode.Off, MouseFilter = MouseFilterEnum.Ignore };
-        _heardText.AddThemeFontSizeOverride("italics_font_size", 30);
-        _heardText.AddThemeFontSizeOverride("normal_font_size", 30);
-        _heardText.AddThemeColorOverride("default_color", new Color(0.92f, 0.9f, 0.86f));
+        _heardText.AddThemeFontSizeOverride("italics_font_size", BodySize - 4);
+        _heardText.AddThemeFontSizeOverride("normal_font_size", BodySize - 4);
+        _heardText.AddThemeColorOverride("default_color", new Color(0.9f, 0.88f, 0.84f));
         heardBox.AddChild(_heardWho);
         heardBox.AddChild(_heardText);
         _heard.AddChild(heardBox);
@@ -259,6 +300,8 @@ public partial class Main : Control
         else SetScene(_art.Scene(_phase));
         SetPortrait(null);
         _listener = null;
+        _focus = null;
+        _conversing = false;
         _moods.Clear();
         Arrive(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
         SetMode(_mode); // refresh the dim layer for the new kind of place
@@ -318,42 +361,67 @@ public partial class Main : Control
 
         string? speaker = line.Speaker;
         string? heardFrom = HeardFrom(line);
+        _heard.Visible = false;
         if (speaker is not null && heardFrom is not null)
         {
-            ShowOverheard(speaker, heardFrom, line.Body);
+            ShowOverheard(speaker, heardFrom, Tag(line, "from") ?? "", line.Body);
             return;
         }
-        _heard.Visible = false;
-        _panel.Visible = true;
 
+        if (speaker is null && !_conversing)
+        {
+            // Teo looking around or thinking, nobody talking to him: a compact note, the scene left clear.
+            ShowNote(line.Body);
+            return;
+        }
+
+        _conversing = true;
+        _note.Visible = false;
+        ShowBar(true);
         if (speaker is not null && speaker != "TEO")
         {
             // Someone speaking to Teo: their portrait if they have one, otherwise just their name.
             string? mood = Tag(line, "mood");
             if (mood is not null) _moods[speaker] = mood;
             _listener = _art.HasPortraits(speaker) ? speaker : null;
+            _focus = speaker;
             SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
             DimPortrait(false);
         }
-        else if (speaker is null)
-        {
-            // Teo's thoughts and descriptions: the listener's portrait (if any) dims.
-            DimPortrait(true);
-        }
-        else DimPortrait(false);
+        else DimPortrait(speaker is null);   // Teo's thoughts mid-conversation: the other person's portrait dims
 
         _speaker.Visible = speaker is not null;
         _speaker.Text = speaker is null ? "" : Title(speaker);
-        _text.AddThemeColorOverride("default_color", speaker is null ? new Color(0.78f, 0.82f, 0.9f) : new Color(0.98f, 0.95f, 0.9f));
+        _text.AddThemeColorOverride("default_color", speaker is null ? Thought : Spoken);
         _text.Text = speaker is null ? "[i]" + Bbcode(line.Body) + "[/i]" : Bbcode(line.Body);
         StartTyping(_text);
     }
 
-    private void ShowOverheard(string speaker, string from, string body)
+    private void ShowBar(bool show)
     {
-        _panel.Visible = false;
-        if (_listener is null) SetPortrait(null);
-        else DimPortrait(true);
+        _panel.Visible = show;
+        _dim.Visible = show && _roomView.Visible;
+        if (!show) SetPortrait(null);
+    }
+
+    private void ShowNote(string body)
+    {
+        ShowBar(false);
+        _noteText.Text = _lastNote = "[i]" + Bbcode(body) + "[/i]";
+        // As wide as the words need, up to a comfortable reading width; longer thoughts wrap.
+        float width = ThemeDB.FallbackFont.GetStringSize(Clean(body), HorizontalAlignment.Left, -1, BodySize - 2).X;
+        _noteText.CustomMinimumSize = new Vector2(Math.Min(1000, width + 12), 0);
+        _note.Visible = true;
+        StartTyping(_noteText);
+    }
+
+    private void ShowOverheard(string speaker, string from, string direction, string body)
+    {
+        // An overheard line doesn't interrupt a conversation's layout, and doesn't open one.
+        if (_conversing) DimPortrait(true);
+        else ShowBar(false);
+        _note.Visible = false;
+        _heardFrom = direction;
         _heardWho.Text = $"{Title(speaker).ToUpperInvariant()}  ·  {from}";
         _heardText.Text = "[i]" + Bbcode(body) + "[/i]";
         _heard.Visible = true;
@@ -391,7 +459,7 @@ public partial class Main : Control
         {
             _typing = false;
             _typingLabel.VisibleRatio = 1;
-            _more.Visible = _panel.Visible;
+            _more.Visible = true;
             return;
         }
         NextLine();
@@ -400,6 +468,17 @@ public partial class Main : Control
     private void OpenChoices(List<(string text, int index)> options, bool allowBack)
     {
         SetMode(Mode.Choosing);
+        _note.Visible = false;
+        _heard.Visible = false;
+        if (!_conversing) _speaker.Visible = allowBack;
+        if (!_conversing && !allowBack)
+        {
+            // Choices straight after an observation: the observation moves into the bar as their context.
+            _text.AddThemeColorOverride("default_color", Thought);
+            _text.Text = _lastNote;
+            _text.VisibleRatio = 1;
+        }
+        ShowBar(true);
         if (_view.Kind == PresentationKind.Hub)
         {
             if (!allowBack) _speaker.Visible = false;
@@ -413,6 +492,7 @@ public partial class Main : Control
             AddChoice($"{n++}.  {text}", () => Choose(i));
         }
         if (allowBack) AddChoice("Not now.", StartWalking);
+        _choices.Columns = _choices.GetChildCount() >= 3 ? 2 : 1;
         if (_choices.GetChildCount() > 0) ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
     }
 
@@ -430,8 +510,12 @@ public partial class Main : Control
     {
         ClearChoices();
         _listener = null;
+        _focus = null;
+        _conversing = false;
+        _lastNote = "";
         _heard.Visible = false;
-        SetPortrait(null);
+        _note.Visible = false;
+        ShowBar(false);
         SetMode(Mode.Walking);
     }
 
@@ -490,10 +574,8 @@ public partial class Main : Control
     private void SetMode(Mode mode)
     {
         _mode = mode;
-        bool overlay = mode != Mode.Walking;
-        _panel.Visible = overlay;
+        if (mode == Mode.Walking) ShowBar(false);
         if (mode != Mode.Talking) _heard.Visible = false;
-        _dim.Visible = overlay && _roomView.Visible;
         _roomView.Controllable = mode == Mode.Walking;
         _more.Visible = false;
         if (mode == Mode.Walking) _prompt.Visible = false;
@@ -532,21 +614,67 @@ public partial class Main : Control
             {
                 _typing = false;
                 _typingLabel.VisibleRatio = 1;
-                _more.Visible = _panel.Visible;
+                _more.Visible = true;
             }
         }
-        // The panel hugs its content and sits on the bottom edge, leaving the room visible above it.
-        // With a portrait the panel sits to its right; without one it is centred.
-        bool beside = _portraitCard.Visible;
-        float width = beside ? 1264 : 1180, left = beside ? 620 : (1920 - 1180) / 2f;
-        _panel.CustomMinimumSize = new Vector2(width, 170);
-        _panel.Size = new Vector2(width, 0);
-        _panel.Position = new Vector2(left, 1044 - _panel.Size.Y);
-        _more.Position = new Vector2(left + width - 38, 1004);
-        _heard.Size = Vector2.Zero;
-        _heard.Position = new Vector2((1920 - _heard.Size.X) / 2, 96);
+        Layout(delta);
         UpdatePrompt();
         if (_autoSteps >= 0) RunAutomation();
+    }
+
+    /// <summary>
+    /// Places the bar, the portrait, the note and the overheard caption, and moves the camera only when
+    /// the bar would cover the people in the conversation.
+    /// </summary>
+    private void Layout(double delta)
+    {
+        bool portrait = _portraitCard.Visible && _panel.Visible;
+        _barMargin.AddThemeConstantOverride("margin_left", portrait ? (int)PortraitW + 90 : 150);
+        _text.CustomMinimumSize = new Vector2(1920 - (portrait ? PortraitW + 90 : 150) - 150, 40);
+        _panel.Size = new Vector2(1920, 0);
+        float barH = Math.Max(BarMinHeight, _panel.Size.Y);
+        _panel.Size = new Vector2(1920, barH);
+        _panel.Position = new Vector2(0, 1080 - barH);
+        _portraitCard.Position = new Vector2(48, 1080 - 26 - _portraitCard.Size.Y);
+
+        _note.Size = Vector2.Zero;
+        _note.Size = Vector2.Zero;
+        _note.Position = new Vector2((1920 - _note.Size.X) / 2, 1080 - 60 - _note.Size.Y);
+
+        _heard.Size = Vector2.Zero;
+        _heard.Position = _heardFrom switch
+        {
+            "left" => new Vector2(60, 150),
+            "right" => new Vector2(1920 - 60 - _heard.Size.X, 150),
+            "" => new Vector2((1920 - _heard.Size.X) / 2, 110),
+            var anchor => AboveThing(anchor, _heard.Size),
+        };
+
+        var active = _panel.Visible ? (Control)_panel : _note.Visible ? _note : _heard;
+        // The "more" marker sits inside the bar, and just outside the smaller boxes so it never covers words.
+        _more.Position = active == _panel
+            ? active.Position + active.Size - new Vector2(110, 62)
+            : active.Position + new Vector2(active.Size.X + 10, active.Size.Y - 34);
+
+        // Camera: rise just enough to keep Teo and whoever is talking to him above the bar.
+        float need = 0;
+        if (_panel.Visible && _roomView.Visible)
+        {
+            float lowest = 0;
+            if (_roomView.TeoVisible) lowest = _roomView.ScreenFeet(null) ?? 0;
+            if (_focus is not null) lowest = Math.Max(lowest, _roomView.ScreenFeet(_focus.ToLowerInvariant()) ?? 0);
+            float barTop = 1080 - barH;
+            need = Math.Clamp(lowest + 12 - barTop, 0, MaxLift);
+        }
+        // Small differences are ignored, so the view doesn't drift line by line.
+        if (need > _liftTarget + 6 || need < _liftTarget - 40 || need == 0) _liftTarget = need;
+        _roomView.Lift += (float)((_liftTarget - _roomView.Lift) * (1 - Math.Exp(-delta * 4)));
+    }
+
+    private Vector2 AboveThing(string anchor, Vector2 size)
+    {
+        float x = _roomView.ScreenX(anchor) ?? 960;
+        return new Vector2(Math.Clamp(x - size.X / 2, 40, 1880 - size.X), 150);
     }
 
     private void RunAutomation()
@@ -577,6 +705,7 @@ public partial class Main : Control
         }
         if (_typing) Continue();
         _autoSteps = -1;
+        GD.Print($"shot: mode {_mode}");
         GetTree().CreateTimer(0.4).Timeout += () =>
         {
             GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
@@ -589,6 +718,10 @@ public partial class Main : Control
     private void ShowEnding()
     {
         SetMode(Mode.Ending);
+        _note.Visible = false;
+        _heard.Visible = false;
+        _conversing = true;
+        ShowBar(true);
         SetPortrait(null);
         _speaker.Visible = true;
         _speaker.Text = "To be continued";
@@ -603,7 +736,7 @@ public partial class Main : Control
 
     private void AddChoice(string text, Action onPressed)
     {
-        var b = new Button { Text = text, Alignment = HorizontalAlignment.Left, FocusMode = FocusModeEnum.All };
+        var b = new Button { Text = text, Alignment = HorizontalAlignment.Left, FocusMode = FocusModeEnum.All, SizeFlagsHorizontal = SizeFlags.ExpandFill, ClipText = false, AutowrapMode = TextServer.AutowrapMode.WordSmart };
         b.AddThemeFontSizeOverride("font_size", 27);
         b.AddThemeColorOverride("font_color", new Color(0.93f, 0.9f, 0.84f));
         b.AddThemeColorOverride("font_hover_color", new Color(1f, 0.82f, 0.55f));
@@ -640,7 +773,7 @@ public partial class Main : Control
             _portraitCard.Visible = false;
             return;
         }
-        _portrait.Texture = TextureFor(path);
+        _portrait.Texture = new AtlasTexture { Atlas = TextureFor(path), Region = PortraitCrop };
         _portraitCard.Visible = true;
         _portraitCard.Modulate = new Color(1, 1, 1, 0);
         CreateTween().TweenProperty(_portraitCard, "modulate:a", 1.0, 0.18);

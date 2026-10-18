@@ -17,7 +17,7 @@ public sealed record PersonSpec(
 
 /// <summary>
 /// Pixel people for the walkable world: 28×52 frames, facing right (flip for left).
-/// Frames: idle 0–1, walk 2–5. The sheet is one row.
+/// Frames: idle 0-1, walk 2-5. The sheet is one row.
 /// </summary>
 public static class PixelPeople
 {

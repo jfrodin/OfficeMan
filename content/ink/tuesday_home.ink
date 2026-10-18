@@ -17,7 +17,7 @@
 }
 Tuesday. The summer party. Viktor put it on a Tuesday so nobody drinks.
 Viktor has met us, hasn't he?
-STOJAN: Because it's MY balcony! #heard:through the wall
+STOJAN: Because it's MY balcony! #heard:through the wall #from:right
 A door slams. Then the daughter's music through the wall. Just bass, and a girl singing in English about being disappointed.
 - (opts)
 * [Get up.]

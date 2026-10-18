@@ -40,6 +40,37 @@ public partial class RoomView : Control
 
     public Vector2 TeoPosition => _teo.Position;
 
+    public bool TeoVisible => _teo.Visible;
+
+    private float _lift;
+
+    /// <summary>How far the view is raised (screen pixels), to keep people clear of the dialogue bar.</summary>
+    public float Lift
+    {
+        get => _lift;
+        set { _lift = value; if (_screen is not null) _screen.Position = new Vector2(0, -Mathf.Round(value)); }
+    }
+
+    private float ScreenScale => _room is null ? 4 : 1920f / _room.Width;
+
+    /// <summary>Where someone's feet are on screen (unlifted): Teo when <paramref name="sprite"/> is null.</summary>
+    public float? ScreenFeet(string? sprite)
+    {
+        if (_room is null) return null;
+        if (sprite is null) return _teo.Position.Y * ScreenScale;
+        foreach (var (thing, actor) in _present)
+            if (actor is not null && thing.Sprite == sprite) return actor.Position.Y * ScreenScale;
+        return null;
+    }
+
+    /// <summary>A thing's horizontal position on screen, by id or anchor.</summary>
+    public float? ScreenX(string anchor)
+    {
+        foreach (var (thing, _) in _present)
+            if (thing.Id == anchor || thing.AnchorId == anchor) return thing.X * ScreenScale;
+        return null;
+    }
+
     public void Init(ArtManifest art, Func<string, Texture2D> texture)
     {
         _art = art;

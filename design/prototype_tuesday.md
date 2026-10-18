@@ -23,7 +23,7 @@
 
 ### Outsiders at the party (proposal)
 
-Because the venue is public, each run draws **1–2 outsiders** from a small pool (seeded at the start). They can pull Office Man into a thread that has nothing to do with the office. This is cheap replay variety: the office cast stays the same, the strangers change. Pool ideas, all ❓ and to be shaped by the creator:
+Because the venue is public, each run draws **1-2 outsiders** from a small pool (seeded at the start). They can pull Office Man into a thread that has nothing to do with the office. This is cheap replay variety: the office cast stays the same, the strangers change. Pool ideas, all ❓ and to be shaped by the creator:
 
 - **Western consultants** on a team-building night at the next table. They explain the country to whoever will listen. Satire aimed at the Western gaze.
 - **A wedding or hen party** sharing the terrace. Loud, sentimental, and an open door for drunk choices.

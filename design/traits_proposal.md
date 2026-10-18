@@ -31,7 +31,7 @@ Conditions push the tensions for a while. They're how one evening can make Teo s
 
 | Condition | Comes from | Pushes |
 |---|---|---|
-| **Drunk** (0–4) | Drinking | Nerve forward, appetite hungry, candour blunt; he notices less |
+| **Drunk** (0-4) | Drinking | Nerve forward, appetite hungry, candour blunt; he notices less |
 | **Hungover** | Last night | Nerve back, warmth closed, everything slower |
 | **Tired** | Hours awake | Warmth closed; he notices less |
 | **Mood** (low … high) | The day so far | Low: back and closed. High: forward and open |

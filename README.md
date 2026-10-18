@@ -21,7 +21,7 @@ lives elsewhere).
 |---|---|---|
 | Walk | Arrows / WASD | Left stick / d-pad |
 | Interact, continue | E / Enter / Space | A |
-| Choose | 1–9, mouse, or arrows + Enter | d-pad + A |
+| Choose | 1-9, mouse, or arrows + Enter | d-pad + A |
 | Back out of a menu | Esc | B |
 | Quick save / load | F5 / F9 | |
 

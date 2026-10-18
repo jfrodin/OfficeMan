@@ -147,7 +147,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[REQUIRED]** No combat, inventory puzzles, skill checks or other RPG conventions unless they clearly improve the experience. Every system must justify itself.
 - **[REQUIRED]** Challenge unnecessary complexity.
 - **[REQUIRED]** The game must stay entertaining during an ordinary day, not only during extraordinary events.
-- **[AGREED 2026-10-18]** Time structure: hybrid. 3–4 chapters years apart, each a few days played in detail. Between chapters, a playable "years pass" sequence of quick moments and small choices. A life can end in any chapter.
+- **[AGREED 2026-10-18]** Time structure: hybrid. 3-4 chapters years apart, each a few days played in detail. Between chapters, a playable "years pass" sequence of quick moments and small choices. A life can end in any chapter.
 - **[AGREED 2026-10-18]** Narration: Office Man's inner monologue.
 - **[AGREED 2026-10-18]** Opening: a Tuesday with the office summer party that evening. The Boss scheduled it on a weekday so nobody would drink. Everyone gets hammered anyway.
 - **[AGREED 2026-10-18]** Gameplay format, modelled on the creator's earlier prototype *Deadhouse* (`E:\Dev\RPG`): a **pixel-art world with direct control** (arrows/WASD/controller), side-on view with depth, small pixel characters visible in the scene, walk up to people and objects and interact. Spoken lines float above characters. **Conversations open over the live scene**: a large illustrated portrait bottom-left, text and choices bottom-right. No combat. (A visual-novel-style dialogue screen was built first by mistake; it is being rearranged into this.)
@@ -261,7 +261,7 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Art test approved, to run alongside the text prototype. | §11 |
 | 2026-10-18 | Names from `design/naming.md` adopted provisionally (first picks; Kaslovia / Novizar). Easy to change later. | §3, §5 |
 | 2026-10-18 | Outsider pool at the party adopted as proposed; contents are easy to change later. | §8 |
-| 2026-10-18 | Neighbours' daughter is 16–18. Minors are never part of sexual or romantic content. | §4, §5 |
+| 2026-10-18 | Neighbours' daughter is 16-18. Minors are never part of sexual or romantic content. | §4, §5 |
 | 2026-10-18 | Teo's inner-monologue voice in `design/sample_scenes.md` approved as the starting point for all writing. | §8 |
 | 2026-10-18 | Development authorised. Text prototype and art test started. | §13 |
 | 2026-10-18 | Art: animation-inspired approach preferred (more mature). Portrait development paused; references preserved in `art/reference/`. | §9 |

@@ -21,7 +21,7 @@ characters without the creator.
 | World state | Qualities, per-character regard and memories, alcohol/tiredness/mood/shame, provisional traits, hidden tiered checks |
 | Content | Full Tuesday and Wednesday morning in ink: 6 night routes, 3 outsider threads, 15 closing hooks, memories paid off on Wednesday |
 | Tools | Text player with reading pace; simulator (5 play styles, coverage, outcome spread); 33 tests |
-| Health | 10,000 simulated lives: 0 crashes, 0 dead ends, every storylet reachable, generic ending 1–4% |
+| Health | 10,000 simulated lives: 0 crashes, 0 dead ends, every storylet reachable, generic ending 1-4% |
 
 ### Weak (evidence)
 
@@ -32,7 +32,7 @@ characters without the creator.
 | **Causes aren't legible** | Checks resolve silently. A bad outcome rarely tells you *why* (drunk? tactless? unlucky?), which is what makes a disaster feel fair. |
 | **Conditions are mostly alcohol** | Mood, tiredness and shame exist but rarely change what Teo thinks or can do. |
 | **Memory stays private** | Characters remember Teo, but nothing spreads. By Wednesday the whole office should "know" things, rightly or wrongly. |
-| **The big threads are hard to reach** | Viktor's club, Ramona, a night at Magda's: 1–10% of random lives. Some of that is right (rare is good), some is just hidden. |
+| **The big threads are hard to reach** | Viktor's club, Ramona, a night at Magda's: 1-10% of random lives. Some of that is right (rare is good), some is just hidden. |
 | **Some failures are simply bad** | Several refusals and failed checks close a door without opening another. That breaks *No Optimal Life*. |
 | **It's played in a terminal** | Fine for testing, poor for evaluating a game. No portraits, no sense of place. |
 
@@ -72,7 +72,7 @@ The original Step 1 notes below still describe the conversation layer, which is 
 - The text player stays, for fast testing.
 
 ### Step 2: Who Teo is (traits and conditions, designed with the creator first)
-- **A design session first:** the final hidden trait list (4–5), fixed or slightly random starting values, how each trait *shows* without numbers.
+- **A design session first:** the final hidden trait list (4-5), fixed or slightly random starting values, how each trait *shows* without numbers.
 - Traits change what Teo notices, which options appear, and how he talks to himself.
 - Conditions v2: drunk, hungover, tired, mood, humiliated, plus whatever the session adds. Each has a monologue voice, so his state can be read from how he thinks.
 - **Legible in hindsight:** after an important check, one line of monologue names the cause ("I said it because of the third zhivka"), or a person does ("You were drunk, Teo").
@@ -103,7 +103,7 @@ The original Step 1 notes below still describe the conversation layer, which is 
 |---|---|
 | Final character art, art direction, environment art | References kept in `art/reference/`; temporary art is enough to evaluate the game |
 | Animation, audio, music | Not needed to judge the narrative |
-| Chapters 2–4, time jumps, "years pass" | Prove one day first |
+| Chapters 2-4, time jumps, "years pass" | Prove one day first |
 | City map, new locations, new main characters | Scope; and the creator leads the cast |
 | Magda's darker storyline | Creator wants to develop it later |
 | Localisation, Steam, achievements, settings menus | Shipping concerns |
