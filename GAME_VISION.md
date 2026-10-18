@@ -114,7 +114,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **The Neighbours.** The family next door: a man, his wife, their daughter. On Tuesday Office Man meets the man in the stairwell. The man has built something without a permit, knows where Office Man works, and asks a favour. The wife and daughter are only heard through the wall.
 - **The Boss's Wife.** About 50, same as the Boss. Used to be attractive; age has worked against her. They have money, and she has become a typical Eastern European new-money woman who overcompensates. She knows about his affairs very well, and swallows her pride with money and handbags.
 - **The Boss.** About 50. Good-looking and knows it, "big dick aura". Married. Constantly sleeps around. Thinks nobody knows; everybody knows. Really great at his job, a genuinely good boss. Macho. Thinks his wife is too old.
-- **The Secretary.** Overweight, divorced, grown children. Desperate for attention. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat").
+- **The Secretary (Magda).** Younger than first sketched (**[OPEN]** exact age). Two children, by different men. Overweight. Desperate for attention: low self-esteem, and she seeks gratification through sex. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat"). Her darker personality will be developed much more later in the game.
   - **[REQUIRED]** We never make fun of her. We laugh with her, and we feel for her tragic life.
 
 ## 6. Dialogue and narrative systems
@@ -156,6 +156,8 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[REQUIRED]** Supports both absurd comedy and dark or intimate scenes.
 - **[PREFERENCE]** Detailed environments, meaningful facial expressions, character animation and body language, atmospheric lighting, distinctive locations, strong consistency, a polished intentional style.
 - **[OPEN]** Rendering resolution and production technique.
+- **[AGREED 2026-10-18]** Portrait development is **paused**. Final character art is decided much later. Strongest references so far, preserved in `art/reference/` with their source code: `drawn_flat.png` (flat illustration) and `construct_1_animation.png` (animation-inspired construction). The creator preferred the animation approach, made more mature.
+- **[AGREED 2026-10-18]** Until then, existing portraits are temporary art. The dialogue interface must support large portraits, multiple expressions per character, and replacing artwork without changes to the dialogue system.
 
 ## 10. Asset production
 
@@ -203,6 +205,22 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 
 ---
 
+## Current priority [AGREED 2026-10-18]
+
+**The game experience comes first. Final artwork can wait.** The focus is the narrative simulation:
+
+- hidden character attributes and temporary conditions
+- relationships and persistent character memories
+- authored dialogue with conditional choices and outcomes
+- controlled randomness
+- events triggered by circumstances and previous decisions
+- consequences that create new opportunities and storylines
+- multiple substantially different life trajectories
+
+Measured against *No Optimal Life*: after a disaster, the player should want to continue out of curiosity, not reload.
+Target: the first playable prototype, one day with few locations and characters but genuinely different outcomes.
+Proposed plan: `design/milestone_1.md`. The story and cast are not expanded without the creator.
+
 ## Open questions
 
 Discovery round 2 started 2026-10-18.
@@ -211,8 +229,9 @@ Discovery round 2 started 2026-10-18.
 2. **Attribute visibility.** Leaning towards indirect communication; the inner monologue is a natural channel for it. Deliberately not settled; to be found through prototyping.
 3. **Setting details.** A fictional Eastern European country? Proposed satire rule: people are never the punchline for being from here, only for who they are.
 4. **Prototype cast.** Boss, Secretary, Veteran, Awkward Colleague, Boss's Wife. Possibly someone from outside work.
-5. **Art direction.** Art test v1 is ready for judgement; see `design/art_test_v1.md`.
+5. **Magda's age and children.** Younger than 52 (exact age open); two children by different men. Content lines to update once decided: `tuesday_party.ink` (her son and daughter abroad), `tuesday_night.ink` (graduation/wedding photos), `wednesday.ink` (two "fifty-two" lines, the mugs).
 6. **Trait system.** The prototype uses PROVISIONAL placeholder traits (nerve, tact, judgment, restraint) and fixed starting values. To be designed together.
+7. **Milestone 1.** Proposal in `design/milestone_1.md`, awaiting approval.
 
 ## Decision log
 
@@ -243,3 +262,6 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Neighbours' daughter is 16–18. Minors are never part of sexual or romantic content. | §4, §5 |
 | 2026-10-18 | Teo's inner-monologue voice in `design/sample_scenes.md` approved as the starting point for all writing. | §8 |
 | 2026-10-18 | Development authorised. Text prototype and art test started. | §13 |
+| 2026-10-18 | Art: animation-inspired approach preferred (more mature). Portrait development paused; references preserved in `art/reference/`. | §9 |
+| 2026-10-18 | Priority shifts to the narrative simulation and a playable one-day prototype. | Current priority |
+| 2026-10-18 | Magda: younger than first sketched, two children by different men, low self-esteem, seeks validation through sex; darker side developed later. | §5 |

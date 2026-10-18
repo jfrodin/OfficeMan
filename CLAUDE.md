@@ -10,14 +10,19 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 
 ## Current phase
 
-**Prototype development (authorised 2026-10-18).** Building the text prototype (one Tuesday + Wednesday morning) and running the art test. Major creative decisions still need the creator's approval; record them in `GAME_VISION.md`.
+**Narrative prototype (from 2026-10-18).** The game experience comes first. Work towards Milestone 1 (`design/milestone_1.md`, once approved): a playable day that validates the narrative simulation. Portrait and art development are **paused**; use existing portraits as temporary art.
+
+- Do not expand the story or invent new main characters without the creator.
+- **Never delete, overwrite or modify** `art/reference/` or its source files (`Drawn/MagdaDrawing.cs`, `Drawn/DrawnStyles.cs`, `Drawn/CartoonMagda.cs`).
+- Dialogue must reference portraits by character and mood only, so artwork can be replaced without touching dialogue or engine code.
+- Measure every system against *No Optimal Life*: disasters should invite continuing, not reloading.
 
 ## Commands
 
 - Play: `dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug]`
 - Simulate: `dotnet run --project tools/OfficeMan.Sim -- --runs 1000` (must report 0 crashes, 0 dead ends; check coverage)
 - Test: `dotnet test`
-- Art: `dotnet run --project tools/OfficeMan.ArtGen` → `art/out/`
+- Art: `dotnet run --project tools/OfficeMan.ArtGen [-- cast|construct|drawn|styles|pixel]` → `art/out/` (scratch output, not committed)
 - Godot 4.6 .NET is at `E:\Godot_v4.6-stable_mono_win64` (graphical client not started yet).
 
 After any content change, run the simulator and the tests before committing.

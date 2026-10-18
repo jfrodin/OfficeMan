@@ -1,3 +1,4 @@
+// REFERENCE ARTWORK SOURCE: produces art/reference/drawn_flat.png. Do not modify; the creator chose it as a visual reference (2026-10-18).
 using OfficeMan.ArtGen.Portraits;
 
 namespace OfficeMan.ArtGen.Drawn;
