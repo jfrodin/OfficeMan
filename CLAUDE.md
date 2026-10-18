@@ -10,9 +10,17 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 
 ## Current phase
 
-**Discovery / paper design. No implementation is authorised.** Do not create game code, assets or project scaffolding until the creator explicitly approves development.
+**Prototype development (authorised 2026-10-18).** Building the text prototype (one Tuesday + Wednesday morning) and running the art test. Major creative decisions still need the creator's approval; record them in `GAME_VISION.md`.
 
-You may maintain `GAME_VISION.md`, this file, and design documents in `design/` (Markdown only). Design documents are proposals. They only become decisions once recorded as [AGREED] in `GAME_VISION.md`.
+## Commands
+
+- Play: `dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug]`
+- Simulate: `dotnet run --project tools/OfficeMan.Sim -- --runs 1000` (must report 0 crashes, 0 dead ends; check coverage)
+- Test: `dotnet test`
+- Art: `dotnet run --project tools/OfficeMan.ArtGen` → `art/out/`
+- Godot 4.6 .NET is at `E:\Godot_v4.6-stable_mono_win64` (graphical client not started yet).
+
+After any content change, run the simulator and the tests before committing.
 
 ## Agreed stack
 

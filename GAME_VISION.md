@@ -211,7 +211,8 @@ Discovery round 2 started 2026-10-18.
 2. **Attribute visibility.** Leaning towards indirect communication; the inner monologue is a natural channel for it. Deliberately not settled; to be found through prototyping.
 3. **Setting details.** A fictional Eastern European country? Proposed satire rule: people are never the punchline for being from here, only for who they are.
 4. **Prototype cast.** Boss, Secretary, Veteran, Awkward Colleague, Boss's Wife. Possibly someone from outside work.
-5. **The "marry my daughter" joke.** Daughter is 16–18. Exact punchline open; see `design/sample_scenes.md`.
+5. **Art direction.** Art test v1 is ready for judgement; see `design/art_test_v1.md`.
+6. **Trait system.** The prototype uses PROVISIONAL placeholder traits (nerve, tact, judgment, restraint) and fixed starting values. To be designed together.
 
 ## Decision log
 
@@ -241,3 +242,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Outsider pool at the party adopted as proposed; contents are easy to change later. | §8 |
 | 2026-10-18 | Neighbours' daughter is 16–18. Minors are never part of sexual or romantic content. | §4, §5 |
 | 2026-10-18 | Teo's inner-monologue voice in `design/sample_scenes.md` approved as the starting point for all writing. | §8 |
+| 2026-10-18 | Development authorised. Text prototype and art test started. | §13 |
