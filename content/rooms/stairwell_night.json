@@ -1,0 +1,21 @@
+// The same landing at night: the stair window is dark, the bulb is all there is.
+{
+  "id": "stairwell_night",
+  "image": "art/game/rooms/stairwell_night.png",
+  "emissive": "art/game/rooms/stairwell_night_emissive.png",
+  "glow": "art/game/rooms/stairwell_night_glow.png",
+  "front": "art/game/rooms/stairwell_night_front.png",
+  "walk": { "minX": 20, "maxX": 440, "minY": 196, "maxY": 250 },
+  "spawn": [150, 210],
+
+  "ambient": [0.12, 0.13, 0.18],
+  "look": { "bloom": 0.9, "fog": 0.14, "fogColor": "6a6458", "exposure": 1.4, "saturation": 0.8, "vignette": 0.6, "grain": 0.045 },
+  "lights": [
+    { "x": 200, "y": 47, "radius": 210, "intensity": 1.05, "color": "ffcf88", "flicker": true },
+    { "x": 409, "y": 177, "radius": 26, "intensity": 0.4, "color": "8aa0ff" }
+  ],
+  "things": [
+    { "id": "stojan", "name": "Stojan", "sprite": "stojan", "x": 360, "y": 208, "faceLeft": true, "smoke": [9, -27],
+      "when": "time >= 22:00" }
+  ]
+}

@@ -1,0 +1,20 @@
+// The fourth-floor landing, morning. Pictures: art/game/rooms/stairwell*.png, drawn by tools/OfficeMan.ArtGen/Rooms/StairwellRoom.cs.
+{
+  "id": "stairwell",
+  "image": "art/game/rooms/stairwell.png",
+  "emissive": "art/game/rooms/stairwell_emissive.png",
+  "glow": "art/game/rooms/stairwell_glow.png",
+  "front": "art/game/rooms/stairwell_front.png",
+  "walk": { "minX": 20, "maxX": 440, "minY": 196, "maxY": 250 },
+  "spawn": [96, 206],
+
+  "ambient": [0.24, 0.26, 0.28],
+  "look": { "bloom": 0.8, "fog": 0.12, "fogColor": "9a9484", "exposure": 1.35, "saturation": 0.85, "vignette": 0.55, "grain": 0.04 },
+  "lights": [
+    { "x": 200, "y": 47, "radius": 220, "intensity": 0.95, "color": "ffd9a0", "flicker": true },
+    { "x": 326, "y": 70, "radius": 230, "intensity": 0.6, "color": "b8c8dc", "dir": [-0.3, 1], "inner": 25, "outer": 55 }
+  ],
+  "things": [
+    { "id": "stojan", "name": "Stojan", "sprite": "stojan", "x": 372, "y": 206, "faceLeft": true, "smoke": [9, -27] }
+  ]
+}

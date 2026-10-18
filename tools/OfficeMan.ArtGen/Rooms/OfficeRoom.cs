@@ -58,10 +58,10 @@ public static class OfficeRoom
     {
         a.FillRect(0, 0, W, 12, Ceiling, (x, y) => 0.5, 0);
         a.FillRect(0, 12, W, Rail, Plaster, (x, y) =>
-            0.55 - (y - 12) / 400.0 + Noise(x, y, 3) * 0.05, dither: 0.35);
+            0.55 - (y - 12) / 400.0 + Noise(x / 6, y / 6, 3) * 0.04, dither: 0);
         a.FillRect(0, Rail - 2, W, Rail + 1, Wood, (x, y) => y == Rail - 2 ? 0.7 : 0.4, 0);
         a.FillRect(0, Rail + 1, W, WallBottom, Panel, (x, y) =>
-            0.5 + ((x % 24) == 0 ? -0.25 : (x % 24) == 1 ? 0.15 : 0) - (y - Rail) / 160.0, dither: 0.25);
+            0.5 + ((x % 24) == 0 ? -0.25 : (x % 24) == 1 ? 0.15 : 0) - (y - Rail) / 160.0, dither: 0);
         a.FillRect(0, WallBottom - 3, W, WallBottom, Panel, (x, y) => 0.15, 0);
 
         // Linoleum: large tiles, a faint checker, darker where it meets the wall.
@@ -71,8 +71,8 @@ public static class OfficeRoom
             double checker = (tx + ty) % 2 == 0 ? 0.04 : 0;
             double seam = (y - WallBottom) % 12 == 0 || (x + (y - WallBottom) / 3) % 24 == 0 ? -0.08 : 0;
             double contact = Math.Max(0, 1 - (y - WallBottom) / 10.0) * 0.25;
-            return 0.55 + checker + seam - contact + Noise(x, y, 7) * 0.04;
-        }, dither: 0.3);
+            return 0.55 + checker + seam - contact;
+        }, dither: 0);
 
         // Fluorescent fittings; the tubes glow.
         for (int i = 0; i < 4; i++)
@@ -138,7 +138,7 @@ public static class OfficeRoom
 
         // The EU poster: a smiling family on a bridge we haven't built yet.
         a.FillRect(334, 34, 368, 86, Paper, (x, y) => 0.9, 0);
-        a.FillRect(336, 36, 366, 66, Glass, (x, y) => 0.9 - (y - 36) / 60.0, 0.4);
+        a.FillRect(336, 36, 366, 66, Glass, (x, y) => 0.9 - (y - 36) / 60.0, 0);
         a.FillRect(336, 58, 366, 62, Metal, (x, y) => 0.55, 0);
         foreach (int fx in new[] { 343, 348, 354, 359 }) a.FillRect(fx, 50, fx + 2, 58, RedB, (x, y) => 0.6, 0);
         for (int i = 0; i < 12; i++) a.Paint(345 + i, 70, BlueB, 0.9, 0);   // the stars, roughly
@@ -154,7 +154,7 @@ public static class OfficeRoom
     private static void ViktorsOffice(SceneCanvas a, Canvas e)
     {
         // Inside: his own window, his desk, his chair, the minister photo.
-        a.FillRect(392, 12, W, WallBottom, Plaster, (x, y) => 0.6 - (y - 12) / 500.0, 0.3);
+        a.FillRect(392, 12, W, WallBottom, Plaster, (x, y) => 0.6 - (y - 12) / 500.0, 0);
         for (int y = 26; y < 98; y++)
             for (int x = 440; x < 476; x++)
             {
@@ -168,11 +168,11 @@ public static class OfficeRoom
         a.FillRect(410, 50, 413, 57, Fabric, (x, y) => 0.6, 0);
         a.FillRect(416, 50, 419, 57, Fabric, (x, y) => 0.6, 0);
         a.FillRect(410, 118, 474, 123, Wood, (x, y) => y == 118 ? 0.8 : 0.6, 0);   // the good desk
-        a.FillRect(412, 123, 472, 160, Wood, (x, y) => 0.4, 0.2);
+        a.FillRect(412, 123, 472, 160, Wood, (x, y) => 0.4, 0);
         a.FillRect(448, 96, 468, 118, Fabric, (x, y) => 0.5, 0);             // executive chair
         a.FillRect(396, 120, 406, 160, Pot, (x, y) => 0.5, 0);
         foreach (var (x, y) in Circle(401, 108, 10)) a.Paint(x, y, Leaf, 0.45 + ((x + y) % 3) * 0.1, 0);
-        a.FillRect(392, 160, W, WallBottom, Floor, (x, y) => 0.5, 0.2);
+        a.FillRect(392, 160, W, WallBottom, Floor, (x, y) => 0.5, 0);
 
         // The glass wall, with its door always open.
         for (int y = 12; y < WallBottom; y++)
@@ -187,13 +187,15 @@ public static class OfficeRoom
 
     private static void DoorCabinetCooler(SceneCanvas a, Canvas e)
     {
-        a.FillRect(2, 58, 30, WallBottom, Wood, (x, y) => 0.45 + (x is 2 or 3 or 28 or 29 ? -0.15 : 0) + Noise(x, y, 2) * 0.05, 0.2);
-        a.FillRect(24, 112, 27, 115, Metal, (x, y) => 0.9, 0);
+        a.FillRect(0, 107, 33, 110, Wood, (x, y) => 0.3, 0);                // frame
+        a.FillRect(2, 110, 30, WallBottom, Wood, (x, y) => 0.45 + (x is 2 or 3 or 28 or 29 ? -0.15 : 0) + Noise(x, y, 2) * 0.05, 0);
+        a.FillRect(6, 118, 26, 138, Glass, (x, y) => 0.45, 0);              // wired glass panel
+        a.FillRect(24, 144, 27, 147, Metal, (x, y) => 0.9, 0);
         for (int x = 8; x < 22; x++)
-            for (int y = 50; y < 55; y++) e[x, y] = Rgb.Hex("40d070");       // EXIT, more or less
-        a.FillRect(7, 49, 23, 56, Metal, (x, y) => 0.3, 0);
+            for (int y = 99; y < 104; y++) e[x, y] = Rgb.Hex("40d070");       // EXIT, more or less
+        a.FillRect(7, 98, 23, 105, Metal, (x, y) => 0.3, 0);
 
-        a.FillRect(34, 124, 56, WallBottom, GreenMetal, (x, y) => 0.55 - (x == 34 ? 0.15 : 0), 0.2);
+        a.FillRect(34, 124, 56, WallBottom, GreenMetal, (x, y) => 0.55 - (x == 34 ? 0.15 : 0), 0);
         for (int y = 136; y < WallBottom; y += 13) a.FillRect(35, y, 55, y + 1, GreenMetal, (x, yy) => 0.25, 0);
         for (int y = 129; y < WallBottom; y += 13) a.FillRect(43, y, 47, y + 1, Metal, (x, yy) => 0.8, 0);
         a.FillRect(36, 116, 54, 124, Paper, (x, y) => 0.6 + (y % 2) * 0.1, 0);  // files on top
@@ -213,32 +215,32 @@ public static class OfficeRoom
         {
             foreach (var (x, y) in Circle(bx, by, 6)) a.Paint(x, y, ramp, 0.55 + (bx - x + by - y) * 0.035, 0);
             a.Paint(bx - 2, by - 3, Paper, 1.0, 0);
-            for (int y = by + 6; y < 140; y++) a.Paint(bx + (y / 5 % 2), y, Paper, 0.75, 0);
+            for (int y = by + 6; y < 154; y++) a.Paint(bx + (y / 5 % 2), y, Paper, 0.75, 0);
         }
-        a.FillRect(126, 130, 134, 140, Metal, (x, y) => 0.85, 0);
-        a.FillRect(84, 128, 94, 140, Wood, (x, y) => 0.6, 0);
-        a.FillRect(86, 130, 92, 138, Paper, (x, y) => 0.7, 0);
-        a.FillRect(98, 134, 103, 140, Paper, (x, y) => 0.95, 0);
+        a.FillRect(126, 144, 134, 154, Metal, (x, y) => 0.85, 0);
+        a.FillRect(84, 142, 94, 154, Wood, (x, y) => 0.6, 0);
+        a.FillRect(86, 144, 92, 152, Paper, (x, y) => 0.7, 0);
+        a.FillRect(98, 148, 103, 154, Paper, (x, y) => 0.95, 0);
 
         // Teo: a monitor, a pile, a mug.
         Monitor(a, e, 172);
-        a.FillRect(198, 128, 214, 140, Paper, (x, y) => 0.6 + ((y - 128) % 2) * 0.12, 0);
-        a.FillRect(204, 124, 216, 128, Paper, (x, y) => 0.5, 0);
-        a.FillRect(166, 134, 171, 140, Paper, (x, y) => 0.85, 0);
+        a.FillRect(198, 142, 214, 154, Paper, (x, y) => 0.6 + ((y - 128) % 2) * 0.12, 0);
+        a.FillRect(204, 138, 216, 142, Paper, (x, y) => 0.5, 0);
+        a.FillRect(166, 148, 171, 154, Paper, (x, y) => 0.85, 0);
 
         // Kornel: a monitor, stacks squared to the edge, a pen pot.
         Monitor(a, e, 252);
-        a.FillRect(280, 132, 296, 140, Paper, (x, y) => 0.8, 0);
-        a.FillRect(282, 130, 294, 132, Paper, (x, y) => 0.9, 0);
-        a.FillRect(244, 132, 249, 140, Metal, (x, y) => 0.6, 0);
-        for (int i = 0; i < 3; i++) a.FillRect(245 + i * 2, 127, 246 + i * 2, 132, RedB, (x, y) => 0.6, 0);
+        a.FillRect(280, 146, 296, 154, Paper, (x, y) => 0.8, 0);
+        a.FillRect(282, 144, 294, 146, Paper, (x, y) => 0.9, 0);
+        a.FillRect(244, 146, 249, 154, Metal, (x, y) => 0.6, 0);
+        for (int i = 0; i < 3; i++) a.FillRect(245 + i * 2, 141, 246 + i * 2, 146, RedB, (x, y) => 0.6, 0);
 
         // Zdenka: one file, one ruler, a lamp.
-        a.FillRect(326, 134, 344, 140, Paper, (x, y) => 0.75, 0);
-        a.FillRect(346, 138, 366, 139, Metal, (x, y) => 0.95, 0);
-        a.FillRect(372, 118, 374, 140, Metal, (x, y) => 0.6, 0);
-        a.FillRect(364, 114, 376, 120, GreenMetal, (x, y) => 0.6, 0);
-        for (int x = 366; x < 375; x++) e[x, 120] = Rgb.Hex("ffd890");
+        a.FillRect(326, 148, 344, 154, Paper, (x, y) => 0.75, 0);
+        a.FillRect(346, 152, 366, 153, Metal, (x, y) => 0.95, 0);
+        a.FillRect(372, 132, 374, 154, Metal, (x, y) => 0.6, 0);
+        a.FillRect(364, 128, 376, 134, GreenMetal, (x, y) => 0.6, 0);
+        for (int x = 366; x < 375; x++) e[x, 134] = Rgb.Hex("ffd890");
 
         // Chairs pulled out beside each desk.
         foreach (var d in desks) Chair(a, d[1] + 4);
@@ -246,25 +248,25 @@ public static class OfficeRoom
 
     private static void Desk(SceneCanvas a, int x0, int x1)
     {
-        a.FillRect(x0, 140, x1, 143, Wood, (x, y) => y == 140 ? 0.85 : 0.6, 0);
-        a.FillRect(x0 + 2, 143, x1 - 2, WallBottom, Wood, (x, y) => 0.35 + (x == x0 + 2 ? -0.1 : 0) + Noise(x, y, 5) * 0.04, 0.2);
-        a.FillRect(x0 + 6, 150, x1 - 6, 151, Wood, (x, y) => 0.2, 0);
-        a.FillRect(x0 + 6, 160, x1 - 6, 161, Wood, (x, y) => 0.2, 0);
+        a.FillRect(x0, 154, x1, 157, Wood, (x, y) => y == 154 ? 0.85 : 0.6, 0);
+        a.FillRect(x0 + 2, 157, x1 - 2, WallBottom, Wood, (x, y) => 0.35 + (x == x0 + 2 ? -0.1 : 0) + Noise(x, y, 5) * 0.04, 0);
+        a.FillRect(x0 + 6, 164, x1 - 6, 165, Wood, (x, y) => 0.2, 0);
+        a.FillRect(x0 + 6, 174, x1 - 6, 175, Wood, (x, y) => 0.2, 0);
     }
 
     private static void Monitor(SceneCanvas a, Canvas e, int x0)
     {
-        a.FillRect(x0, 114, x0 + 24, 132, Fabric, (x, y) => 0.5, 0);
-        for (int y = 116; y < 130; y++)
+        a.FillRect(x0, 128, x0 + 24, 146, Fabric, (x, y) => 0.5, 0);
+        for (int y = 130; y < 144; y++)
             for (int x = x0 + 2; x < x0 + 22; x++)
                 e[x, y] = Rgb.Hex("6aa0c8").Mix(Rgb.Hex("dceaf4"), (y % 3 == 0 ? 0.35 : 0.1) + (x - x0) / 80.0).Mix(Rgb.Hex("000000"), 0.35);
-        a.FillRect(x0 + 10, 132, x0 + 14, 138, Fabric, (x, y) => 0.4, 0);
-        a.FillRect(x0 + 4, 138, x0 + 20, 140, Fabric, (x, y) => 0.55, 0);
+        a.FillRect(x0 + 10, 146, x0 + 14, 152, Fabric, (x, y) => 0.4, 0);
+        a.FillRect(x0 + 4, 152, x0 + 20, 154, Fabric, (x, y) => 0.55, 0);
     }
 
     private static void Chair(SceneCanvas a, int x)
     {
-        a.FillRect(x, 146, x + 12, 162, Fabric, (xx, y) => 0.55 - (y - 146) / 80.0, 0.2);
+        a.FillRect(x, 146, x + 12, 162, Fabric, (xx, y) => 0.55 - (y - 146) / 80.0, 0);
         a.FillRect(x - 2, 162, x + 14, 166, Fabric, (xx, y) => 0.45, 0);
         a.FillRect(x + 5, 166, x + 7, 176, Metal, (xx, y) => 0.4, 0);
         a.FillRect(x - 1, 176, x + 13, 178, Metal, (xx, y) => 0.3, 0);

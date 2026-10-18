@@ -27,6 +27,13 @@
       },
       "aliases": { "happy": "smile" }
     },
+    "STOJAN": {
+      "images": {
+        "neutral": "art/game/portraits/stojan_neutral.png",
+        "laughing": "art/game/portraits/stojan_laughing.png"
+      },
+      "aliases": { "happy": "laughing", "pleased": "neutral" }
+    },
     "KORNEL": {
       "images": {
         "neutral": "art/game/portraits/kornel_neutral.png",
@@ -66,6 +73,10 @@
   "defaultScene": "office",
   // Phases that are played as walkable rooms (content/rooms/<id>.json). Others show their scene picture.
   "phaseRooms": {
+    "home_morning": "flat",
+    "stairwell_morning": "stairwell",
+    "night_home": "stairwell_night",
+    "wed_wake": "flat",
     "office": "office",
     "wed_office": "office"
   },
@@ -74,6 +85,7 @@
     "magda": "art/game/sprites/magda.png",
     "zdenka": "art/game/sprites/zdenka.png",
     "kornel": "art/game/sprites/kornel.png",
-    "viktor": "art/game/sprites/viktor.png"
+    "viktor": "art/game/sprites/viktor.png",
+    "stojan": "art/game/sprites/stojan.png"
   }
 }

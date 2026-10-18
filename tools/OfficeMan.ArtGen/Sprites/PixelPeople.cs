@@ -2,8 +2,8 @@ using OfficeMan.ArtGen.Raster;
 
 namespace OfficeMan.ArtGen.Sprites;
 
-public enum HairStyle { Messy, Perm, SweptBack, Bun, Combover }
-public enum TopStyle { Shirt, ShirtTie, Cardigan, Dress, SuitOpen, Suit }
+public enum HairStyle { Messy, Perm, SweptBack, Bun, Combover, Bald }
+public enum TopStyle { Shirt, ShirtTie, Cardigan, Dress, SuitOpen, Suit, Vest }
 
 /// <summary>A small walking person, described rather than drawn.</summary>
 public sealed record PersonSpec(
@@ -13,7 +13,7 @@ public sealed record PersonSpec(
     TopStyle Top, string TopColor, string TopShade,
     string Bottom, string BottomShade, string Shoes,
     int Build = 6, int Height = 2, bool Glasses = false, bool Earrings = false, bool Belly = false,
-    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28");
+    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null);
 
 /// <summary>
 /// Pixel people for the walkable world: 28×52 frames, facing right (flip for left).
@@ -39,7 +39,11 @@ public static class PixelPeople
     public static readonly PersonSpec Viktor = new("viktor", "c98f6c", "a66a50", HairStyle.SweptBack, "3c3432", "241e1c",
         TopStyle.SuitOpen, "2c3546", "1c2230", "2c3546", "1c2230", "1a1414", Build: 8, Height: 3, Accent: "ece9e4", GreyAt: "a7a3a0");
 
-    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor };
+    /// <summary>The neighbour: big, bald with a grey fringe, a moustache, a white vest, sweatpants and slippers.</summary>
+    public static readonly PersonSpec Stojan = new("stojan", "d9a07e", "b07658", HairStyle.Bald, "8a847c", "5e5a54",
+        TopStyle.Vest, "e8e4d8", "b8b2a2", "5a5e66", "3e424a", "6a3a2a", Build: 9, Height: 3, Belly: true, Moustache: "4a3a30");
+
+    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor, Stojan };
 
     public static Canvas Sheet(PersonSpec p)
     {
@@ -105,6 +109,12 @@ public static class PixelPeople
                 Px(cx + 1, shoulder + 6, p.Accent ?? "ece9e4");
                 Px(cx + 1, shoulder + 2, p.SkinShade);
                 break;
+            case TopStyle.Vest:
+                Rect(cx - w + 1, shoulder, cx - w + 2, shoulder + 3, p.SkinShade);   // bare shoulder
+                Rect(cx + w - 2, shoulder, cx + w - 1, shoulder + 3, p.Skin);
+                Rect(cx - 1, shoulder, cx + 3, shoulder + 2, p.Skin);                // the scoop of the vest
+                Px(cx + 1, shoulder + 3, p.SkinShade);
+                break;
             case TopStyle.Suit:
                 Rect(cx, shoulder, cx + 2, shoulder + 2, p.Accent ?? "ece7dc");   // blouse at the neck
                 break;
@@ -114,7 +124,7 @@ public static class PixelPeople
             Rect(cx - w + 1, hip, cx + w - 1, hip, p.BottomShade);
 
         // Near arm, swinging the other way, with a hand.
-        Rect(cx + w - 1 - swing, shoulder + 1, cx + w + 1 - swing, hip + 1, p.Top is TopStyle.ShirtTie ? p.Skin : p.TopColor);
+        Rect(cx + w - 1 - swing, shoulder + 1, cx + w + 1 - swing, hip + 1, p.Top is TopStyle.ShirtTie or TopStyle.Vest ? p.Skin : p.TopColor);
         if (p.Top is TopStyle.ShirtTie) Rect(cx + w - 1 - swing, shoulder + 1, cx + w + 1 - swing, shoulder + 3, p.TopColor); // short sleeve
         Px(cx + w - swing, hip + 2, p.Skin);
         Px(cx + w + 1 - swing, hip + 2, p.Skin);
@@ -145,6 +155,8 @@ public static class PixelPeople
         }
 
         DrawHair(p, Px, Rect, hx, headTop, headBottom);
+        if (p.Moustache is not null) Rect(hx + 1, eyeY + 3, hx + 4, eyeY + 3, p.Moustache);
+        if (p.Top is TopStyle.Vest) Rect(cx - w - 1 + swing, shoulder + 4, cx - w + 1 + swing, hip + 1, p.SkinShade); // far arm, bare
 
         // Outline everything from outside.
         var mask = new Canvas(FrameW, FrameH);
@@ -190,6 +202,11 @@ public static class PixelPeople
                 rect(hx - 9, top - 3, hx - 6, top + 1, p.HairColor);   // the bun
                 px(hx - 8, top - 3, p.HairShade);
                 px(hx - 9, top, p.HairShade);
+                break;
+            case HairStyle.Bald:
+                rect(hx - 6, top + 3, hx - 4, top + 7, p.HairColor);   // the grey fringe round the back
+                px(hx - 5, top + 2, p.HairShade);
+                px(hx + 1, top + 1, "f0d0b0");                        // shine on the dome
                 break;
             case HairStyle.Combover:
                 rect(hx - 6, top + 2, hx - 4, top + 6, p.HairColor);   // the sides

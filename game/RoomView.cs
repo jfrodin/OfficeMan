@@ -28,6 +28,9 @@ public partial class RoomView : Control
     private Func<string, Texture2D> _texture = null!;
     private Texture2D _shadow = null!;
     private double _clock;
+    private Smoke _smoke = null!;
+    private List<RoomLayout.RoomLight> _lights = new();
+    private Vector4[] _lightPos = new Vector4[16];
 
     /// <summary>How drunk Teo is (0–4): he walks a little crooked.</summary>
     public int Drunk { get; set; }
@@ -58,6 +61,8 @@ public partial class RoomView : Control
         _viewport.AddChild(_actors);
         _front = new Sprite2D { Centered = false, ZIndex = 100 };
         _viewport.AddChild(_front);
+        _smoke = new Smoke { ZIndex = 50 };
+        _viewport.AddChild(_smoke);
 
         _shadow = MakeShadow();
         _teo = new Actor(texture(art.Sprite("teo")), _shadow);
@@ -82,9 +87,11 @@ public partial class RoomView : Control
         _room = room;
         _viewport.Size = new Vector2I(room.Width, room.Height);
         _background.Texture = _texture(_art.Resolve(room.Image));
+        _material.SetShaderParameter("base", _background.Texture);
         _front.Texture = room.Front is null ? null : _texture(_art.Resolve(room.Front));
         _teo.Position = new Vector2(room.Spawn[0], room.Spawn[1]);
         _teo.FaceLeft = false;
+        _teo.Visible = room.ShowTeo;
 
         var black = BlackTexture();
         _material.SetShaderParameter("canvas_size", new Vector2(room.Width, room.Height));
@@ -108,6 +115,7 @@ public partial class RoomView : Control
     {
         foreach (var (_, actor) in _present) actor?.QueueFree();
         _present.Clear();
+        _smoke.Sources.Clear();
         foreach (var thing in _room.Things)
         {
             if (thing.When is not null && !present(thing.When)) continue;
@@ -116,11 +124,14 @@ public partial class RoomView : Control
             {
                 actor = new Actor(_texture(_art.Sprite(thing.Sprite)), _shadow) { Position = new Vector2(thing.X, thing.Y), FaceLeft = thing.FaceLeft };
                 _actors.AddChild(actor);
+                if (thing.Smoke is { Length: 2 } sm)
+                    _smoke.Sources.Add(new Vector2(thing.X + (thing.FaceLeft ? -sm[0] : sm[0]), thing.Y + sm[1]));
             }
             _present.Add((thing, actor));
         }
 
         var lights = _room.Lights.Where(l => l.When is null || present(l.When)).Take(16).ToList();
+        _lights = lights;
         var pos = new Vector4[16];
         var col = new Vector4[16];
         var dir = new Vector4[16];
@@ -137,6 +148,7 @@ public partial class RoomView : Control
             }
             else dir[i] = new Vector4(0, 0, 0, -2);
         }
+        _lightPos = pos;
         _material.SetShaderParameter("light_count", lights.Count);
         _material.SetShaderParameter("light_pos", pos);
         _material.SetShaderParameter("light_col", col);
@@ -181,6 +193,7 @@ public partial class RoomView : Control
     {
         if (_room is null) return;
         _clock += delta;
+        Flicker();
         var dir = Vector2.Zero;
         if (Controllable)
         {
@@ -198,6 +211,23 @@ public partial class RoomView : Control
             _teo.Walking = true;
         }
         else _teo.Walking = false;
+    }
+
+    /// <summary>Failing bulbs: mostly steady, sometimes a dip, now and then a stutter.</summary>
+    private void Flicker()
+    {
+        bool any = false;
+        var pos = (Vector4[])_lightPos.Clone();
+        for (int i = 0; i < _lights.Count; i++)
+        {
+            if (!_lights[i].Flicker) continue;
+            any = true;
+            double t = _clock;
+            double stutter = Math.Sin(t * 0.7) > 0.93 ? (Math.Sin(t * 47) > 0 ? 0.25 : 1) : 1;
+            double hum = 0.94 + Math.Sin(t * 13.1) * 0.03 + Math.Sin(t * 7.3) * 0.03;
+            pos[i].W = (float)(_lightPos[i].W * hum * stutter);
+        }
+        if (any) _material.SetShaderParameter("light_pos", pos);
     }
 
     private static Texture2D MakeShadow()
@@ -218,6 +248,44 @@ public partial class RoomView : Control
         var img = Image.CreateEmpty(4, 4, false, Image.Format.Rgb8);
         img.Fill(Colors.Black);
         return ImageTexture.CreateFromImage(img);
+    }
+
+    /// <summary>Cigarette smoke: single pixels rising, drifting and thinning out.</summary>
+    private partial class Smoke : Node2D
+    {
+        private readonly List<(Vector2 pos, double age, double seed)> _puffs = new();
+        private double _next;
+        public List<Vector2> Sources { get; } = new();
+
+        public override void _Process(double delta)
+        {
+            _next -= delta;
+            if (_next <= 0 && Sources.Count > 0)
+            {
+                foreach (var s in Sources) _puffs.Add((s, 0, GD.Randf() * 10));
+                _next = 0.18;
+            }
+            for (int i = _puffs.Count - 1; i >= 0; i--)
+            {
+                var (p, age, seed) = _puffs[i];
+                age += delta;
+                if (age > 3.2) { _puffs.RemoveAt(i); continue; }
+                p += new Vector2((float)(Math.Sin(age * 1.7 + seed) * 4 * delta), (float)(-9 * delta));
+                _puffs[i] = (p, age, seed);
+            }
+            QueueRedraw();
+        }
+
+        public override void _Draw()
+        {
+            foreach (var (p, age, _) in _puffs)
+            {
+                float a = (float)Math.Clamp(0.55 - age * 0.17, 0, 0.55);
+                var c = new Color(0.86f, 0.85f, 0.82f, a);
+                DrawRect(new Rect2(Mathf.Floor(p.X), Mathf.Floor(p.Y), 1, 1), c);
+                if (age > 1.2) DrawRect(new Rect2(Mathf.Floor(p.X) + 1, Mathf.Floor(p.Y), 1, 1), c * new Color(1, 1, 1, 0.6f));
+            }
+        }
     }
 
     /// <summary>A person on the floor: a sprite sheet with idle (0–1) and walk (2–5) frames, anchored at the feet, with a soft shadow.</summary>

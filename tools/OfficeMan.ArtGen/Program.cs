@@ -101,7 +101,7 @@ if (sets.Contains("game"))
 
     foreach (var mood in new[] { Mood.Happy, Mood.Irritated, Mood.Sad })
         Png.Save(CartoonMagda.Draw(mood), Path.Combine(portraits, $"magda_{mood.ToString().ToLowerInvariant()}.png"));
-    foreach (var member in new CastMember[] { new Viktor(), new Zdenka(), new Kornel() })
+    foreach (var member in new CastMember[] { new Viktor(), new Zdenka(), new Kornel(), new Stojan() })
         foreach (var rig in new[] { member.Neutral, member.Distinct })
             Png.Save(member.Draw(rig), Path.Combine(portraits, $"{member.Name}_{rig.Name}.png"));
     Png.Save(Placeholders.Silhouette(), Path.Combine(portraits, "silhouette.png"));
@@ -117,6 +117,13 @@ if (sets.Contains("game"))
     Png.Save(office.Emissive, Path.Combine(rooms, "office_emissive.png"));
     Png.Save(office.Glow, Path.Combine(rooms, "office_glow.png"));
     Png.Save(office.Front, Path.Combine(rooms, "office_front.png"));
+    foreach (var (name, layers) in new[] { ("flat", FlatRoom.Draw()), ("stairwell", StairwellRoom.Draw(night: false)), ("stairwell_night", StairwellRoom.Draw(night: true)) })
+    {
+        Png.Save(layers.Albedo, Path.Combine(rooms, $"{name}.png"));
+        Png.Save(layers.Emissive, Path.Combine(rooms, $"{name}_emissive.png"));
+        Png.Save(layers.Glow, Path.Combine(rooms, $"{name}_glow.png"));
+        Png.Save(layers.Front, Path.Combine(rooms, $"{name}_front.png"));
+    }
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
     foreach (var (name, image) in Placeholders.Scenes())

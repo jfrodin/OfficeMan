@@ -271,3 +271,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Milestone 1 (`design/milestone_1.md`) approved. | Current priority |
 | 2026-10-18 | Gameplay format: Deadhouse-style walkable pixel world with direct control; conversations as portrait + dialogue overlays. | §8 |
 | 2026-10-18 | Traits are two-sided tensions (Nerve, Warmth, Appetite, Honesty), hidden; Teo's baseline is careful, open, held back, smooth, tired and jaded. | §7 |
+| 2026-10-18 | Creator's review: all locations follow one visual standard (`design/visual_standard.md`): one camera and scale, lit by the room shader, no noise or random decoration, people present as sprites. Speech has three presentations: direct (portrait), overheard (caption, no portrait), thoughts (narration, no portrait). | §9 |

@@ -22,6 +22,9 @@ public sealed class RoomLayout
     /// <summary>Things in front of the people (transparent elsewhere).</summary>
     public string? Front { get; set; }
 
+    /// <summary>False where Teo is part of the picture (asleep in bed) rather than a walking sprite.</summary>
+    public bool ShowTeo { get; set; } = true;
+
     public float[] Ambient { get; set; } = { 0.45f, 0.45f, 0.45f };
     public List<RoomLight> Lights { get; set; } = new();
     public Mood Look { get; set; } = new();
@@ -40,6 +43,9 @@ public sealed class RoomLayout
 
         /// <summary>Presence condition, e.g. "time &gt; 16:00".</summary>
         public string? When { get; set; }
+
+        /// <summary>A failing bulb: dips and stutters now and then.</summary>
+        public bool Flicker { get; set; }
     }
 
     /// <summary>The finishing pass: bloom, fog, exposure, saturation, vignette, grain.</summary>
@@ -88,6 +94,9 @@ public sealed class RoomLayout
 
         /// <summary>Facing left instead of right.</summary>
         public bool FaceLeft { get; set; }
+
+        /// <summary>A lit cigarette: offset (x, y) from the feet, facing right. Smoke rises from it.</summary>
+        public float[]? Smoke { get; set; }
 
         /// <summary>Presence condition, e.g. "time &lt; 11:15".</summary>
         public string? When { get; set; }

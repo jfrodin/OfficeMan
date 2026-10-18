@@ -40,6 +40,11 @@ public partial class Main : Control
     private RichTextLabel _text = null!;
     private VBoxContainer _choices = null!;
     private Label _more = null!;
+    private PanelContainer _heard = null!;
+    private Label _heardWho = null!;
+    private RichTextLabel _heardText = null!;
+    private RichTextLabel _typingLabel = null!;
+    private string? _listener;   // who Teo is talking to: their portrait stays up (dimmed) during narration
     private PanelContainer _arrival = null!;
     private Label _arrivalText = null!;
     private VBoxContainer _prompt = null!;
@@ -65,6 +70,8 @@ public partial class Main : Control
     private int _autoSteps = -1;
     private int _autoChoices;
     private string? _shotPath;
+    private string? _lookRoom;
+    private int _lookAt = -1;
 
     public override void _Ready()
     {
@@ -75,6 +82,8 @@ public partial class Main : Control
             if (args[i] == "--seed" && i + 1 < args.Length) _seed = int.Parse(args[++i]);
             else if (args[i] == "--shot" && i + 1 < args.Length) _shotPath = args[++i];
             else if (args[i] == "--steps" && i + 1 < args.Length) _autoSteps = int.Parse(args[++i]);
+            else if (args[i] == "--room" && i + 1 < args.Length) _lookRoom = args[++i];
+            else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
         }
 
         string contentDir = ContentLocator.Find(ProjectSettings.GlobalizePath("res://"));
@@ -87,6 +96,26 @@ public partial class Main : Control
         Controls.Register();
         BuildUi();
         StartLife(_seed);
+        if (_lookRoom is not null) LookAtRoom(_lookRoom);
+    }
+
+    /// <summary>Review aid: show one room, empty of dialogue, at a given time of day, and screenshot it.</summary>
+    private void LookAtRoom(string id)
+    {
+        _autoSteps = -1;
+        if (_lookAt >= 0) _game.State.Minute = _lookAt;
+        _roomView.Visible = true;
+        _scene.Visible = false;
+        _roomView.Load(_rooms[id], _game.Evaluate);
+        _panel.Visible = false;
+        _choices.Visible = false;
+        _arrival.Visible = false;
+        SetPortrait(null);
+        GetTree().CreateTimer(0.8).Timeout += () =>
+        {
+            GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
+            GetTree().Quit();
+        };
     }
 
     // ───────────────────────── layout ─────────────────────────
@@ -113,7 +142,7 @@ public partial class Main : Control
 
         // Portrait: bottom-left, over the scene.
         const float ph = 640, pw = ph * 600 / 760f;
-        _portraitCard = new PanelContainer { Position = new Vector2(36, 1080 - 36 - ph - 10), Size = new Vector2(pw + 10, ph + 10), MouseFilter = MouseFilterEnum.Ignore };
+        _portraitCard = new PanelContainer { Position = new Vector2(36, 1080 - 36 - ph - 10), Size = new Vector2(pw + 10, ph + 10), MouseFilter = MouseFilterEnum.Ignore, Visible = false };
         _portraitCard.AddThemeStyleboxOverride("panel", Box(new Color(0.08f, 0.07f, 0.08f, 0.92f), 6, 3, new Color(0.9f, 0.85f, 0.78f, 0.85f)));
         _portrait = new TextureRect { ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCentered, CustomMinimumSize = new Vector2(pw, ph), MouseFilter = MouseFilterEnum.Ignore };
         _portraitCard.AddChild(_portrait);
@@ -140,6 +169,21 @@ public partial class Main : Control
         _more.Text = "▼";
         _more.Position = new Vector2(1846, 1004);
         AddChild(_more);
+
+        // Overheard speech: a compact caption at the top, no portrait, no dialogue panel.
+        _heard = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
+        _heard.AddThemeStyleboxOverride("panel", Box(new Color(0.04f, 0.04f, 0.05f, 0.72f), 8, 0, default, 26, 14));
+        var heardBox = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+        _heardWho = MakeLabel(20, new Color(0.7f, 0.76f, 0.86f, 0.9f));
+        _heardText = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, AutowrapMode = TextServer.AutowrapMode.Off, MouseFilter = MouseFilterEnum.Ignore };
+        _heardText.AddThemeFontSizeOverride("italics_font_size", 30);
+        _heardText.AddThemeFontSizeOverride("normal_font_size", 30);
+        _heardText.AddThemeColorOverride("default_color", new Color(0.92f, 0.9f, 0.86f));
+        heardBox.AddChild(_heardWho);
+        heardBox.AddChild(_heardText);
+        _heard.AddChild(heardBox);
+        AddChild(_heard);
+        _typingLabel = _text;
 
         _arrival = new PanelContainer { Position = new Vector2(36, 30), MouseFilter = MouseFilterEnum.Ignore };
         _arrival.AddThemeStyleboxOverride("panel", Box(new Color(0, 0, 0, 0.55f), 12, 0, default, 18, 10));
@@ -214,6 +258,7 @@ public partial class Main : Control
         if (room) _roomView.Load(_rooms[_roomId!], _game.Evaluate);
         else SetScene(_art.Scene(_phase));
         SetPortrait(null);
+        _listener = null;
         _moods.Clear();
         Arrive(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
         SetMode(_mode); // refresh the dim layer for the new kind of place
@@ -272,20 +317,71 @@ public partial class Main : Control
         if (scene is not null && !_roomView.Visible) SetScene(_art.Scene(_phase, scene));
 
         string? speaker = line.Speaker;
+        string? heardFrom = HeardFrom(line);
+        if (speaker is not null && heardFrom is not null)
+        {
+            ShowOverheard(speaker, heardFrom, line.Body);
+            return;
+        }
+        _heard.Visible = false;
+        _panel.Visible = true;
+
         if (speaker is not null && speaker != "TEO")
         {
+            // Someone speaking to Teo: their portrait if they have one, otherwise just their name.
             string? mood = Tag(line, "mood");
             if (mood is not null) _moods[speaker] = mood;
-            SetPortrait(_art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
+            _listener = _art.HasPortraits(speaker) ? speaker : null;
+            SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
+            DimPortrait(false);
         }
+        else if (speaker is null)
+        {
+            // Teo's thoughts and descriptions: the listener's portrait (if any) dims.
+            DimPortrait(true);
+        }
+        else DimPortrait(false);
+
         _speaker.Visible = speaker is not null;
         _speaker.Text = speaker is null ? "" : Title(speaker);
-        _text.AddThemeColorOverride("default_color", speaker is null ? new Color(0.86f, 0.88f, 0.93f) : new Color(0.98f, 0.95f, 0.9f));
-        _text.Text = Bbcode(line.Body);
-        _text.VisibleCharacters = 0;
+        _text.AddThemeColorOverride("default_color", speaker is null ? new Color(0.78f, 0.82f, 0.9f) : new Color(0.98f, 0.95f, 0.9f));
+        _text.Text = speaker is null ? "[i]" + Bbcode(line.Body) + "[/i]" : Bbcode(line.Body);
+        StartTyping(_text);
+    }
+
+    private void ShowOverheard(string speaker, string from, string body)
+    {
+        _panel.Visible = false;
+        if (_listener is null) SetPortrait(null);
+        else DimPortrait(true);
+        _heardWho.Text = $"{Title(speaker).ToUpperInvariant()}  ·  {from}";
+        _heardText.Text = "[i]" + Bbcode(body) + "[/i]";
+        _heard.Visible = true;
+        StartTyping(_heardText);
+    }
+
+    private void StartTyping(RichTextLabel label)
+    {
+        _typingLabel = label;
+        label.VisibleCharacters = 0;
         _typed = 0;
         _typing = true;
         _more.Visible = false;
+    }
+
+    private void DimPortrait(bool dim) =>
+        _portrait.Modulate = dim ? new Color(0.5f, 0.5f, 0.56f) : Colors.White;
+
+    /// <summary>"heard" or "heard:through the wall" marks a line as overheard, not spoken to Teo.</summary>
+    private static string? HeardFrom(StoryLine line)
+    {
+        foreach (string t in line.Tags)
+        {
+            string s = t.Trim();
+            if (s.Equals("heard", StringComparison.OrdinalIgnoreCase)) return "overheard";
+            if (s.StartsWith("heard:", StringComparison.OrdinalIgnoreCase)) return s[6..].Trim();
+        }
+        return null;
     }
 
     private void Continue()
@@ -294,8 +390,8 @@ public partial class Main : Control
         if (_typing)
         {
             _typing = false;
-            _text.VisibleRatio = 1;
-            _more.Visible = true;
+            _typingLabel.VisibleRatio = 1;
+            _more.Visible = _panel.Visible;
             return;
         }
         NextLine();
@@ -333,6 +429,8 @@ public partial class Main : Control
     private void StartWalking()
     {
         ClearChoices();
+        _listener = null;
+        _heard.Visible = false;
         SetPortrait(null);
         SetMode(Mode.Walking);
     }
@@ -394,6 +492,7 @@ public partial class Main : Control
         _mode = mode;
         bool overlay = mode != Mode.Walking;
         _panel.Visible = overlay;
+        if (mode != Mode.Talking) _heard.Visible = false;
         _dim.Visible = overlay && _roomView.Visible;
         _roomView.Controllable = mode == Mode.Walking;
         _more.Visible = false;
@@ -428,18 +527,24 @@ public partial class Main : Control
         if (_typing)
         {
             _typed += delta * CharsPerSecond;
-            _text.VisibleCharacters = (int)_typed;
-            if (_typed >= _text.GetTotalCharacterCount())
+            _typingLabel.VisibleCharacters = (int)_typed;
+            if (_typed >= _typingLabel.GetTotalCharacterCount())
             {
                 _typing = false;
-                _text.VisibleRatio = 1;
-                _more.Visible = true;
+                _typingLabel.VisibleRatio = 1;
+                _more.Visible = _panel.Visible;
             }
         }
         // The panel hugs its content and sits on the bottom edge, leaving the room visible above it.
-        _panel.Size = new Vector2(1264, 0);
-        _panel.Position = new Vector2(620, 1044 - _panel.Size.Y);
-        _more.Position = new Vector2(1846, 1004);
+        // With a portrait the panel sits to its right; without one it is centred.
+        bool beside = _portraitCard.Visible;
+        float width = beside ? 1264 : 1180, left = beside ? 620 : (1920 - 1180) / 2f;
+        _panel.CustomMinimumSize = new Vector2(width, 170);
+        _panel.Size = new Vector2(width, 0);
+        _panel.Position = new Vector2(left, 1044 - _panel.Size.Y);
+        _more.Position = new Vector2(left + width - 38, 1004);
+        _heard.Size = Vector2.Zero;
+        _heard.Position = new Vector2((1920 - _heard.Size.X) / 2, 96);
         UpdatePrompt();
         if (_autoSteps >= 0) RunAutomation();
     }

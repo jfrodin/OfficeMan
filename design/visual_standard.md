@@ -1,0 +1,75 @@
+# Visual standard for locations
+
+**Status: working standard (2026-10-18), written after the creator's review of the flat and the hallway.**
+Final art direction is still open; this keeps every scene in the prototype coherent until then.
+
+## Why the scenes were inconsistent
+
+| | Office | Flat (before) | Hallway (before) |
+|---|---|---|---|
+| Made for | The walkable room system | The first art test, weeks of iterations earlier | A stop-gap gradient |
+| Native size / scale on screen | 480×270, ×4 | 320×180, ×6 (bigger pixels) | 320×180, ×6 |
+| Perspective | Side-on elevation: flat back wall, a strip of floor | One-point perspective with converging walls; the bed drawn in a different perspective again | None |
+| Lighting | Unlit art + real lights + post-processing | Light baked into the picture, no shader | None |
+| Texture | Material ramps, restrained | Heavy ordered dithering everywhere ("pixel noise") | Dithered gradient |
+| People | Pixel sprites in the scene | None | An empty silhouette card |
+
+The root cause was process, not technique: the office was built and reviewed for the walkable system; the
+other two were never rebuilt for it, and I didn't look at them in the game before handing the build over.
+
+## The standard
+
+**Canvas and camera**
+- Every location is **480×270 native**, shown at **×4**. Same pixel size everywhere.
+- **Side-on elevation**: the back wall is flat and parallel to the screen. No converging walls, no second perspective inside a scene. Depth comes from the floor strip and from overlap (things in front, things behind).
+- Wall base (where floor meets wall) at **y ≈ 176–178**; the floor strip below is where people stand.
+
+**Scale and proportions** (characters ~50 px tall ≈ 1.7 m; roughly 30 px per metre)
+- Doors **66 px** tall, ~30 px wide. Tables and desks **22–26 px**, counters **30 px**, beds **20–24 px** high and about **60–70 px** long.
+- Windows start around **1 character height** above the floor line.
+- Ceilings are stylised high (2.5–3.3 character heights) so walls carry the storytelling; that applies to all rooms alike.
+
+**Lighting**
+- Every scene is drawn **unlit** and lit by the room shader. Every visible light has a source in the picture (a window, a bulb, a screen, a door gap).
+- One **key light** (the strongest, sets the mood), one or two **practical** lights, a tinted **ambient**. People are lit by the same lights and cast floor shadows.
+- Time of day is shown by light, not by text: dawn, office morning, night.
+
+**Pixel density and texture**
+- Materials use short hand-picked ramps (4–7 steps). Texture only where a material has it (wood grain, tile seams, wallpaper print, terrazzo chips), as regular patterns, never random noise.
+- **No large dithered fields.** Dithering only for soft gradients in light, sky and glass.
+- Outlines only where needed for readability (characters); environment shapes are read by value contrast.
+
+**Composition**
+- Each scene has a clear focal point (where the story happens), a readable silhouette for every important object, breathing space around them, and a foreground element for depth where it helps.
+- Objects sit on the floor line or the wall plane, never floating.
+
+**Environmental storytelling**
+- Every object earns its place by saying something about who lives or works there. No random decoration.
+
+**People**
+- Anyone present in a scene appears in it as a sprite, at scene scale, with at least idle animation.
+- Describing a visible action in text is a fallback, not a substitute.
+
+## Presentation modes for speech
+
+| Situation | Presentation |
+|---|---|
+| Someone speaks **to Teo** | Portrait bottom-left (if the character has one), name, words bottom-right |
+| Someone is **overheard** (through a wall, across a room) | No portrait. A compact caption at the top of the screen with the speaker's name and where the voice comes from |
+| Teo's **thoughts** and descriptions | No portrait of their own. Narration style (italic, cooler colour), centred when nobody is talking to him; if a conversation is under way, the other person's portrait stays but dims |
+
+Characters without portrait art speak in a name-only dialogue panel, never behind an empty silhouette.
+
+## Where the scenes stand (2026-10-18)
+
+Checked by screenshot (`--room <id> --at HH:MM`), not only by tests.
+
+| Scene | Meets the standard | Still open |
+|---|---|---|
+| Flat (dawn) | Side-on, wall base 178, bed/counter/door to scale, dawn key light from the window, storytelling objects (clock 06:47, dishes, diploma in the wardrobe, envelopes by the door) | Teo is not shown in his own flat yet (wakes in bed: needs a lying-down sprite). Upper wall still a little empty. |
+| Stairwell (day, night) | Same camera and scale as the office, two doors, stairs to the half-landing, bulb that flickers, Stojan present as a sprite with smoke; night has TV light under his door; terrazzo floor in tiles like the office | Floor in the lower third is plain; no foreground element. |
+| Office | Door now 66 px; desks lowered to 24 px; dithering removed from walls and floor | Desk clutter still tiny blocks; the chairs read as dark rectangles. |
+
+Known deviation: the people sprites are **~44–46 px**, not 50. Next to a 66 px door they look slightly short. Fixing it means a taller sprite frame for everyone at once; until then it is applied the same everywhere, so scenes stay consistent with each other.
+
+Screens emit light on top of everything in the frame except people and the foreground: the shader compares the frame with the room's own albedo and holds back emissive light wherever something stands in front.
