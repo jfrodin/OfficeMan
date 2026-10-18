@@ -27,6 +27,26 @@ for (int i = 0; i < expressions.Length; i++)
 }
 Png.Save(sheet.Scaled(3), Path.Combine(outDir, "magda_sheet.png"));
 Png.Save(TeoFlat.Draw().Scaled(4), Path.Combine(outDir, "teo_flat.png"));
+
+// Style comparison: the same expression in five styles, each shown at the same on-screen size (448×544).
+var crushed = expressions.First(x => x.Name == "crushed");
+var cel = MagdaPortrait.Draw(crushed, PortraitStyle.Cel);
+var styles = new (string name, Canvas image)[]
+{
+    ("A_soft", MagdaPortrait.Draw(crushed).Scaled(4)),
+    ("B_cel", cel.Scaled(4)),
+    ("C_chunky", StyleFilters.Chunky(cel).Scaled(8)),
+    ("D_riso", StyleFilters.Riso(MagdaPortrait.Draw(crushed, PortraitStyle.Soft with { Background = false }), 4)),
+    ("E_smooth", StyleFilters.Smooth(cel)),
+};
+var compare = new Canvas(448 * styles.Length + 16 * (styles.Length - 1), 544);
+compare.Fill(Rgb.Hex("101418"));
+for (int i = 0; i < styles.Length; i++)
+{
+    Png.Save(styles[i].image, Path.Combine(outDir, $"style_{styles[i].name}.png"));
+    compare.Draw(styles[i].image, i * (448 + 16), 0);
+}
+Png.Save(compare, Path.Combine(outDir, "style_comparison.png"));
 Console.WriteLine($"Wrote art to {outDir}");
 
 static string FindRepoRoot()

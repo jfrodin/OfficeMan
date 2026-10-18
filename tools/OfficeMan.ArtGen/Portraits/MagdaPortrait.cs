@@ -7,20 +7,29 @@ namespace OfficeMan.ArtGen.Portraits;
 /// Volumes are smooth height fields lit and quantised onto hand-picked ramps;
 /// facial features are drawn from an <see cref="Expression"/>.
 /// </summary>
-public static class MagdaPortrait
+public sealed class MagdaPortrait
 {
     public const int W = 112, H = 136;
 
     // ── Palette ────────────────────────────────────────────────
-    private static readonly Ramp Background = Ramp.Of("1a2429", "1f2c32", "26363d", "2e4048");
-    private static readonly Ramp Skin = Ramp.Of("5a2a26", "8a4436", "b2604c", "cf8064", "e5a184", "f3c2a0", "fbdcc0");
-    private static readonly Ramp Hair = Ramp.Of("1c0a12", "35101e", "531a2c", "742638", "963646", "b65254", "d27c6c");
-    private static readonly Ramp Dress = Ramp.Of("360810", "5c0d1a", "861424", "b01e2c", "d43838", "ec6656");
-    private static readonly Ramp Gold = Ramp.Of("5a3a12", "8c6420", "c49a3a", "ecd27a");
-    private static readonly Ramp Lips = Ramp.Of("4e1216", "8e2228", "b8363a", "d85a54", "ec8a7a");
-    private static readonly Ramp Shadow = Ramp.Of("34447c", "5068a4", "7894c6");
-    private static readonly Ramp Iris = Ramp.Of("2a1a10", "5a3a20", "8a6034");
+    private readonly Ramp Background;
+    private static readonly Ramp BaseBackground = Ramp.Of("1a2429", "1f2c32", "26363d", "2e4048");
+    private readonly Ramp Skin;
+    private static readonly Ramp BaseSkin = Ramp.Of("5a2a26", "8a4436", "b2604c", "cf8064", "e5a184", "f3c2a0", "fbdcc0");
+    private readonly Ramp Hair;
+    private static readonly Ramp BaseHair = Ramp.Of("1c0a12", "35101e", "531a2c", "742638", "963646", "b65254", "d27c6c");
+    private readonly Ramp Dress;
+    private static readonly Ramp BaseDress = Ramp.Of("360810", "5c0d1a", "861424", "b01e2c", "d43838", "ec6656");
+    private readonly Ramp Gold;
+    private static readonly Ramp BaseGold = Ramp.Of("5a3a12", "8c6420", "c49a3a", "ecd27a");
+    private readonly Ramp Lips;
+    private static readonly Ramp BaseLips = Ramp.Of("4e1216", "8e2228", "b8363a", "d85a54", "ec8a7a");
+    private readonly Ramp Shadow;
+    private static readonly Ramp BaseShadow = Ramp.Of("34447c", "5068a4", "7894c6");
+    private readonly Ramp Iris;
+    private static readonly Ramp BaseIris = Ramp.Of("2a1a10", "5a3a20", "8a6034");
     private static readonly Rgb Ink = Rgb.Hex("170a0e");
+    private readonly PortraitStyle _style;
     private static readonly Rgb Lash = Rgb.Hex("1e1016");
     private static readonly Rgb Brow = Rgb.Hex("4a2024");
     private static readonly Rgb EyeWhite = Rgb.Hex("ebe0d2");
@@ -42,10 +51,26 @@ public static class MagdaPortrait
 
     private static readonly Cells Curls = new(seed: 52, cellSize: 4.2);
 
-    public static Canvas Draw(Expression e)
+    private MagdaPortrait(PortraitStyle style)
+    {
+        _style = style;
+        Background = style.Reduce(BaseBackground);
+        Skin = style.Reduce(BaseSkin);
+        Hair = style.Reduce(BaseHair);
+        Dress = style.Reduce(BaseDress);
+        Gold = BaseGold;
+        Lips = style.Reduce(BaseLips);
+        Shadow = BaseShadow;
+        Iris = BaseIris;
+    }
+
+    public static Canvas Draw(Expression e, PortraitStyle? style = null) =>
+        new MagdaPortrait(style ?? PortraitStyle.Soft).Render(e);
+
+    private Canvas Render(Expression e)
     {
         var canvas = new Canvas(W, H);
-        DrawBackground(canvas);
+        if (_style.Background) DrawBackground(canvas);
 
         var hairBackField = new HeightField(W, H, HairBackBlobs(), smoothness: 0.25);
         var hairBack = new Canvas(W, H);
@@ -56,7 +81,7 @@ public static class MagdaPortrait
         DrawBody(body, headField);
 
         var head = new Canvas(W, H);
-        Volume.Render(head, headField, Skin, Key, FaceShading, dither: 0.35);
+        Volume.Render(head, headField, Skin, Key, FaceShading, dither: _style.Dither);
 
         var hairFrontField = new HeightField(W, H, HairFrontBlobs(), smoothness: 0.25);
         var hairFront = new Canvas(W, H);
@@ -71,6 +96,7 @@ public static class MagdaPortrait
         canvas.Draw(hairBack);
         canvas.Draw(body);
         canvas.Draw(head);
+        if (_style.InnerOutlines) canvas.Outline(head, (x, y) => Skin.Step(0));
         DrawFace(canvas, head, e);
         CastHairShadow(canvas, head, hairFront);
         canvas.Draw(hairFront);
@@ -81,7 +107,7 @@ public static class MagdaPortrait
 
     // ── Background ─────────────────────────────────────────────
 
-    private static void DrawBackground(Canvas c)
+    private void DrawBackground(Canvas c)
     {
         for (int y = 0; y < H; y++)
             for (int x = 0; x < W; x++)
@@ -94,7 +120,7 @@ public static class MagdaPortrait
 
     // ── Hair ───────────────────────────────────────────────────
 
-    private static List<Blob> HairBackBlobs() => new()
+    private List<Blob> HairBackBlobs() => new()
     {
         new(Cx, 50, 35, 33, Z: -26, Depth: 0.9),
         new(Cx - 4, 34, 28, 18, Z: -18),
@@ -104,7 +130,7 @@ public static class MagdaPortrait
         new(Cx + 30, 91, 9, 9, Z: -32),
     };
 
-    private static List<Blob> HairFrontBlobs() => new()
+    private List<Blob> HairFrontBlobs() => new()
     {
         new(Cx - 3, 37, 26, 11, Z: 18, Depth: 0.8),   // fringe volume
         new(Cx - 14, 41, 13, 7.5, Z: 20),            // swept to her right
@@ -116,16 +142,17 @@ public static class MagdaPortrait
     };
 
     /// <summary>Tight permed curls: darken the creases between clumps, catch light on their tops.</summary>
-    private static double HairTexture(int x, int y, double t)
+    private double HairTexture(int x, int y, double t)
     {
         var (f1, f2) = Curls.At(x, y * 1.1);
         double crease = Math.Clamp((f2 - f1) * 2.2, 0, 1);   // 0 at cell borders
         double dome = 1 - Math.Clamp(f1 * 1.4, 0, 1);         // 1 at clump centres
-        return t * (0.72 + 0.28 * crease) + dome * 0.12 - 0.05;
+        double k = _style.HairTexture;
+        return t * (1 - 0.28 * k + 0.28 * k * crease) + (dome * 0.12 - 0.05) * k;
     }
 
     /// <summary>Breaks up the hair silhouette into curl bumps.</summary>
-    private static bool CurlyEdge(HeightField f, int x, int y)
+    private bool CurlyEdge(HeightField f, int x, int y)
     {
         int outside = 0;
         for (int j = -2; j <= 2; j++)
@@ -136,7 +163,7 @@ public static class MagdaPortrait
         return f1 < 0.62 - outside * 0.025;
     }
 
-    private static void CastHairShadow(Canvas c, Canvas head, Canvas hairFront)
+    private void CastHairShadow(Canvas c, Canvas head, Canvas hairFront)
     {
         // Hair throws a soft shadow down-right onto the face.
         for (int y = 0; y < H; y++)
@@ -148,7 +175,7 @@ public static class MagdaPortrait
             }
     }
 
-    private static Rgb Darker(Rgb skin)
+    private Rgb Darker(Rgb skin)
     {
         for (int i = 1; i < Skin.Colors.Count; i++)
             if (Skin.Colors[i] == skin) return Skin.Colors[i - 1];
@@ -157,7 +184,7 @@ public static class MagdaPortrait
 
     // ── Body ───────────────────────────────────────────────────
 
-    private static void DrawBody(Canvas body, HeightField headField)
+    private void DrawBody(Canvas body, HeightField headField)
     {
         // Shadow the head casts onto neck and chest.
         double JawShadow(int x, int y, double t)
@@ -174,7 +201,7 @@ public static class MagdaPortrait
             new(Cx, 100, 16, 12, Z: -6),
             new(Cx, 134, 52, 30, Z: -12, Depth: 0.45),
         };
-        Volume.Render(body, skin, Skin, Key, JawShadow, dither: 0.35, smoothness: 0.2);
+        Volume.Render(body, skin, Skin, Key, JawShadow, dither: _style.Dither, smoothness: 0.2);
 
         var dress = new List<Blob>
         {
@@ -188,7 +215,7 @@ public static class MagdaPortrait
             // A couple of soft folds from the bust down.
             double fold = Math.Sin((x - Cx) * 0.28 + y * 0.05);
             return t + fold * 0.05 - (y > 128 && Math.Abs(x - Cx) < 3 ? 0.18 : 0);
-        }, dither: 0.25, clip: (x, y) => y >= Neckline(x), smoothness: 0.12);
+        }, dither: _style.Dither * 0.7, clip: (x, y) => y >= Neckline(x), smoothness: 0.12);
         body.Draw(dressLayer);
 
         // Neckline edge and the shadow line at the centre of the bust.
@@ -212,7 +239,7 @@ public static class MagdaPortrait
         body[(int)Cx, 106] = Gold.Step(1);
     }
 
-    private static double Neckline(double x)
+    private double Neckline(double x)
     {
         double d = (x - Cx) / 27;
         return Math.Abs(d) >= 1 ? 107 : 107 + 12 * (1 - d * d);
@@ -220,7 +247,7 @@ public static class MagdaPortrait
 
     // ── Head ───────────────────────────────────────────────────
 
-    private static List<Blob> HeadBlobs(Expression e)
+    private List<Blob> HeadBlobs(Expression e)
     {
         double cheekLift = Math.Max(0, e.Smile) * 2 + e.Squint;
         return new List<Blob>
@@ -238,7 +265,7 @@ public static class MagdaPortrait
         };
     }
 
-    private static double FaceShading(int x, int y, double t)
+    private double FaceShading(int x, int y, double t)
     {
         // Eye sockets sit back.
         foreach (double ex in new[] { Cx - EyeDx, Cx + EyeDx })
@@ -252,7 +279,7 @@ public static class MagdaPortrait
 
     // ── Face ───────────────────────────────────────────────────
 
-    private static void DrawFace(Canvas c, Canvas head, Expression e)
+    private void DrawFace(Canvas c, Canvas head, Expression e)
     {
         DrawBlush(c, head, e);
         foreach (int side in new[] { -1, 1 })
@@ -268,13 +295,13 @@ public static class MagdaPortrait
         if (e.Smile > 0.45) DrawSmileLines(c, e);
     }
 
-    private static double Upper(double dx, Expression e) =>
+    private double Upper(double dx, Expression e) =>
         EyeY - (2.9 * e.LidOpen + 0.5) * (1 - Math.Pow(dx / EyeHalfW, 2)) + 0.3;
 
-    private static double Lower(double dx, Expression e) =>
+    private double Lower(double dx, Expression e) =>
         EyeY + (1.9 - 1.4 * e.Squint) * (1 - Math.Pow(dx / EyeHalfW, 2)) + 0.6;
 
-    private static void DrawEye(Canvas c, double ex, int side, Expression e)
+    private void DrawEye(Canvas c, double ex, int side, Expression e)
     {
         int x0 = (int)Math.Floor(ex - EyeHalfW), x1 = (int)Math.Ceiling(ex + EyeHalfW);
         double ix = ex + e.LookX * 1.8, iy = EyeY + e.LookY * 1.1 + 0.4;
@@ -326,7 +353,7 @@ public static class MagdaPortrait
         }
     }
 
-    private static void DrawEyeshadow(Canvas c, double ex, Expression e)
+    private void DrawEyeshadow(Canvas c, double ex, Expression e)
     {
         for (int y = (int)(EyeY - 8); y < EyeY; y++)
             for (int x = (int)(ex - EyeHalfW - 1); x <= ex + EyeHalfW + 1; x++)
@@ -341,7 +368,7 @@ public static class MagdaPortrait
             }
     }
 
-    private static void DrawBrow(Canvas c, double ex, int side, Expression e)
+    private void DrawBrow(Canvas c, double ex, int side, Expression e)
     {
         for (int i = 0; i <= 14; i++)
         {
@@ -356,7 +383,7 @@ public static class MagdaPortrait
         }
     }
 
-    private static void DrawMascaraRun(Canvas c, double ex, int side, Expression e)
+    private void DrawMascaraRun(Canvas c, double ex, int side, Expression e)
     {
         var rng = new Random(side > 0 ? 7 : 11);
         for (int streak = 0; streak < 2; streak++)
@@ -375,7 +402,7 @@ public static class MagdaPortrait
         c[(int)Math.Round(ex + side * 1.5), (int)Math.Ceiling(Lower(1.5, e)) + 1] = Tear;
     }
 
-    private static void DrawBlush(Canvas c, Canvas head, Expression e)
+    private void DrawBlush(Canvas c, Canvas head, Expression e)
     {
         double amount = 0.2 + e.Blush * 0.6;
         foreach (double bx in new[] { Cx - 13, Cx + 13 })
@@ -389,7 +416,7 @@ public static class MagdaPortrait
                 }
     }
 
-    private static void DrawNoseDetail(Canvas c)
+    private void DrawNoseDetail(Canvas c)
     {
         c[(int)Cx - 2, 78] = Skin.Step(1);
         c[(int)Cx + 3, 78] = Skin.Step(1);
@@ -399,7 +426,7 @@ public static class MagdaPortrait
 
     // ── Mouth ──────────────────────────────────────────────────
 
-    private static void DrawMouth(Canvas c, Expression e)
+    private void DrawMouth(Canvas c, Expression e)
     {
         double w = MouthHalfW + Math.Max(0, e.Smile) * 1.5 + e.MouthOpen * 0.5;
 
@@ -445,7 +472,7 @@ public static class MagdaPortrait
             c[x, (int)Math.Ceiling(Seam(0) + Open(0) * 4.8 + 3.6)] = Skin.Step(3);
     }
 
-    private static void DrawSmileLines(Canvas c, Expression e)
+    private void DrawSmileLines(Canvas c, Expression e)
     {
         foreach (int side in new[] { -1, 1 })
         {
@@ -462,7 +489,7 @@ public static class MagdaPortrait
 
     // ── Earrings ───────────────────────────────────────────────
 
-    private static void DrawEarrings(Canvas c)
+    private void DrawEarrings(Canvas c)
     {
         foreach (int side in new[] { -1, 1 })
         {
