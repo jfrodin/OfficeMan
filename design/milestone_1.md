@@ -42,7 +42,7 @@ characters without the creator.
 
 Each step ends in something the creator can play.
 
-### Step 1: A playable window (Godot) — REVISED 2026-10-18 · first walkable room done
+### Step 1: A playable window (Godot) (REVISED 2026-10-18 · first walkable room done)
 
 The first build was a visual-novel-style dialogue screen. The creator wants a **walkable pixel world** like
 *Deadhouse*. Step 1 becomes:

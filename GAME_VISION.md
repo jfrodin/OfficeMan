@@ -1,4 +1,4 @@
-# The Misadventures of Office Man — Game Vision
+# The Misadventures of Office Man: Game Vision
 
 Owner and creative director: the project creator. This document records the creative vision. It is the reference for every design decision.
 
@@ -239,7 +239,7 @@ Discovery round 2 started 2026-10-18.
 
 | Date | Decision | Section |
 |---|---|---|
-| 2026-10-18 | All material from the earlier iteration (female protagonist, Valdren, Lindqvist family, four inner voices, Harwick branch, Grok portraits, earlier tone notes) is discarded. Not valid. | — |
+| 2026-10-18 | All material from the earlier iteration (female protagonist, Valdren, Lindqvist family, four inner voices, Harwick branch, Grok portraits, earlier tone notes) is discarded. Not valid. | - |
 | 2026-10-18 | Tone references adopted (see §4). | §4 |
 | 2026-10-18 | Office Man is about 40; his behaviour is shaped by player choice. | §5 |
 | 2026-10-18 | Office Man is a local. | §3 |
@@ -272,3 +272,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Gameplay format: Deadhouse-style walkable pixel world with direct control; conversations as portrait + dialogue overlays. | §8 |
 | 2026-10-18 | Traits are two-sided tensions (Nerve, Warmth, Appetite, Honesty), hidden; Teo's baseline is careful, open, held back, smooth, tired and jaded. | §7 |
 | 2026-10-18 | Creator's review: all locations follow one visual standard (`design/visual_standard.md`): one camera and scale, lit by the room shader, no noise or random decoration, people present as sprites. Speech has three presentations: direct (portrait), overheard (caption, no portrait), thoughts (narration, no portrait). | §9 |
+| 2026-10-18 | No AI tells anywhere: never em/en dashes, no typical AI phrasing. Applies to dialogue, UI, docs and comments. | CLAUDE.md |

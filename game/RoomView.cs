@@ -32,7 +32,7 @@ public partial class RoomView : Control
     private List<RoomLayout.RoomLight> _lights = new();
     private Vector4[] _lightPos = new Vector4[16];
 
-    /// <summary>How drunk Teo is (0–4): he walks a little crooked.</summary>
+    /// <summary>How drunk Teo is (0-4): he walks a little crooked.</summary>
     public int Drunk { get; set; }
 
     /// <summary>When false, Teo stands still (conversations, menus).</summary>
@@ -288,7 +288,7 @@ public partial class RoomView : Control
         }
     }
 
-    /// <summary>A person on the floor: a sprite sheet with idle (0–1) and walk (2–5) frames, anchored at the feet, with a soft shadow.</summary>
+    /// <summary>A person on the floor: a sprite sheet with idle (0-1) and walk (2-5) frames, anchored at the feet, with a soft shadow.</summary>
     private partial class Actor : Sprite2D
     {
         private double _t;

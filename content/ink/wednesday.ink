@@ -102,7 +102,7 @@ They're not wrong. They're perfect. They're the best eggs I've ever had and I wa
 * [Eat fast and get out.]
     ~ remember("kornel", "rushed_out")
     I eat in four minutes. I say thanks to the door, mostly.
-    KORNEL: Do you want a lift? It's no trouble. I'm going the same— okay. Okay. See you there.
+    KORNEL: Do you want a lift? It's no trouble. I'm going the same way anyway. Okay. Okay. See you there.
 - -> phone_check
 
 
@@ -352,7 +352,7 @@ Reception calls. There's a man asking for "Mr Permit."
 - else:
     Stojan's in the lobby holding a sausage the length of my arm, wrapped in newspaper.
     STOJAN: For the woman who measures. To say thank you in advance.
-    TEO: Stojan, you can't—
+    TEO: Stojan, you can't.
     STOJAN: It's a sausage, Teo. It's not a bribe. A bribe is money. This is culture.
     ~ flag("stojan_sausage")
 }
@@ -548,7 +548,7 @@ It's in the deck now. It's going to be in a museum by Christmas.
 # phase: wed_end
 # kind: scene
 # priority: 0
-At twelve, an email to all staff from Human Resources. Subject: <i>Summer Party — Feedback Form</i>.
+At twelve, an email to all staff from Human Resources. Subject: <i>Summer Party: Feedback Form</i>.
 Question one: <i>On a scale of 1 to 5, how would you rate the evening?</i>
 I sit there for a long time with the cursor over the numbers. There should be a box for "it happened."
 -> finale

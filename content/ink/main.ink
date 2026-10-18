@@ -1,4 +1,4 @@
-// The Misadventures of Office Man — prototype content.
+// The Misadventures of Office Man, prototype content.
 // Every knot with a "# phase:" tag is a storylet; see src/OfficeMan.Core/Content/Storylet.cs for tags.
 // Dialogue lines are written "NAME: words". Everything else is Teo's inner monologue.
 

@@ -36,7 +36,7 @@ var game = Game.New(content, seed);
 var ui = new TextUi { Animate = !fast && !Console.IsInputRedirected && !Console.IsOutputRedirected };
 
 Console.WriteLine();
-ui.Dim($"THE MISADVENTURES OF OFFICE MAN — prototype · life #{seed}");
+ui.Dim($"THE MISADVENTURES OF OFFICE MAN, prototype · life #{seed}");
 if (ui.Animate) ui.Dim("(Press any key to show text instantly.)");
 Console.WriteLine();
 
@@ -84,7 +84,7 @@ while (true)
             game.Choose(n - 1);
             break;
         }
-        ui.Dim($"Pick 1–{view.Choices.Count}. (s save · l load · d debug · q quit)");
+        ui.Dim($"Pick 1-{view.Choices.Count}. (s save · l load · d debug · q quit)");
     }
 }
 
@@ -138,7 +138,7 @@ sealed partial class TextUi
         if (view.Choices.Count == 0) return;
 
         Console.WriteLine();
-        if (view.Kind == PresentationKind.Hub) Dim($"{view.Clock} — what now?");
+        if (view.Kind == PresentationKind.Hub) Dim($"{view.Clock}. What now?");
         for (int i = 0; i < view.Choices.Count; i++)
         {
             var c = view.Choices[i];

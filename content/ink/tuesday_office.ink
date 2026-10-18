@@ -89,7 +89,7 @@ It's perfect. It's the most Kaslovian thing that's ever happened.
 * [Put in two hundred.]
     ~ qadd("money", -200)
     ~ remember("magda", "paid_less")
-    She looks at the note. She doesn't say anything. She writes <i>Teo — 200</i> on the clipboard in very small, very neat writing.
+    She looks at the note. She doesn't say anything. She writes <i>Teo, 200</i> on the clipboard in very small, very neat writing.
 * [Say you'll bring it later. #cautious]
     ~ remember("magda", "didnt_pay")
     MAGDA: Of course. Later.
@@ -205,7 +205,7 @@ She says it the way other people say <i>looks like rain</i>.
 # when: knows_file && stojan_promise
 # duration: 20
 The trolley is where files go to wait. Some wait for days. Some wait so long they become history, and someone from the university comes to photograph them.
-<i>PETROVICI, S. — Unauthorised Extension — Inspection: Z. Horák.</i>
+<i>PETROVICI, S. Unauthorised extension. Inspection: Z. Horák.</i>
 There are photos. The "balcony" from below. It looks like a shed that's trying to escape.
 And there's the bus stop.
 * [Put it at the bottom of the trolley. Thursday becomes next month. #bold]
