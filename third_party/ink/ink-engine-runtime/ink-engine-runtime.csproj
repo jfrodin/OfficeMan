@@ -1,0 +1,50 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <WarningLevel>0</WarningLevel>
+    <TreatWarningsAsErrors>false</TreatWarningsAsErrors>
+    <RootNamespace>Ink.Runtime</RootNamespace>
+    <AssemblyName>ink-engine-runtime</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup>
+    
+    <Company>inkle Ltd</Company>
+    <Authors>InkleStudios</Authors>
+    <Copyright>inkle Ltd</Copyright>
+    <RepositoryUrl>https://github.com/inkle/ink</RepositoryUrl>
+    <PackageProjectUrl>https://www.inklestudios.com/ink/</PackageProjectUrl>
+    <VersionPrefix>1.2.1</VersionPrefix>
+    
+    <Description>Runtime engine for the ink scripting language</Description>
+    <RepositoryType>git</RepositoryType>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+    <PackageId>Inkle.Ink.Engine</PackageId>
+    
+    <NoWarn>1701;1702;1591</NoWarn>
+  </PropertyGroup>
+
+  <!-- PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>none</DebugType>
+    <DebugSymbols>false</DebugSymbols>
+  </PropertyGroup -->
+
+  <ItemGroup>
+    <!-- this is planned for the future sdk versions
+      <InternalsVisibleTo Include="ink_compiler"/>
+      <InternalsVisibleTo Include="inklecate"/>
+      <InternalsVisibleTo Include="ink-tests"/>
+    -->
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>ink_compiler</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>inklecate</_Parameter1>
+    </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>ink-tests</_Parameter1>
+    </AssemblyAttribute>
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,17 @@
+# Build output
+bin/
+obj/
+*.user
+.vs/
+.vscode/
+TestResults/
+
+# Godot
+.godot/
+*.import
+export/
+export_presets.cfg
+
+# Local saves and generated art previews
+saves/
+art/out/

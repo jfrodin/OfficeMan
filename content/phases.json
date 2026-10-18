@@ -1,0 +1,23 @@
+// The shape of the prototype: Tuesday and Wednesday morning.
+// mode: "scene" plays one storylet chosen by the director; "hub" offers a menu until "end" or an exit.
+// start: clock time the phase begins (time only moves forward). day: 0 = Tuesday.
+{
+  "firstPhase": "home_morning",
+  "phases": [
+    { "id": "home_morning",      "title": "Teo's flat",                 "mode": "scene", "day": 0, "start": "06:47", "next": "stairwell_morning" },
+    { "id": "stairwell_morning", "title": "The stairwell",              "mode": "scene", "day": 0, "start": "07:35", "next": "office" },
+    { "id": "office",            "title": "City Planning Office, Permits Section", "mode": "hub", "day": 0, "start": "08:30", "end": "16:30", "next": "party" },
+    { "id": "party",             "title": "Terasa Velka, on the river", "mode": "hub",   "day": 0, "start": "17:00", "end": "23:30", "next": "night_home" },
+
+    { "id": "night_club",        "title": "Club Schengen",              "mode": "scene", "day": 0, "next": "night_home" },
+    { "id": "night_magda",       "title": "Outside Magda's building",   "mode": "scene", "day": 0, "next": "wed_wake" },
+    { "id": "night_ramona",      "title": "The back of Ramona's car",   "mode": "scene", "day": 0, "next": "night_home" },
+    { "id": "night_river",       "title": "The river",                  "mode": "scene", "day": 0, "next": "wed_wake" },
+    { "id": "night_kornel",      "title": "Kornel's car",               "mode": "scene", "day": 0, "next": "wed_wake" },
+    { "id": "night_home",        "title": "The stairwell",              "mode": "scene", "day": 0, "next": "wed_wake" },
+
+    { "id": "wed_wake",          "title": "The morning after",                  "mode": "scene", "day": 1, "start": "07:10", "next": "wed_office" },
+    { "id": "wed_office",        "title": "The office",                 "mode": "hub",   "day": 1, "start": "09:00", "end": "11:30", "next": "wed_end" },
+    { "id": "wed_end",           "title": "",                           "mode": "scene", "day": 1, "next": "end" }
+  ]
+}

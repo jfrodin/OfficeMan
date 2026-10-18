@@ -1,0 +1,162 @@
+﻿using System.Collections.Concurrent;
+using System.Diagnostics;
+using OfficeMan.Core;
+using OfficeMan.Core.Content;
+
+// Plays many lives automatically and reports on the content.
+//   dotnet run --project tools/OfficeMan.Sim -- [--runs 1000] [--seed 1] [--persona random|drinker|cautious|kind|bold|all]
+// Exit code 1 if any run crashed or hit a dead end.
+
+int runs = 1000;
+int firstSeed = 1;
+string personaArg = "all";
+for (int i = 0; i < args.Length; i++)
+{
+    if (args[i] == "--runs") runs = int.Parse(args[++i]);
+    else if (args[i] == "--seed") firstSeed = int.Parse(args[++i]);
+    else if (args[i] == "--persona") personaArg = args[++i];
+}
+
+ContentBundle content;
+try { content = ContentBundle.Load(ContentLocator.Find()); }
+catch (ContentException e) { Console.Error.WriteLine(e.Message); return 1; }
+
+foreach (string w in content.Warnings) Console.WriteLine($"warning: {w}");
+
+var personas = personaArg == "all" ? Persona.All : Persona.All.Where(p => p.Name == personaArg).ToArray();
+bool failed = false;
+var allPlayed = new ConcurrentDictionary<string, int>();
+
+foreach (var persona in personas)
+{
+    var report = Simulator.Run(content, persona, runs, firstSeed);
+    report.Print();
+    failed |= report.Failures.Count > 0 || report.DeadEnds > 0;
+    foreach (var (id, n) in report.StoryletPlays) allPlayed.AddOrUpdate(id, n, (_, old) => old + n);
+}
+
+var never = content.Storylets.Where(s => !allPlayed.ContainsKey(s.Id)).Select(s => s.Id).ToList();
+Console.WriteLine();
+Console.WriteLine(never.Count == 0
+    ? "Coverage: every storylet was reached at least once."
+    : $"Coverage: NEVER REACHED ({never.Count}): {string.Join(", ", never)}");
+
+return failed ? 1 : 0;
+
+sealed record Persona(string Name, IReadOnlyDictionary<string, double> TagWeights, double ExitWeight)
+{
+    public static readonly Persona[] All =
+    {
+        new("random", new Dictionary<string, double>(), 0.6),
+        new("drinker", new Dictionary<string, double> { ["drink"] = 5, ["cautious"] = 0.3 }, 0.3),
+        new("cautious", new Dictionary<string, double> { ["cautious"] = 5, ["drink"] = 0.2, ["bold"] = 0.3 }, 1.0),
+        new("kind", new Dictionary<string, double> { ["kind"] = 5, ["bold"] = 0.5 }, 0.5),
+        new("bold", new Dictionary<string, double> { ["bold"] = 5, ["drink"] = 2, ["cautious"] = 0.2 }, 0.4),
+    };
+
+    public double Weight(ChoiceView c)
+    {
+        double w = 1;
+        foreach (string tag in c.Tags)
+        {
+            if (tag == "exit") w *= ExitWeight;
+            else if (TagWeights.TryGetValue(tag.Trim(), out double m)) w *= m;
+        }
+        return w;
+    }
+}
+
+sealed class Report
+{
+    public required string Persona { get; init; }
+    public int Runs;
+    public long Decisions;
+    public int DeadEnds;
+    public TimeSpan Elapsed;
+    public readonly ConcurrentBag<string> Failures = new();
+    public readonly ConcurrentDictionary<string, int> StoryletPlays = new();
+    public readonly ConcurrentDictionary<string, int> WokeAt = new();
+    public readonly ConcurrentDictionary<string, int> Endings = new();
+    public readonly ConcurrentDictionary<string, int> Nights = new();
+    public readonly ConcurrentDictionary<string, int> Headlines = new();
+    public readonly ConcurrentDictionary<string, int> PeakDrunk = new();
+    public readonly ConcurrentDictionary<string, byte> UniqueLives = new();
+    public readonly ConcurrentDictionary<string, byte> UniqueStories = new();
+
+    public void Print()
+    {
+        Console.WriteLine();
+        Console.WriteLine($"═══ persona: {Persona} · {Runs} lives · {Elapsed.TotalSeconds:0.0}s ═══");
+        Console.WriteLine($"  decisions per life: {(double)Decisions / Math.Max(1, Runs):0.0}");
+        Console.WriteLine($"  distinct storylet sequences: {UniqueLives.Count} ({100.0 * UniqueLives.Count / Math.Max(1, Runs):0}%)");
+        Console.WriteLine($"  distinct headline sets (what the player would retell): {UniqueStories.Count}");
+        Console.WriteLine($"  crashes: {Failures.Count}   dead ends: {DeadEnds}");
+        foreach (string f in Failures.Take(5)) Console.WriteLine($"    ! {f}");
+
+        Section("how Tuesday night went", Nights);
+        Section("woke up on Wednesday", WokeAt);
+        Section("closing hook", Endings);
+        Section("peak drunkenness (0 sober … 4 wrecked)", PeakDrunk);
+        Section("most common headlines", Headlines, 12);
+    }
+
+    private void Section(string title, ConcurrentDictionary<string, int> data, int take = 20)
+    {
+        Console.WriteLine($"  {title}:");
+        foreach (var (key, n) in data.OrderByDescending(kv => kv.Value).Take(take))
+            Console.WriteLine($"    {100.0 * n / Math.Max(1, Runs),5:0.0}%  {key}");
+    }
+}
+
+static class Simulator
+{
+    private static readonly HashSet<string> NightStorylets =
+        new() { "club_schengen", "magda_walk", "ramona_car", "river_night", "kornel_night", "home_stairwell" };
+
+    private static readonly string[] WakePlaces = { "home (no record)", "home", "Magda's", "Kornel's sofa", "sobering-up station" };
+
+    public static Report Run(ContentBundle content, Persona persona, int runs, int firstSeed)
+    {
+        var report = new Report { Persona = persona.Name, Runs = runs };
+        var clock = Stopwatch.StartNew();
+
+        Parallel.For(0, runs, i =>
+        {
+            int seed = firstSeed + i;
+            try
+            {
+                var game = Game.New(content, seed);
+                int decisions = 0;
+                while (!game.IsOver)
+                {
+                    if (++decisions > 2000) throw new InvalidOperationException("over 2000 decisions; probable loop");
+                    var choices = game.Current.Choices;
+                    var weights = choices.Select(c => (int)Math.Round(persona.Weight(c) * 100)).ToList();
+                    int pick = Rng.Weighted(seed, $"sim:{persona.Name}:{decisions}", weights);
+                    game.Choose(Math.Max(0, pick));
+                }
+
+                Interlocked.Add(ref report.Decisions, decisions);
+                Interlocked.Add(ref report.DeadEnds, game.DeadEnds);
+                var s = game.State;
+                foreach (string id in s.History) report.StoryletPlays.AddOrUpdate(id, 1, (_, n) => n + 1);
+                Count(report.WokeAt, WakePlaces[Math.Clamp(s.Get("slept_at"), 0, WakePlaces.Length - 1)]);
+                Count(report.Nights, string.Join(" → ", s.History.Where(NightStorylets.Contains)));
+                Count(report.Endings, s.History.LastOrDefault(h => h.StartsWith("end_")) ?? "(none)");
+                Count(report.PeakDrunk, s.Get("peak_drunk").ToString());
+                foreach (string h in s.Headlines.Distinct()) Count(report.Headlines, h);
+                report.UniqueLives.TryAdd(string.Join(">", s.History), 0);
+                report.UniqueStories.TryAdd(string.Join("|", s.Headlines.OrderBy(h => h)), 0);
+            }
+            catch (Exception e)
+            {
+                report.Failures.Add($"seed {seed}: {e.GetType().Name}: {e.Message.Split('\n')[0]}");
+            }
+        });
+
+        report.Elapsed = clock.Elapsed;
+        return report;
+    }
+
+    private static void Count(ConcurrentDictionary<string, int> d, string key) => d.AddOrUpdate(key, 1, (_, n) => n + 1);
+}
