@@ -1,6 +1,6 @@
 # Who Teo is: traits and conditions
 
-**Status: MOSTLY AGREED (2026-10-18).** Tensions, hidden presentation and Teo's baseline agreed (see `GAME_VISION.md` §7). "Candour" is renamed **Honesty**. Starting-value approach proposed; fifth trait open.
+**Status: AGREED (2026-10-19).** Four tensions (Nerve, Warmth, Appetite, Honesty; "Candour" renamed Honesty), hidden; Teo's baseline; option B for starting values; lasting change only after big moments; end-of-day description in words. No fifth trait for now. See `GAME_VISION.md` §7.
 
 ## The idea in one line
 

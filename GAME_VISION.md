@@ -139,8 +139,10 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[AGREED 2026-10-18]** Personality is a set of two-sided tensions, not scores: both ends help and hurt, so there is no "maxed" Teo. Working set: **Nerve** (bold ↔ careful), **Warmth** (open ↔ closed), **Appetite** (hungry ↔ held back), **Honesty** (blunt ↔ smooth). Names use plain English. Details: `design/traits_proposal.md`.
 - **[AGREED 2026-10-18]** Hidden: no numbers on screen. Personality shows through Teo's inner voice, which choices appear and how they're worded, what people say, and hindsight lines naming causes.
 - **[AGREED 2026-10-18]** Teo's baseline: careful, open, held back, smooth, a man who lets life happen to him. He starts tired and jaded from government work.
-- **[PREFERENCE]** Starting values: the creator's baseline Teo, nudged a step or two at random per life, then shaped slowly by how the player plays (roleplay through play, no character-creation screen). Pending the creator's final confirmation.
-- **[OPEN]** A fifth trait (first candidate: Pride, can't lose face ↔ can laugh at himself), only if playtesting shows a gap.
+- **[AGREED 2026-10-19]** Starting values: the creator's baseline Teo, with one or two traits nudged a step at random per life. Always Teo, never quite the same man. No character-creation screen.
+- **[AGREED 2026-10-19]** Lasting change is rare: a trait shifts a step only after a big moment the player saw (the first time he stands up to Viktor, a night he can't remember, a public humiliation). Day to day, conditions (drink, tiredness, mood) push him instead.
+- **[AGREED 2026-10-19]** At the end of the day, a few plain lines say who Teo was today. No numbers.
+- **[AGREED 2026-10-19]** Four traits for now. Pride (can't lose face ↔ can laugh at himself) only later, if a story needs it.
 
 ## 8. Gameplay and interaction
 
@@ -279,3 +281,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-19 | Stojan's daughter: looks like a female Stojan; annoying, self-centred, feels entitled to riches without effort, waiting to marry someone rich. | §5 |
 | 2026-10-19 | Stojan's daughter is Lenka. His wife Dana is her opposite: modest, slim, worn out because she does all the housework. | §5 |
 | 2026-10-19 | No Grok or other image AI for the game's art. Keep making our own (code-built art, the drawn_flat line for portraits). Grok tests were only for exploring. | §9, §10 |
+| 2026-10-19 | Traits: keep four; small random variation per life; lasting change only after big moments; end-of-day description in words. | §7 |
