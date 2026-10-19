@@ -1,0 +1,136 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using Godot;
+using OfficeMan.Core;
+using OfficeMan.Core.Content;
+
+namespace OfficeMan.Game;
+
+/// <summary>Tools for development and review: automated play, screenshots, single-room views, contact sheets.</summary>
+public partial class Main
+{
+    private int _autoSteps = -1;
+    private int _autoChoices;
+    private string? _shotPath;
+    private string? _lookRoom;
+    private string? _shotMenu;
+    private bool _reviewOnly;   // showing Review.bat's screenshots, not playing
+    private int _lookAt = -1;
+
+    /// <summary>
+    /// Command line (after --): --seed N; --shot path.png --steps N (play N steps automatically, then screenshot);
+    /// --menu main|settings|load (open the pause menu before the screenshot); --room id --at HH:MM (one room, no
+    /// dialogue); --stitch out.png in1.png … (a contact sheet); --review list.txt (look through screenshots).
+    /// Returns true when a tool took over and the game shouldn't start.
+    /// </summary>
+    private bool HandleDevArgs(string[] args)
+    {
+        if (args.Length > 1 && args[0] == "--review")
+        {
+            Controls.Register();
+            _reviewOnly = true;
+            AddChild(new ReviewViewer(args[1]));
+            return true;
+        }
+        if (args.Length > 2 && args[0] == "--stitch")
+        {
+            Stitch(args[1], args[2..]);
+            GetTree().Quit();
+            return true;
+        }
+        for (int i = 0; i < args.Length; i++)
+        {
+            if (args[i] == "--seed" && i + 1 < args.Length) _seed = int.Parse(args[++i]);
+            else if (args[i] == "--shot" && i + 1 < args.Length) _shotPath = args[++i];
+            else if (args[i] == "--steps" && i + 1 < args.Length) _autoSteps = int.Parse(args[++i]);
+            else if (args[i] == "--room" && i + 1 < args.Length) _lookRoom = args[++i];
+            else if (args[i] == "--menu" && i + 1 < args.Length) _shotMenu = args[++i];
+            else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
+        }
+        return false;
+    }
+
+    /// <summary>Review aid: puts screenshots side by side, two to a row, each at half size.</summary>
+    private static void Stitch(string output, string[] inputs)
+    {
+        const int tw = 960, th = 540, cols = 2;
+        int rows = (inputs.Length + cols - 1) / cols;
+        var sheet = Image.CreateEmpty(tw * cols + 8 * (cols + 1), th * rows + 8 * (rows + 1), false, Image.Format.Rgb8);
+        sheet.Fill(new Color(0.08f, 0.08f, 0.09f));
+        for (int i = 0; i < inputs.Length; i++)
+        {
+            var img = Image.LoadFromFile(inputs[i]);
+            if (img is null) continue;
+            img.Convert(Image.Format.Rgb8);
+            img.Resize(tw, th, Image.Interpolation.Lanczos);
+            sheet.BlitRect(img, new Rect2I(0, 0, tw, th), new Vector2I(8 + (i % cols) * (tw + 8), 8 + (i / cols) * (th + 8)));
+        }
+        sheet.SavePng(output);
+    }
+
+    /// <summary>Review aid: show one room, empty of dialogue, at a given time of day, and screenshot it.</summary>
+    private void LookAtRoom(string id)
+    {
+        _autoSteps = -1;
+        if (_lookAt >= 0) _game.State.Minute = _lookAt;
+        _roomView.Visible = true;
+        _scene.Visible = false;
+        _roomView.Load(_rooms[id], _game.Evaluate);
+        _panel.Visible = false;
+        _choices.Visible = false;
+        _note.Visible = false;
+        _heard.Visible = false;
+        _dim.Visible = false;
+        _arrival.Visible = false;
+        SetPortrait(null);
+        GetTree().CreateTimer(0.8).Timeout += () =>
+        {
+            GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
+            GetTree().Quit();
+        };
+    }
+
+    private void RunAutomation()
+    {
+        if (_autoSteps > 0)
+        {
+            _autoSteps--;
+            switch (_mode)
+            {
+                case Mode.Talking:
+                    if (_typing) Continue();
+                    Continue();
+                    break;
+                case Mode.Choosing when _view.Kind != PresentationKind.End:
+                    var buttons = _choices.GetChildren().OfType<Button>().ToList();
+                    int pick = Rng.Range(_seed, $"auto:{_autoChoices++}", 0, Math.Max(1, buttons.Count));
+                    buttons[pick].EmitSignal(BaseButton.SignalName.Pressed);
+                    break;
+                case Mode.Walking:
+                    int c = Rng.Range(_seed, $"auto:{_autoChoices++}", 0, _view.Choices.Count);
+                    var choice = _view.Choices[c];
+                    string? where = choice.Tags.FirstOrDefault(t => t.StartsWith("where:"))?[6..];
+                    if (where is not null) _roomView.StandNear(where);
+                    Choose(choice.Index);
+                    break;
+            }
+            return;
+        }
+        if (_typing) Continue();
+        _autoSteps = -1;
+        GD.Print($"shot: mode {_mode} phase {_phase}");
+        if (_shotMenu is not null)
+        {
+            OpenMenu();
+            if (_shotMenu == "settings") ShowSettingsMenu();
+            else if (_shotMenu == "load") ShowLoadMenu();
+        }
+        GetTree().CreateTimer(0.4).Timeout += () =>
+        {
+            GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
+            GetTree().Quit();
+        };
+    }
+}

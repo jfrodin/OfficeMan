@@ -23,9 +23,9 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 - Play (text): `dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug] [--fast]`
 - Simulate: `dotnet run --project tools/OfficeMan.Sim -- --runs 1000` (must report 0 crashes, 0 dead ends; check coverage)
 - Test: `dotnet test`
-- Art: `dotnet run --project tools/OfficeMan.ArtGen [-- cast|construct|drawn|styles|pixel]` → `art/out/` (scratch output, not committed)
+- Art: `dotnet run --project tools/OfficeMan.ArtGen [-- game|sprites|cast|flat|reference]` (default `game`). `game` writes `art/game/` (committed); the others write previews to `art/out/` (scratch, not committed). `reference` re-renders the two protected references for comparison.
 - Godot 4.6 .NET is at `E:\Godot_v4.6-stable_mono_win64`. The Godot project is `game/` (build with `dotnet build` in that folder; its `nuget.config` points at Godot's bundled SDK).
-- Temporary in-game art: `dotnet run --project tools/OfficeMan.ArtGen -- game` → `art/game/` (committed), mapped in `content/art.json`.
+- In-game art is mapped in `content/art.json`: portraits by speaker and mood, rooms by phase, scene pictures for phases without a room.
 
 After any content change, run the simulator and the tests before committing.
 

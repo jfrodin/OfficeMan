@@ -23,7 +23,7 @@ public class ArtManifestTests
     {
         var schedule = PhaseSchedule.FromJson(File.ReadAllText(Path.Combine(ContentDir, "phases.json")));
         foreach (var phase in schedule.Phases)
-            Assert.True(Art.PhaseScenes.ContainsKey(phase.Id), $"phase '{phase.Id}' has no scene in art.json");
+            Assert.True(Art.PhaseScenes.ContainsKey(phase.Id) || Art.PhaseRooms.ContainsKey(phase.Id), $"phase '{phase.Id}' has no room or scene in art.json");
     }
 
     [Fact]

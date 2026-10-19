@@ -2,7 +2,8 @@
 
 A narrative adventure about an ordinary life in a city that can turn absurd without warning.
 
-**Status:** prototype, text-only. One Tuesday (the office summer party) and the Wednesday morning after.
+**Status:** prototype. One Tuesday (the office summer party) and the Wednesday morning after, playable as a walkable
+pixel world (Godot) or as text in the terminal.
 
 - Creative vision: [GAME_VISION.md](GAME_VISION.md)
 - Design documents: [design/](design/)
@@ -23,9 +24,14 @@ lives elsewhere).
 | Interact, continue | E / Enter / Space | A |
 | Choose | 1-9, mouse, or arrows + Enter | d-pad + A |
 | Back out of a menu | Esc | B |
+| Pause menu (save, load, settings) | Esc | Start |
 | Quick save / load | F5 / F9 | |
 
-Every choice autosaves. The office is walkable; other places are still shown as pictures with a list of choices.
+Every choice autosaves. Teo's flat, the stairwell, the office and the party are walkable rooms; the night scenes are
+still pictures with a list of choices.
+
+**Review the look:** double-click `Review.bat`. It captures every room and every way text appears, then opens a viewer
+(← → to look through, Esc to close) and saves them all on one sheet, `art/out/review.png`.
 
 **In the terminal** (fast for testing):
 
@@ -64,11 +70,14 @@ dotnet test
 | `content/ink/*.ink` | All writing. Each knot tagged `# phase:` is a storylet |
 | `src/OfficeMan.Core` | The life engine: world state, director, conditions, checks, saves |
 | `src/OfficeMan.Cli` | Text front end |
-| `game/` | Godot 4.6 (C#) front end: the dialogue screen. Not in the .sln; build with `dotnet build` inside `game/` |
+| `game/` | Godot 4.6 (C#) front end: rooms, walking, text, menus. Not in the .sln; build with `dotnet build` inside `game/` |
 | `content/art.json` | Which image is used for each speaker + mood, each location, and which phases are walkable rooms |
 | `content/rooms/*.json` | Walkable rooms: picture, walkable floor, and the people and things in them (anchors for `# where:`) |
 | `tools/OfficeMan.Sim` | Headless life simulator |
-| `tools/OfficeMan.ArtGen` | Code-built pixel art (art direction test) |
+| `tools/OfficeMan.ArtGen` | All the art, built from code: rooms, sprites, temporary portraits (see its `Program.cs`) |
+| `art/game/` | The generated in-game art (committed) |
+| `art/reference/` | The two reference images the creator chose. Never change them or their sources |
+| `design/` | Design documents; `design/noted.md` lists what the creator has pointed out, to fix when asked |
 | `tests/OfficeMan.Tests` | Unit and content tests |
 | `third_party/ink` | Vendored ink runtime and compiler (MIT) |
 

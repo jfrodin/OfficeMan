@@ -2,7 +2,7 @@
 
 **Status: proposal for the creator. Not in the game yet; the game still uses the temporary portraits.**
 
-Preview: `art/proposals/flat_cast_v1.png`. Regenerate: `dotnet run --project tools/OfficeMan.ArtGen -- flat` (about a minute) → `art/out/flat/<name>_<mood>.png` and `art/out/flat_cast.png`.
+Preview: `art/proposals/flat_cast.png` (the set) and `art/proposals/magda_young.png`. Regenerate: `dotnet run --project tools/OfficeMan.ArtGen -- flat` (about a minute) → `art/out/flat/<name>_<mood>.png` and `art/out/flat_cast.png`.
 
 ## How it's built
 

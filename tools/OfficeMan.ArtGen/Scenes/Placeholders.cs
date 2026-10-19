@@ -13,11 +13,8 @@ public static class Placeholders
 
     public static IEnumerable<(string name, Canvas image)> Scenes()
     {
-        yield return ("office", Office());
-        yield return ("terrace", Terrace());
         yield return ("club", Club());
         yield return ("river", River());
-        yield return ("stairwell", Stairwell());
         yield return ("estate_night", Estate());
         yield return ("car_night", Car());
         yield return ("station", Station());
@@ -54,28 +51,6 @@ public static class Placeholders
             }
     }
 
-    private static Canvas Office()
-    {
-        var c = Gradient("6d7a72", "3b4440");
-        for (int i = 0; i < 4; i++) Rect(c, 20 + i * 76, 8, 70 + i * 76, 11, Rgb.Hex("e8f0e0"));   // fluorescent strips
-        for (int i = 0; i < 3; i++) Rect(c, 34 + i * 100, 36, 104 + i * 100, 92, Rgb.Hex("9fb4c0")); // windows
-        for (int i = 0; i < 3; i++) Rect(c, 34 + i * 100, 62, 104 + i * 100, 64, Rgb.Hex("6d7a72"));
-        Rect(c, 0, 120, W, H, Rgb.Hex("4a4238"));                                                    // floor
-        for (int i = 0; i < 5; i++) Rect(c, 10 + i * 64, 112, 58 + i * 64, 124, Rgb.Hex("7a6a52"));  // desks
-        return c;
-    }
-
-    private static Canvas Terrace()
-    {
-        var c = Gradient("f2b07a", "4a6a74");
-        Glow(c, 230, 92, 60, Rgb.Hex("ffd9a0"), 0.9);                                               // low sun
-        Rect(c, 0, 104, W, 132, Rgb.Hex("3e5e66"));                                                  // river
-        for (int i = 0; i < 40; i++) c[(i * 37) % W, 108 + (i * 13) % 20] = Rgb.Hex("f6d0a0");      // glints
-        Rect(c, 0, 132, W, H, Rgb.Hex("6a4a36"));                                                    // decking
-        for (int x = 0; x < W; x += 9) c[x, 30 + (int)(Math.Sin(x * 0.05) * 6)] = Rgb.Hex("fff0b0"); // string lights
-        return c;
-    }
-
     private static Canvas Club()
     {
         var c = Gradient("120c22", "05040a");
@@ -96,15 +71,6 @@ public static class Placeholders
             for (int y = 100; y < 170; y += 6) c[x + (y / 6) % 3, y] = Rgb.Hex("e8b860");            // lamp reflections
             c[x, 68 - i % 3 * 8] = Rgb.Hex("ffd890");
         }
-        return c;
-    }
-
-    private static Canvas Stairwell()
-    {
-        var c = Gradient("6a6450", "2a2620");
-        Glow(c, 160, 20, 90, Rgb.Hex("f0e0a0"), 0.6);
-        for (int i = 0; i < 8; i++) Rect(c, 60 + i * 14, 120 - i * 10, 280, 122 - i * 10, Rgb.Hex("3a3428"));
-        Rect(c, 20, 40, 50, 120, Rgb.Hex("5a4030"));                                                 // a door
         return c;
     }
 

@@ -32,9 +32,6 @@ CONST AT_STATION = 4
 === function drunk()
     ~ return q("drunk")
 
-=== function tired()
-    ~ return q("tired")
-
 === function mood()
     ~ return q("mood")
 
@@ -55,16 +52,6 @@ CONST AT_STATION = 4
 
 === function hungover()
     ~ return q("hungover")
-
-// Skills the hidden checks use, made from the traits.
-=== function tact()
-    ~ return q("tact")
-
-=== function judgment()
-    ~ return q("judgment")
-
-=== function restraint()
-    ~ return q("restraint")
 
 // Hindsight: after an important check, one line names the cause. Each line once per life (two for drink).
 === function hindsight()

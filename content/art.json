@@ -43,10 +43,6 @@
     }
   },
   "scenes": {
-    "teo_flat": "art/game/scenes/teo_flat.png",
-    "stairwell": "art/game/scenes/stairwell.png",
-    "office": "art/game/scenes/office.png",
-    "terrace": "art/game/scenes/terrace.png",
     "club": "art/game/scenes/club.png",
     "river": "art/game/scenes/river.png",
     "estate_night": "art/game/scenes/estate_night.png",
@@ -56,21 +52,13 @@
     "kornel_flat": "art/game/scenes/kornel_flat.png"
   },
   "phaseScenes": {
-    "home_morning": "teo_flat",
-    "stairwell_morning": "stairwell",
-    "office": "office",
-    "party": "terrace",
     "night_club": "club",
     "night_magda": "estate_night",
     "night_ramona": "car_night",
     "night_river": "river",
-    "night_kornel": "car_night",
-    "night_home": "stairwell",
-    "wed_wake": "teo_flat",
-    "wed_office": "office",
-    "wed_end": "office"
+    "night_kornel": "car_night"
   },
-  "defaultScene": "office",
+  "defaultScene": "estate_night",
   // Phases that are played as walkable rooms (content/rooms/<id>.json). Others show their scene picture.
   "phaseRooms": {
     "home_morning": "flat",
@@ -79,7 +67,8 @@
     "wed_wake": "flat",
     "office": "office",
     "wed_office": "office",
-    "party": "terrace"
+    "party": "terrace",
+    "wed_end": "office"
   },
   "sprites": {
     "teo": "art/game/sprites/teo.png",
