@@ -9,4 +9,5 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-19 | When Teo talks, the portrait doesn't change: it's still the other person (e.g. Stojan). Teo has no portrait; his lines show his name next to the listener's portrait at full brightness. | `game/Main.cs`, NextLine |
 | 2026-10-19 | Portraits need a lot of work overall in the UI: the frame and how they sit on screen. UI work comes later. | Conversation bar (`game/Main.cs`) |
 | 2026-10-19 | Changing location: a black screen that says where we are (and probably when), instead of cutting straight to the new place. Later. | `game/Main.cs`, EnterPhase / Arrive |
+| 2026-10-19 | "Viktor comes out of his office and claps once" (office arrival): he should actually do it on screen, walk out of his office, not stay where he is. Same principle wherever the text describes someone moving. | `content/ink/tuesday_office.ink:23`, `content/rooms/office.json` |
 | 2026-10-19 | Portraits are end-of-project work: one expression per character is enough for now. | `design/portraits_flat.md` |
