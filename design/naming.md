@@ -46,7 +46,7 @@ The country's language is invented, a blend of Slavic, Hungarian and Romanian so
 | **The Veteran** | **Zdenka Horák** · Ilona · Agneta | Zdenka: hard consonants, sounds harmless out loud |
 | **The Awkward Colleague** | **Kornel Vidrascu** · Bogdan · Feliks | Kornel: slightly wrong in every room |
 | **The Neighbour** (man) | **Stojan Petrovici** · Ferenc · Bogumil | Stojan: big hands, bigger voice |
-| **Neighbour's wife** | Dana · Mirela · Hajnal | |
-| **Neighbour's daughter** | Lenka · Dorina · Anica | |
+| **Neighbour's wife** | Dana · Mirela · Hajnal | **Dana** (used in the script) |
+| **Neighbour's daughter** | Lenka · Dorina · Anica | **Lenka** (creator, 2026-10-19) |
 
 **Bold** = my first pick in each row.
