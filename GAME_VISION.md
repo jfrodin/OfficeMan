@@ -278,3 +278,4 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-18 | Choices gated by hidden state (mood, drink, traits) stay fully hidden when unavailable: no greyed-out options, no hints. | §7 |
 | 2026-10-19 | Stojan's daughter: looks like a female Stojan; annoying, self-centred, feels entitled to riches without effort, waiting to marry someone rich. | §5 |
 | 2026-10-19 | Stojan's daughter is Lenka. His wife Dana is her opposite: modest, slim, worn out because she does all the housework. | §5 |
+| 2026-10-19 | No Grok or other image AI for the game's art. Keep making our own (code-built art, the drawn_flat line for portraits). Grok tests were only for exploring. | §9, §10 |
