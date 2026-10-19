@@ -70,6 +70,10 @@ Nothing in the game, its docs, code comments or commits may read like AI wrote i
 - Write the way a person writes: plain words, uneven rhythm, short sentences.
 - Before committing text, search for U+2014 and U+2013 and remove them.
 
+## Creator's notes
+
+When the creator points something out, add it to `design/noted.md` and fix it only when they ask.
+
 ## Working standards
 
 - Iterate. Prove the core experience before adding content. No large city or long story before the prototype works.
