@@ -3,8 +3,8 @@ using OfficeMan.ArtGen.Raster;
 
 namespace OfficeMan.ArtGen.Drawn.Flat;
 
-public enum FlatHair { SweptBack, Bun, Combover, BaldFringe }
-public enum FlatClothes { SuitOpenCollar, SuitBlouse, ShirtTie, Vest }
+public enum FlatHair { SweptBack, Bun, Combover, BaldFringe, Curls }
+public enum FlatClothes { SuitOpenCollar, SuitBlouse, ShirtTie, Vest, Scoop }
 public enum FlatGlasses { None, Round, Half }
 
 /// <summary>
@@ -85,6 +85,9 @@ public sealed record FlatSpec
     public string? Brooch { get; init; }
 
     public bool Cigarette { get; init; }
+    public bool Earrings { get; init; }
+    public bool Necklace { get; init; }
+    public bool DoubleChin { get; init; }
     public bool ChestHair { get; init; }
 }
 
@@ -138,6 +141,7 @@ public static class FlatFace
         var body = BodyShape(p);
 
         if (p.Hair == FlatHair.Bun) DrawBun(s, p);
+        if (p.Hair == FlatHair.Curls) DrawCurlsBehind(s, p);
         DrawBody(s, p, body);
         Ears(s, p);
         DrawFace(s, p, face, e);
@@ -149,6 +153,13 @@ public static class FlatFace
         if (p.Moustache is not null) DrawMoustache(s, p, e);
         if (p.Glasses != FlatGlasses.None) DrawGlasses(s, p);
         if (p.Cigarette) DrawCigarette(s, p, e);
+        if (p.Earrings)
+            foreach (int side in new[] { -1, 1 })
+            {
+                var hoop = Shapes.Ellipse(Cx + side * (p.Temple + 4), 448, 14, 17);
+                s.Stroke(Closed(hoop), 3.2, Hex("d1a54a"));
+                s.Stroke(hoop.Skip(28).Take(10).ToList(), 1.4, Hex("fff0c0"));
+            }
 
         // A thin warm line to hold the face together, as in the reference.
         s.Stroke(Closed(face), 1.4, Hex("8a4a40"), 0.35);
@@ -199,10 +210,16 @@ public static class FlatFace
         {
             case FlatClothes.Vest:
             {
-                // A white vest, deep scoop, big bare shoulders.
-                var vest = PathBuilder.From(Cx - sh * 0.62, 760).L(Cx - sh * 0.5, 640).C(Cx - sh * 0.42, top + 30, Cx - 70, top + 26, Cx - 64, top + 50)
-                    .C(Cx - 50, 680, Cx + 50, 680, Cx + 64, top + 50).C(Cx + 70, top + 26, Cx + sh * 0.42, top + 30, Cx + sh * 0.5, 640)
-                    .L(Cx + sh * 0.62, 760).Points;
+                // A white tank top: two straps running up over the shoulders, deep armholes, a scoop neck.
+                double sy = p.ChinY + 50;                                   // where the shoulders meet the neck
+                var vest = PathBuilder.From(Cx - sh * 0.66, 760).C(Cx - sh * 0.64, 720, Cx - sh * 0.6, 690, Cx - sh * 0.5, 676)   // side, up to the armhole
+                    .C(Cx - sh * 0.46, 640, Cx - p.Neck - 46, sy + 14, Cx - p.Neck - 40, sy - 4)                                  // armhole, up the strap
+                    .L(Cx - p.Neck - 6, sy - 6)                                                                                    // over the shoulder
+                    .C(Cx - p.Neck + 6, sy + 40, Cx - 50, top + 70, Cx, top + 74)                                                   // scoop neck
+                    .C(Cx + 50, top + 70, Cx + p.Neck - 6, sy + 40, Cx + p.Neck + 6, sy - 6)
+                    .L(Cx + p.Neck + 40, sy - 4)
+                    .C(Cx + p.Neck + 46, sy + 14, Cx + sh * 0.46, 640, Cx + sh * 0.5, 676)
+                    .C(Cx + sh * 0.6, 690, Cx + sh * 0.64, 720, Cx + sh * 0.66, 760).Points;
                 if (p.ChestHair)
                 {
                     var rng = new Random(15);
@@ -213,7 +230,30 @@ public static class FlatFace
                     }
                 }
                 TwoTone(s, vest, p.Cloth, p.ClothShade, 30);
-                s.Stroke(PathBuilder.From(Cx - 64, top + 50).C(Cx - 50, 680, Cx + 50, 680, Cx + 64, top + 50), 2, Hex(p.ClothShade), 0.9);
+                s.Stroke(PathBuilder.From(Cx - p.Neck - 6, sy - 6).C(Cx - p.Neck + 6, sy + 40, Cx - 50, top + 70, Cx, top + 74)
+                    .C(Cx + 50, top + 70, Cx + p.Neck - 6, sy + 40, Cx + p.Neck + 6, sy - 6), 2, Hex(p.ClothShade), 0.9);
+                // The rib of the fabric, and the strap's edge over the shoulder.
+                for (int i = 0; i < 12; i++)
+                {
+                    double x = Cx - sh * 0.5 + i * sh / 11.0;
+                    s.Stroke(new List<Pt> { new(x, top + 90), new(x * 0.98 + Cx * 0.02, 760) }, 1, Hex(p.ClothShade), 0.25, clip: vest);
+                }
+                break;
+            }
+            case FlatClothes.Scoop:
+            {
+                var scoop = PathBuilder.From(Cx - sh - 40, 760).L(Cx - sh - 20, 680).C(Cx - sh + 10, 640, Cx - sh * 0.7, 618, Cx - 120, 612)
+                    .C(Cx - 90, 676, Cx - 40, 700, Cx, 702).C(Cx + 40, 700, Cx + 90, 676, Cx + 120, 612)
+                    .C(Cx + sh * 0.7, 618, Cx + sh - 10, 640, Cx + sh + 20, 680).L(Cx + sh + 40, 760).Points;
+                TwoTone(s, scoop, p.Cloth, p.ClothShade, 60);
+                s.Stroke(PathBuilder.From(Cx - 120, 612).C(Cx - 90, 676, Cx - 40, 700, Cx, 702).C(Cx + 40, 700, Cx + 90, 676, Cx + 120, 612), 2, Hex(p.ClothShade), 0.8);
+                s.Stroke(PathBuilder.From(Cx, 704).C(Cx + 1, 716, Cx, 726, Cx - 2, 736), 1.8, Hex(p.SkinShade), taper: true);
+                if (p.Necklace)
+                {
+                    s.Stroke(PathBuilder.From(Cx - 40, p.ChinY + 30).C(Cx - 26, p.ChinY + 92, Cx + 26, p.ChinY + 92, Cx + 40, p.ChinY + 30), 1.6, Hex("d1a54a"));
+                    s.Fill(Shapes.Ellipse(Cx, p.ChinY + 90, 6, 7), Hex("d1a54a"));
+                    s.Fill(Shapes.Ellipse(Cx - 1.5, p.ChinY + 88, 1.6, 1.6), Hex("fff2c8"));
+                }
                 break;
             }
             case FlatClothes.ShirtTie:
@@ -285,6 +325,7 @@ public static class FlatFace
 
     private static void Ears(Sketch s, FlatSpec p)
     {
+        if (p.Hair == FlatHair.Curls) return;   // under the hair
         foreach (int side in new[] { -1, 1 })
         {
             double x = Cx + side * (p.Temple + 2);
@@ -345,7 +386,9 @@ public static class FlatFace
                     s.Stroke(PathBuilder.From(x, p.EyeY + i * 6).C(x + side * 6, p.EyeY + i * 8, x + side * 10, p.EyeY + i * 10, x + side * 14, p.EyeY + i * 13), 1.3, deep, 0.5 * a, taper: true, clip: face);
             }
         }
-        double fold = 0.35 + a * 0.5 + Math.Max(0, e.Smile) * 0.3;
+        if (p.DoubleChin)
+            s.Stroke(PathBuilder.From(Cx - 50, p.ChinY - 6).C(Cx - 28, p.ChinY + 24, Cx + 28, p.ChinY + 24, Cx + 50, p.ChinY - 6), 2.2, Hex(p.SkinDeep), 0.7, taper: true);
+        double fold = a * 0.85 + Math.Max(0, e.Smile) * (0.15 + a * 0.2);   // young faces only crease when they smile
         foreach (int side in new[] { -1, 1 })
             s.Stroke(PathBuilder.From(Cx + side * 26 * p.NoseWidth, p.EyeY + 60 * p.NoseLength + 8)
                 .C(Cx + side * (44 + e.Smile * 6), p.MouthY - 26, Cx + side * (p.MouthWidth + 18 + e.Smile * 6), p.MouthY - 4, Cx + side * (p.MouthWidth + 16), p.MouthY + 16),
@@ -525,8 +568,57 @@ public static class FlatFace
         }
     }
 
+    /// <summary>Loose curls to the shoulders: the mass behind the head.</summary>
+    private static void DrawCurlsBehind(Sketch s, FlatSpec p)
+    {
+        double top = p.Crown, t = p.Temple;
+        var mass = PathBuilder.From(Cx - 20, top - 26).C(Cx + 90, top - 34, Cx + t + 56, top + 20, Cx + t + 54, 330)
+            .C(Cx + t + 60, 430, Cx + t + 50, 520, Cx + t + 10, 590).C(Cx + 60, 600, Cx + 40, 580, Cx + 30, 560)
+            .L(Cx - 30, 560).C(Cx - 40, 580, Cx - 60, 600, Cx - t - 10, 590)
+            .C(Cx - t - 50, 520, Cx - t - 60, 430, Cx - t - 54, 330).C(Cx - t - 56, top + 20, Cx - 110, top - 30, Cx - 20, top - 26).Points;
+        var curly = Shapes.Scallop(mass, new Pt(Cx, 360), 12, 30, seed: 21);
+        TwoTone(s, curly, p.HairColor, p.HairShade, 24);
+        CurlStrokes(s, p, curly);
+    }
+
+    /// <summary>C-shaped curl strokes on a jittered grid inside an area, lit on the upper left (as in the reference).</summary>
+    private static void CurlStrokes(Sketch s, FlatSpec p, List<Pt> area)
+    {
+        var rng = new Random(52);
+        for (double y = 110; y < 600; y += 24)
+            for (double x = 110; x < 494; x += 24)
+            {
+                double px = x + rng.NextDouble() * 14 - 7, py = y + rng.NextDouble() * 14 - 7;
+                if (!Shapes.Inside(area, px, py)) continue;
+                double rr = 6 + rng.NextDouble() * 4, a0 = rng.NextDouble() * Math.PI * 2;
+                var curl = new List<Pt>();
+                for (int k = 0; k <= 14; k++)
+                {
+                    double a = a0 + k / 14.0 * Math.PI * 1.35;
+                    curl.Add(new Pt(px + Math.Cos(a) * rr, py + Math.Sin(a) * rr * 0.9));
+                }
+                s.Stroke(curl, 2.2, Hex(p.HairShade), 0.85, taper: true);
+                if (px < 330 && py < 420) s.Stroke(Offset(curl.Take(8), -2, -2), 2, Hex(p.HairLight), 0.8, taper: true);
+            }
+    }
+
     private static void DrawHair(Sketch s, FlatSpec p, List<Pt> face)
     {
+        if (p.Hair == FlatHair.Curls)
+        {
+            // A side-swept fringe of curls from a parting on the left, falling past the right temple.
+            double ct = p.Crown, tw = p.Temple;
+            var fringe = PathBuilder.From(Cx - tw - 8, 300).C(Cx - tw - 6, ct + 10, Cx - 40, ct - 22, Cx + 30, ct - 18)
+                .C(Cx + tw, ct - 6, Cx + tw + 14, 260, Cx + tw + 8, 340)
+                .C(Cx + tw - 8, 300, Cx + 70, 262, Cx + 10, 262).C(Cx - 40, 262, Cx - 80, 240, Cx - tw + 10, 300)
+                .C(Cx - tw, 320, Cx - tw - 6, 320, Cx - tw - 8, 300).Points;
+            var curly = Shapes.Scallop(fringe, new Pt(Cx, 230), 9, 24, seed: 22);
+            s.Fill(Offset(curly, 5, 10), Hex(p.SkinShade), 0.6, clip: face);
+            TwoTone(s, curly, p.HairColor, p.HairShade, 10);
+            CurlStrokes(s, p, curly);
+            return;
+        }
+
         double top = p.Crown, t = p.Temple;
         switch (p.Hair)
         {

@@ -11,6 +11,20 @@ namespace OfficeMan.ArtGen.Drawn.Flat;
 /// </summary>
 public static class FlatCast
 {
+    /// <summary>Magda at 21: a round young face, no lines, lighter make-up, loose curls instead of the big perm.</summary>
+    public static readonly FlatSpec Magda = new()
+    {
+        Name = "magda",
+        Skin = "f2c6a8", SkinShade = "d8957e", SkinDeep = "bd7766", SkinLight = "fbdcc6", Blush = "ea8c86", BlushAmount = 0.45,
+        Crown = 190, Temple = 116, Cheek = 128, JawY = 494, Jaw = 92, ChinY = 530, Chin = 36, Neck = 62, Shoulders = 292,
+        Age = 0, Bags = false, EyeWidth = 28, EyeSpacing = 46, Hood = 0.2, Iris = "6b4a2e", EyeShadow = "9fb4e0",
+        BrowColor = "5a2430", BrowWidth = 4.2,
+        NoseLength = 0.78, NoseWidth = 0.9, MouthWidth = 30, LipFullness = 0.9, LipUpper = "c4505a", LipLower = "d86a6a",
+        Hair = FlatHair.Curls, HairColor = "8a2c42", HairShade = "5c1a2f", HairLight = "b6536a",
+        Clothes = FlatClothes.Scoop, Cloth = "d0303d", ClothShade = "97192c",
+        Earrings = true, Necklace = true, DoubleChin = true,
+    };
+
     public static readonly FlatSpec Viktor = new()
     {
         Name = "viktor",
@@ -86,6 +100,7 @@ public static class FlatCast
             (Stojan, "neutral", new Expression { Smile = 0.45, LidOpen = 0.85 }),
             (Stojan, "laughing", new Expression { Smile = 1, MouthOpen = 0.8, LidOpen = 0.05, BrowRaise = 1, Blush = 0.6 }),
         };
+        yield return ("magda", "young", FlatFace.Draw(Magda, new Expression { Smile = 0.7, MouthOpen = 0.18, LookX = -0.2, BrowRaise = 0.4 }));
         foreach (var (spec, mood, e) in looks) yield return (spec.Name, mood, FlatFace.Draw(spec, e));
     }
 }
