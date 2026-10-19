@@ -80,6 +80,10 @@ sealed class Report
     public readonly ConcurrentDictionary<string, int> Nights = new();
     public readonly ConcurrentDictionary<string, int> Headlines = new();
     public readonly ConcurrentDictionary<string, int> PeakDrunk = new();
+    public readonly ConcurrentDictionary<string, int> StartingTeo = new();
+    public readonly ConcurrentDictionary<string, int> Shifts = new();
+    public readonly ConcurrentDictionary<string, int> NightByNerve = new();
+    public readonly ConcurrentDictionary<string, int> NerveCount = new();
     public readonly ConcurrentDictionary<string, byte> UniqueLives = new();
     public readonly ConcurrentDictionary<string, byte> UniqueStories = new();
 
@@ -98,6 +102,15 @@ sealed class Report
         Section("closing hook", Endings);
         Section("peak drunkenness (0 sober … 4 wrecked)", PeakDrunk);
         Section("most common headlines", Headlines, 12);
+        Section("starting Teo (traits nudged from the baseline)", StartingTeo, 12);
+        Section("lasting trait shifts", Shifts, 12);
+        Console.WriteLine("  how the night went, by starting nerve (share within each nerve level):");
+        foreach (var (key, n) in NightByNerve.OrderBy(kv => kv.Key).ThenByDescending(kv => kv.Value))
+        {
+            string nerve = key.Split('|')[0];
+            int total = NerveCount.TryGetValue(nerve, out int t) ? t : 1;
+            if (100.0 * n / total >= 8) Console.WriteLine($"    nerve {nerve,2}: {100.0 * n / total,5:0.0}%  {key.Split('|')[1]}");
+        }
     }
 
     private void Section(string title, ConcurrentDictionary<string, int> data, int take = 20)
@@ -126,6 +139,11 @@ static class Simulator
             try
             {
                 var game = Game.New(content, seed);
+                var start = OfficeMan.Core.World.Teo.Traits
+                    .Select(t => (t, d: game.State.Get("trait_" + t) - OfficeMan.Core.World.Teo.Baseline[t]))
+                    .Where(x => x.d != 0).Select(x => $"{x.t} {x.d:+0;-0}");
+                Count(report.StartingTeo, string.Join(", ", start));
+                string startNerve = game.State.Get("trait_nerve").ToString();
                 int decisions = 0;
                 while (!game.IsOver)
                 {
@@ -145,6 +163,10 @@ static class Simulator
                 Count(report.Endings, s.History.LastOrDefault(h => h.StartsWith("end_")) ?? "(none)");
                 Count(report.PeakDrunk, s.Get("peak_drunk").ToString());
                 foreach (string h in s.Headlines.Distinct()) Count(report.Headlines, h);
+                foreach (var shift in s.TraitShifts) Count(report.Shifts, $"{shift.Trait} {shift.Delta:+0;-0} ({shift.Reason})");
+                Count(report.NerveCount, startNerve);
+                string night = string.Join(" → ", s.History.Where(NightStorylets.Contains));
+                Count(report.NightByNerve, $"{startNerve}|{(night.Length == 0 ? "(home)" : night)}");
                 report.UniqueLives.TryAdd(string.Join(">", s.History), 0);
                 report.UniqueStories.TryAdd(string.Join("|", s.Headlines.OrderBy(h => h)), 0);
             }

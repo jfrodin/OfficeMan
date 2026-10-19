@@ -17,6 +17,7 @@ EXTERNAL pass_time(minutes)
 EXTERNAL goto_phase(id)
 EXTERNAL headline(text)
 EXTERNAL played(storylet)
+EXTERNAL shift(trait, delta, reason)   // a lasting change to a trait after a big moment: one step, once per reason
 
 // Where Teo wakes up on Wednesday.
 CONST AT_HOME = 1
@@ -36,9 +37,25 @@ CONST AT_STATION = 4
 === function mood()
     ~ return q("mood")
 
+// Teo's traits as they are right now (his character, pushed by drink, mood, tiredness, shame).
+// Each is a line: nerve + bold / - careful; warmth + open / - closed; appetite + hungry / - held back;
+// honesty + blunt / - smooth. 0 is the middle; his baseline is careful, open, held back, smooth.
 === function nerve()
     ~ return q("nerve")
 
+=== function warmth()
+    ~ return q("warmth")
+
+=== function appetite()
+    ~ return q("appetite")
+
+=== function honesty()
+    ~ return q("honesty")
+
+=== function hungover()
+    ~ return q("hungover")
+
+// Skills the hidden checks use, made from the traits.
 === function tact()
     ~ return q("tact")
 
@@ -81,11 +98,7 @@ CONST AT_STATION = 4
         ~ qset("mood", -1)
     }
 
-    // PROVISIONAL base traits: fixed, pending the trait design discussion.
-    ~ qset("base_nerve", 0)
-    ~ qset("base_tact", 1)
-    ~ qset("base_judgment", 1)
-    ~ qset("base_restraint", 1)
+    // Teo's traits are set by the engine before this runs: the creator's baseline, one or two nudged a step.
 
     // Outsiders at the party: two of three, drawn per life.
     {

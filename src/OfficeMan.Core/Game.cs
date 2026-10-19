@@ -63,6 +63,7 @@ public sealed class Game : IConditionContext
         };
         state.AwakeSince = state.AbsoluteMinute;
 
+        OfficeMan.Core.World.Teo.StartingTraits(state);
         var game = new Game(content, state);
         game.RunSilently("init");
         game.Current = game.Advance();
@@ -424,5 +425,6 @@ public sealed class Game : IConditionContext
         });
         _story.BindExternalFunction("headline", (string text) => State.Headlines.Add(text));
         _story.BindExternalFunction("played", (string id) => State.Plays(id), lookaheadSafe: true);
+        _story.BindExternalFunction("shift", (string trait, int delta, string reason) => OfficeMan.Core.World.Teo.Shift(State, trait, delta, reason));
     }
 }

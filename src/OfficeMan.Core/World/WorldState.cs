@@ -37,6 +37,9 @@ public sealed class WorldState
     /// <summary>One-line summaries of things that mattered, for endings and the run log.</summary>
     public List<string> Headlines { get; set; } = new();
 
+    /// <summary>Lasting changes to Teo's traits, in order, with what caused them.</summary>
+    public List<OfficeMan.Core.World.TraitShift> TraitShifts { get; set; } = new();
+
     /// <summary>How many times each check id has been rolled, so repeated checks get fresh rolls.</summary>
     public Dictionary<string, int> CheckCounts { get; set; } = new();
 
