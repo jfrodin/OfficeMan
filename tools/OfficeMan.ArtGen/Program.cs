@@ -132,7 +132,7 @@ if (sets.Contains("game"))
     Png.Save(office.Emissive, Path.Combine(rooms, "office_emissive.png"));
     Png.Save(office.Glow, Path.Combine(rooms, "office_glow.png"));
     Png.Save(office.Front, Path.Combine(rooms, "office_front.png"));
-    foreach (var (name, layers) in new[] { ("flat", FlatRoom.Draw()), ("stairwell", StairwellRoom.Draw(night: false)), ("stairwell_night", StairwellRoom.Draw(night: true)) })
+    foreach (var (name, layers) in new[] { ("flat", FlatRoom.Draw()), ("stairwell", StairwellRoom.Draw(night: false)), ("stairwell_night", StairwellRoom.Draw(night: true)), ("terrace", TerraceRoom.Draw()) })
     {
         Png.Save(layers.Albedo, Path.Combine(rooms, $"{name}.png"));
         Png.Save(layers.Emissive, Path.Combine(rooms, $"{name}_emissive.png"));
@@ -142,6 +142,9 @@ if (sets.Contains("game"))
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
     Png.Save(LyingPerson.Sheet(PixelPeople.Teo), Path.Combine(sprites, "teo_bed.png"));
+    Png.Save(TerraceRoom.BarCounter(), Path.Combine(sprites, "terrace_bar.png"));
+    foreach (var person in PixelPeople.Sitters)
+        Png.Save(PixelPeople.SittingSheet(person), Path.Combine(sprites, $"{person.Name}_sit.png"));
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");

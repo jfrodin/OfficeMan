@@ -17,6 +17,8 @@ call :room 01 flat 06:50
 call :room 02 stairwell 08:00
 call :room 03 stairwell_night 23:00
 call :room 04 office 10:00
+call :room 13 terrace 18:00
+call :room 14 terrace 22:30
 echo Text...
 call :play 05 2  "Thought (note)"
 call :play 06 4  "Overheard"
@@ -28,7 +30,7 @@ call :play 10 75 "Thought during a conversation"
 "%GODOT%" --path . -- --seed 11 --shot "%OUT%\12.png" --steps 30 --menu settings >nul 2>&1
 
 echo Sheet...
-"%GODOT%" --headless --path . -- --stitch "%ROOT%art\out\review.png" "%OUT%\01.png" "%OUT%\02.png" "%OUT%\03.png" "%OUT%\04.png" "%OUT%\05.png" "%OUT%\06.png" "%OUT%\07.png" "%OUT%\08.png" "%OUT%\09.png" "%OUT%\10.png" "%OUT%\11.png" "%OUT%\12.png" >nul 2>&1
+"%GODOT%" --headless --path . -- --stitch "%ROOT%art\out\review.png" "%OUT%\01.png" "%OUT%\02.png" "%OUT%\03.png" "%OUT%\04.png" "%OUT%\05.png" "%OUT%\06.png" "%OUT%\07.png" "%OUT%\08.png" "%OUT%\09.png" "%OUT%\10.png" "%OUT%\11.png" "%OUT%\12.png" "%OUT%\13.png" "%OUT%\14.png" >nul 2>&1
 echo Done: art\out\review.png
 exit /b 0
 

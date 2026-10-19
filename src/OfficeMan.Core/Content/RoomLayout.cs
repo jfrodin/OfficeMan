@@ -27,6 +27,20 @@ public sealed class RoomLayout
 
     public float[] Ambient { get; set; } = { 0.45f, 0.45f, 0.45f };
     public List<RoomLight> Lights { get; set; } = new();
+
+    /// <summary>
+    /// Light that changes over the time spent here (an evening outdoors). Each step applies when its condition
+    /// holds; the last one that holds wins. Ambient replaces <see cref="Ambient"/>; Emissive scales everything
+    /// that glows (windows, bulbs), so lights can come on at dusk.
+    /// </summary>
+    public List<TimeStep> Timeline { get; set; } = new();
+
+    public sealed class TimeStep
+    {
+        public string When { get; set; } = "";
+        public float[]? Ambient { get; set; }
+        public float Emissive { get; set; } = 1;
+    }
     public Mood Look { get; set; } = new();
 
     /// <summary>A light: point, or a cone if <see cref="Dir"/> is set. Angles in degrees from the direction.</summary>
@@ -94,6 +108,12 @@ public sealed class RoomLayout
 
         /// <summary>Facing left instead of right.</summary>
         public bool FaceLeft { get; set; }
+
+        /// <summary>
+        /// Furniture drawn as a sprite so people can stand behind it and in front of it (a bar counter).
+        /// Never interactable.
+        /// </summary>
+        public bool Prop { get; set; }
 
         /// <summary>A lit cigarette: offset (x, y) from the feet, facing right. Smoke rises from it.</summary>
         public float[]? Smoke { get; set; }

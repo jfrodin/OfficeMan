@@ -161,6 +161,18 @@ public partial class RoomView : Control
             _present.Add((thing, actor));
         }
 
+        // The time of day: ambient light and how strongly things glow.
+        var ambient = _room.Ambient;
+        float gain = 1;
+        foreach (var step in _room.Timeline)
+            if (present(step.When))
+            {
+                if (step.Ambient is { Length: 3 } a) ambient = a;
+                gain = step.Emissive;
+            }
+        _material.SetShaderParameter("ambient", new Vector3(ambient[0], ambient[1], ambient[2]));
+        _material.SetShaderParameter("emissive_gain", gain);
+
         var lights = _room.Lights.Where(l => l.When is null || present(l.When)).Take(16).ToList();
         _lights = lights;
         var pos = new Vector4[16];
@@ -194,6 +206,7 @@ public partial class RoomView : Control
         float bestDist = float.MaxValue;
         foreach (var (thing, _) in _present)
         {
+            if (thing.Prop) continue;
             float dx = Math.Abs(p.X - thing.X), dy = Math.Abs(p.Y - (thing.Y + 10));
             bool inReach = thing.Wall ? dx < 16 && p.Y < _room.Walk.MinY + 26 : dx < 22 && dy < 18;
             if (!inReach) continue;

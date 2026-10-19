@@ -13,7 +13,8 @@ public sealed record PersonSpec(
     TopStyle Top, string TopColor, string TopShade,
     string Bottom, string BottomShade, string Shoes,
     int Build = 6, int Height = 2, bool Glasses = false, bool Earrings = false, bool Belly = false,
-    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null, bool Cigarette = false);
+    string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null, bool Cigarette = false,
+    bool Veil = false, bool Sash = false);
 
 /// <summary>
 /// Pixel people for the walkable world: 28×60 frames, people 47-52 px tall (about 30 px per metre), facing right (flip for left).
@@ -43,7 +44,45 @@ public static class PixelPeople
     public static readonly PersonSpec Stojan = new("stojan", "d9a07e", "b07658", HairStyle.Bald, "8a847c", "5e5a54",
         TopStyle.Vest, "e8e4d8", "b8b2a2", "5a5e66", "3e424a", "6a3a2a", Build: 9, Height: 3, Belly: true, Moustache: "4a3a30", Cigarette: true);
 
-    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor, Stojan };
+    // ── The party at Terasa Velka ──
+    public static readonly PersonSpec Ramona = new("ramona", "e8c0a0", "c49478", HairStyle.SweptBack, "d8b878", "a88848",
+        TopStyle.Dress, "f0ece4", "c8c4bc", "e8c0a0", "c49478", "c8a060", Build: 6, Height: 3, Glasses: true, GlassesColor: "141414", Earrings: true);
+
+    public static readonly PersonSpec Laci = new("laci", "f0c8a8", "cc9c80", HairStyle.Messy, "2a2220", "1a1412",
+        TopStyle.Shirt, "26262a", "18181c", "2a2a30", "1c1c22", "141414", Build: 5, Height: 4);
+
+    public static readonly PersonSpec Adrian = new("adrian", "e0b090", "bc8a6c", HairStyle.SweptBack, "1e1a18", "120e0c",
+        TopStyle.SuitOpen, "3a3e46", "26282e", "3a3e46", "26282e", "141010", Build: 6, Height: 4, Accent: "e8e8ec");
+
+    public static readonly PersonSpec Maarten = new("maarten", "f2c8b0", "d0a088", HairStyle.Messy, "d8c08a", "a8905a",
+        TopStyle.ShirtTie, "e6dcc6", "c4b8a0", "c8b89a", "a8987a", "6a4a30", Build: 6, Height: 5, Accent: "2a6ab0");
+
+    public static readonly PersonSpec Felicity = new("felicity", "f4cdb4", "d4a48c", HairStyle.Bun, "e0c890", "b09860",
+        TopStyle.Dress, "d8cfbe", "b0a690", "f4cdb4", "d4a48c", "8a6a50", Build: 5, Height: 3, Earrings: true);
+
+    public static readonly PersonSpec Denisa = new("denisa", "f0c4a4", "cc9a7e", HairStyle.Bun, "3a2420", "241410",
+        TopStyle.Dress, "f070a8", "c04880", "f0c4a4", "cc9a7e", "e8e0e8", Build: 6, Height: 2, Veil: true, Sash: true, Accent: "f8f0f8", Earrings: true);
+
+    public static readonly PersonSpec HenBlonde = new("hen_blonde", "f2c8ae", "d09c84", HairStyle.Perm, "e8c070", "b89040",
+        TopStyle.Dress, "60c0b0", "3a8a80", "f2c8ae", "d09c84", "2a2a2a", Build: 6, Height: 2, Earrings: true);
+
+    public static readonly PersonSpec HenDark = new("hen_dark", "d8a888", "b4806a", HairStyle.Bun, "5a3020", "3a1c10",
+        TopStyle.Dress, "f0c040", "c09020", "d8a888", "b4806a", "2a2a2a", Build: 7, Height: 1, Belly: true);
+
+    public static readonly PersonSpec Waitress = new("waitress", "f0c8b0", "cca088", HairStyle.Bun, "2a1e18", "1a120e",
+        TopStyle.Shirt, "eeeeee", "c8c8c8", "222226", "16161a", "141414", Build: 5, Height: 2);
+
+    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor, Stojan, Ramona, Laci, Adrian, Maarten, Felicity, Denisa, HenBlonde, HenDark, Waitress };
+
+    /// <summary>People who also get a sitting sheet ("name_sit"): sitting on a chair, facing right.</summary>
+    public static IEnumerable<PersonSpec> Sitters => new[] { Zdenka, Maarten, Felicity, HenBlonde, HenDark };
+
+    public static Canvas SittingSheet(PersonSpec p)
+    {
+        var sheet = new Canvas(FrameW * Frames, FrameH);
+        for (int f = 0; f < Frames; f++) sheet.Draw(Frame(p, f % 2, sitting: true), f * FrameW, 0);
+        return sheet;
+    }
 
     public static Canvas Sheet(PersonSpec p)
     {
@@ -52,7 +91,7 @@ public static class PixelPeople
         return sheet;
     }
 
-    public static Canvas Frame(PersonSpec p, int frame)
+    public static Canvas Frame(PersonSpec p, int frame, bool sitting = false)
     {
         var c = new Canvas(FrameW, FrameH);
         void Px(int x, int y, string hex) { if (c.InBounds(x, y)) c[x, y] = Rgb.Hex(hex); }
@@ -69,16 +108,38 @@ public static class PixelPeople
 
         const int cx = 13, foot = 59;
         int legLen = 18 + p.Height / 2, torsoLen = 17 + (p.Height + 1) / 2;
-        int hip = foot - legLen, shoulder = hip - torsoLen + bob;
+        // Sitting: on a chair whose seat is about 0.45 m up (14 px); thighs forward, shins down.
+        const int seat = foot - 14;
+        int hip = sitting ? seat - 1 : foot - legLen, shoulder = hip - torsoLen + bob;
         int headBottom = shoulder - 2, headTop = headBottom - 10;
         int w = p.Build;
 
-        // Legs: back leg darker. Stride moves them apart.
-        int backX = cx - 2 - legStride, frontX = cx + 1 + legStride;
-        Rect(backX - 1, hip, backX + 1, foot - 2, p.BottomShade);
-        Rect(frontX - 1, hip, frontX + 1, foot - 2, p.Bottom);
-        Rect(backX - 1, foot - 1, backX + 2, foot, p.Shoes);
-        Rect(frontX - 1, foot - 1, frontX + 2, foot, p.Shoes);
+        if (sitting)
+        {
+            // The chair: a backrest behind him, a seat, two legs.
+            Rect(cx - 8, seat - 15, cx - 7, seat + 1, "3a2e28");
+            Rect(cx - 7, seat + 1, cx + 6, seat + 2, "4a3a30");
+            Rect(cx - 7, seat + 3, cx - 7, foot, "2a201a");
+            Rect(cx + 6, seat + 3, cx + 6, foot, "2a201a");
+            // Thighs forward along the seat, shins down, the far leg a shade darker.
+            Rect(cx - 3, hip - 2, cx + 8, hip, p.BottomShade);
+            Rect(cx - 3, hip - 1, cx + 9, hip + 1, p.Bottom);
+            Rect(cx + 7, hip + 2, cx + 9, foot - 2, p.Bottom);
+            Rect(cx + 5, hip + 2, cx + 6, foot - 2, p.BottomShade);
+            Rect(cx + 7, foot - 1, cx + 11, foot, p.Shoes);
+        }
+        else
+        {
+            // Legs: back leg darker. Stride moves them apart.
+            int backX = cx - 2 - legStride, frontX = cx + 1 + legStride;
+            Rect(backX - 1, hip, backX + 1, foot - 2, p.BottomShade);
+            Rect(frontX - 1, hip, frontX + 1, foot - 2, p.Bottom);
+            Rect(backX - 1, foot - 1, backX + 2, foot, p.Shoes);
+            Rect(frontX - 1, foot - 1, frontX + 2, foot, p.Shoes);
+        }
+        if (p.Veil)
+            for (int y = shoulder - 14; y <= shoulder + 10; y++)       // behind the head and down the back
+                Rect(cx - 8 + (y - shoulder) / 6, y, cx - 5, y, (y % 3 == 0) ? "dcdce6" : "f2f2f8");
 
         // Arms behind the body first (the far arm), swinging against the legs.
         int swing = walking ? -legStride / 2 : 0;
@@ -92,7 +153,7 @@ public static class PixelPeople
         switch (p.Top)
         {
             case TopStyle.Dress:
-                for (int y = hip; y <= hip + legLen * 55 / 100; y++)
+                for (int y = hip; y <= hip + (sitting ? 3 : legLen * 55 / 100); y++)
                     Rect(cx - w + 1 - (y - hip) / 4, y, cx + w - 1 + (y - hip) / 4 + (p.Belly ? 1 : 0), y, p.TopColor);
                 break;
             case TopStyle.Cardigan:
@@ -119,6 +180,13 @@ public static class PixelPeople
                 Rect(cx, shoulder, cx + 2, shoulder + 2, p.Accent ?? "ece7dc");   // blouse at the neck
                 break;
         }
+        if (p.Sash)
+            for (int i = 0; i <= torsoLen - 2; i++)                   // a sash from the near shoulder to the far hip
+            {
+                int x = cx + w - 2 - i * (2 * w - 3) / (torsoLen - 2);
+                Px(x, shoulder + 1 + i, p.Accent ?? "f8f0f8");
+                Px(x + 1, shoulder + 1 + i, p.Accent ?? "f8f0f8");
+            }
         // Belt line for trousers.
         if (p.Top is TopStyle.Shirt or TopStyle.ShirtTie or TopStyle.SuitOpen)
             Rect(cx - w + 1, hip, cx + w - 1, hip, p.BottomShade);

@@ -87,6 +87,7 @@ It's never one. It's never been one in the whole history of this country.
 
 === party_drink
 # phase: party
+# where: bar
 # kind: hub
 # choice: Get a drink.
 # repeat
@@ -134,6 +135,7 @@ It's never one. It's never been one in the whole history of this country.
 
 === magda_early
 # phase: party
+# where: magda
 # kind: hub
 # choice: Magda, in the red dress.
 # window: 17:00-20:30
@@ -187,6 +189,7 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
 
 === viktor_railing
 # phase: party
+# where: viktor
 # kind: hub
 # choice: Viktor is holding court by the railing.
 # window: 18:00-21:30
@@ -254,6 +257,7 @@ Then she goes down the steps to the river walk, quickly, not running, because ru
 
 === magda_river
 # phase: party
+# where: steps
 # kind: hub
 # choice: Go down to the river walk, where Magda went.
 # when: magda_crushed
@@ -324,6 +328,7 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
 
 === ramona_bar
 # phase: party
+# where: ramona
 # kind: hub
 # choice: Ramona is alone at the bar.
 # when: played("ramona_arrives") > 0
@@ -391,6 +396,7 @@ RAMONA: There's a bag for every conference. I have a whole wardrobe of conferenc
 
 === zdenka_table
 # phase: party
+# where: zdenka
 # kind: hub
 # choice: Zdenka is sitting alone, with mineral water.
 # duration: 20
@@ -478,6 +484,7 @@ KORNEL: "In a building made of concrete, in a city by the Vel..."
 
 === consultants_table
 # phase: party
+# where: consultants
 # kind: hub
 # choice: Join the foreigners at the Team Alignment Evening.
 # when: outsider_consultants
@@ -517,6 +524,7 @@ Resilient. That's what they call you when they'd never live where you live.
 
 === hen_party
 # phase: party
+# where: hen
 # kind: hub
 # choice: The hen party is waving you over.
 # when: outsider_hen
@@ -556,6 +564,7 @@ The whole table waits. They genuinely want to know. So do I.
 
 === developer_bar
 # phase: party
+# where: developer
 # kind: hub
 # choice: The man in the very good suit nods at you.
 # when: outsider_developer
@@ -588,6 +597,7 @@ ADRIAN: If you ever want to talk about your future. Or a flat with a view. We ha
 
 === river_air
 # phase: party
+# where: railing
 # kind: hub
 # choice: Step away to the railing for some air.
 # max: 2
@@ -658,6 +668,7 @@ The river's very close now. Very friendly.
 
 === leave_home
 # phase: party
+# where: gate
 # kind: exit
 # choice: Go home.
 # window: 18:30-23:30
@@ -676,6 +687,7 @@ The river's very close now. Very friendly.
 
 === leave_club
 # phase: party
+# where: viktor
 # kind: exit
 # choice: Go on to Club Schengen with Viktor.
 # when: viktor_invite or regard(viktor) >= 5
@@ -693,6 +705,7 @@ VIKTOR: Come on. The night is young and we're not.
 
 === leave_magda
 # phase: party
+# where: steps
 # kind: exit
 # choice: Walk Magda home.
 # when: magda_walk_offer
@@ -704,6 +717,7 @@ Magda's carrying her shoes. I carry her bag. It weighs about the same as a small
 
 === leave_ramona
 # phase: party
+# where: ramona
 # kind: exit
 # choice: Take Ramona's lift.
 # when: ramona_offer_ride

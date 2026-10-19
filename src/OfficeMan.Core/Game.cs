@@ -234,9 +234,12 @@ public sealed class Game : IConditionContext
 
     // ───────────────────────── storylets ─────────────────────────
 
+    private bool _beginning;
+
     private void StartStorylet(Storylet s)
     {
         _activeStorylet = s.Id;
+        _beginning = true;
         _story.ChoosePathString(s.Id);
     }
 
@@ -265,7 +268,11 @@ public sealed class Game : IConditionContext
                 throw new StoryException($"in storylet '{_activeStorylet}' at {_story.state.currentPathString}: {e.Message}");
             }
             var tags = _story.currentTags.Where(t => !IsMetadataTag(t)).ToList();
-            if (text.Length > 0) _pending.Add(new StoryLine(text, tags));
+            if (text.Length == 0) continue;
+            // The first line of each storylet says so: front ends end the previous conversation there.
+            if (_beginning) tags.Add("begin:" + _activeStorylet);
+            _beginning = false;
+            _pending.Add(new StoryLine(text, tags));
         }
     }
 

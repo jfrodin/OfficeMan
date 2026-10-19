@@ -78,7 +78,8 @@
     "night_home": "stairwell_night",
     "wed_wake": "flat",
     "office": "office",
-    "wed_office": "office"
+    "wed_office": "office",
+    "party": "terrace"
   },
   "sprites": {
     "teo": "art/game/sprites/teo.png",
@@ -87,6 +88,21 @@
     "kornel": "art/game/sprites/kornel.png",
     "viktor": "art/game/sprites/viktor.png",
     "stojan": "art/game/sprites/stojan.png",
-    "teo_bed": "art/game/sprites/teo_bed.png"
+    "teo_bed": "art/game/sprites/teo_bed.png",
+    "ramona": "art/game/sprites/ramona.png",
+    "laci": "art/game/sprites/laci.png",
+    "adrian": "art/game/sprites/adrian.png",
+    "maarten": "art/game/sprites/maarten.png",
+    "felicity": "art/game/sprites/felicity.png",
+    "denisa": "art/game/sprites/denisa.png",
+    "hen_blonde": "art/game/sprites/hen_blonde.png",
+    "hen_dark": "art/game/sprites/hen_dark.png",
+    "waitress": "art/game/sprites/waitress.png",
+    "zdenka_sit": "art/game/sprites/zdenka_sit.png",
+    "maarten_sit": "art/game/sprites/maarten_sit.png",
+    "felicity_sit": "art/game/sprites/felicity_sit.png",
+    "hen_blonde_sit": "art/game/sprites/hen_blonde_sit.png",
+    "hen_dark_sit": "art/game/sprites/hen_dark_sit.png",
+    "terrace_bar": "art/game/sprites/terrace_bar.png"
   }
 }

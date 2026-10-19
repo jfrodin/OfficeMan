@@ -11,6 +11,7 @@ uniform sampler2D emissive : filter_nearest;
 uniform sampler2D glow : filter_linear;
 uniform sampler2D base : filter_nearest;   // the room's albedo alone: where the frame differs, something stands in front
 uniform vec3 ambient = vec3(0.4);
+uniform float emissive_gain = 1.0;   // dusk: windows and bulbs come on
 uniform int light_count = 0;
 uniform vec4 light_pos[MAX_LIGHTS];   // x, y, radius, intensity
 uniform vec4 light_col[MAX_LIGHTS];   // r, g, b, -
@@ -63,8 +64,8 @@ void fragment() {
     vec2 suv = px / canvas_size;
     vec3 seen = texture(TEXTURE, suv).rgb;
     float clear = 1.0 - step(0.01, distance(seen, texture(base, suv).rgb));
-    vec3 col = seen * light_at(px) + texture(emissive, suv).rgb * 1.35 * clear;
-    vec3 halo = texture(glow, UV).rgb;
+    vec3 col = seen * light_at(px) + texture(emissive, suv).rgb * 1.35 * clear * emissive_gain;
+    vec3 halo = texture(glow, UV).rgb * emissive_gain;
     col += halo * bloom;
 
     float n = fbm(px * 0.012 + vec2(TIME * 0.05, TIME * 0.015));

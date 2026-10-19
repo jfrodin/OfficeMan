@@ -76,6 +76,7 @@ Checked by screenshot. `Review.bat` puts every room and text mode on one sheet: 
 | Flat (dawn) | Side-on, to scale, dawn key light, storytelling objects (clock 06:47, dishes, envelopes, diploma in the wardrobe, a moving box and an unlabelled bottle on the cupboards, the smoke alarm with its battery out). Teo is in bed as a sprite, breathing. | Teo in bed is small and simple at this scale. |
 | Stairwell (day, night) | Same camera and scale as the office; doors, stairs, flickering bulb, Stojan smoking (sprite with cigarette and smoke); TV light under his door at night; tiled terrazzo; a neighbour's bicycle in the foreground. | |
 | Office | Door 66 px, desks 24 px, no dithering, real office chairs, keyboards. | Some desk props are still small blocks. |
+| Terrace (17:00-23:30) | Same camera and scale; the river, the far bank and the sky behind the railing; the bar under an awning with Laci behind the counter (a prop, so people stand behind and in front of it); string lights; sitting poses at tables. The evening is a timeline: ambient light and glow change with the clock, the sunset is a light so night can put it out. | The deck's lower half is plain; the outsiders' tables look the same whether or not they're here. |
 
 People are now **47-52 px** tall (frame 28×60), which matches the standard next to 66 px doors.
 

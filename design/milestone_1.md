@@ -60,8 +60,17 @@ pixel sprites; things to look at; interaction prompts; conversations over the li
 words and choices bottom-right); keyboard and controller. Story moves between places mid-conversation are marked
 in the text, so the scene switches exactly where the story does.
 
-**Still to do in Step 1:** walkable flat, stairwell and terrace (the party); floating spoken lines; sprites for
-Ramona, Stojan, Laci and the outsiders.
+**Done (2026-10-19):** the flat (Teo in bed), the stairwell (day and night, Stojan smoking) and the terrace are
+rooms too. The party at Terasa Velka is walkable from 17:00 to 23:30: the light goes from golden sun through dusk
+(the string lights come on) to night. Every party situation is tied to a person or place: the bar (Laci), Magda by
+the door, Viktor at the railing with whoever he's after tonight, Ramona at the bar, Zdenka at her table, the
+consultants, the hen party, the developer, the railing, the steps down to the river; ways out at the door (home),
+with Viktor (the club), with Ramona (her lift) and down the steps (Magda). People appear only when the story has
+them there. Sprites for Ramona, Stojan, Laci and all the outsiders, with sitting poses for people at tables.
+Conversations: the bottom bar with portraits, compact notes for thoughts, overheard captions.
+
+**Still to do in Step 1:** floating spoken lines above people (the mechanism exists for overheard lines placed
+at a person; no lines are written for it yet).
 
 The original Step 1 notes below still describe the conversation layer, which is kept.
 

@@ -386,6 +386,14 @@ public partial class Main : Control
             NextLine();
             return;
         }
+        if (Tag(line, "begin") is not null && _conversing)
+        {
+            // A new scene: whoever Teo was talking to is no longer the one in front of him.
+            _conversing = false;
+            _listener = null;
+            _focus = null;
+            ShowBar(false);
+        }
         string? scene = Tag(line, "scene");
         if (scene is not null && !_roomView.Visible) SetScene(_art.Scene(_phase, scene));
 
@@ -737,7 +745,7 @@ public partial class Main : Control
         }
         if (_typing) Continue();
         _autoSteps = -1;
-        GD.Print($"shot: mode {_mode}");
+        GD.Print($"shot: mode {_mode} phase {_phase}");
         if (_shotMenu is not null)
         {
             OpenMenu();
