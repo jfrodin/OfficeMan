@@ -34,7 +34,7 @@
 
   "things": [
     { "id": "gate", "name": "The way out", "x": 18, "y": 190 },
-    { "id": "magda", "name": "Magda", "sprite": "magda", "x": 64, "y": 196, "when": "not magda_crushed" },
+    { "id": "magda", "name": "Magda", "sprite": "magda_party", "x": 64, "y": 196, "when": "not magda_crushed" },
     { "id": "bar", "name": "The bar", "sprite": "laci", "x": 104, "y": 174 },
     { "id": "bar_counter", "name": "", "sprite": "terrace_bar", "x": 111, "y": 180, "prop": true },
     { "id": "developer", "name": "The man in the very good suit", "sprite": "adrian", "x": 78, "y": 194, "when": "outsider_developer" },

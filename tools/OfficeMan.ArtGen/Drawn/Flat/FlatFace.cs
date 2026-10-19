@@ -4,7 +4,7 @@ using OfficeMan.ArtGen.Raster;
 namespace OfficeMan.ArtGen.Drawn.Flat;
 
 public enum FlatHair { SweptBack, Bun, Combover, BaldFringe, Curls }
-public enum FlatClothes { SuitOpenCollar, SuitBlouse, ShirtTie, Vest, Scoop }
+public enum FlatClothes { SuitOpenCollar, SuitBlouse, ShirtTie, Vest, Scoop, Sweetheart }
 public enum FlatGlasses { None, Round, Half }
 
 /// <summary>
@@ -253,6 +253,33 @@ public static class FlatFace
                     s.Stroke(PathBuilder.From(Cx - 40, p.ChinY + 30).C(Cx - 26, p.ChinY + 92, Cx + 26, p.ChinY + 92, Cx + 40, p.ChinY + 30), 1.6, Hex("d1a54a"));
                     s.Fill(Shapes.Ellipse(Cx, p.ChinY + 90, 6, 7), Hex("d1a54a"));
                     s.Fill(Shapes.Ellipse(Cx - 1.5, p.ChinY + 88, 1.6, 1.6), Hex("fff2c8"));
+                }
+                break;
+            }
+            case FlatClothes.Sweetheart:
+            {
+                // Bare shoulders; the dress curves over each side of the bust and dips between.
+                const double n = 652;   // where the neckline meets the shoulders
+                s.SoftFill(Shapes.Ellipse(Cx - 70, 704, 76, 44), Hex(p.SkinShade), 0.35, 16, body);
+                s.SoftFill(Shapes.Ellipse(Cx + 70, 704, 76, 44), Hex(p.SkinShade), 0.5, 16, body);
+                s.Stroke(PathBuilder.From(Cx - 1, n - 6).C(Cx - 4, n + 14, Cx + 2, n + 30, Cx, n + 48), 2.4, Hex(p.SkinDeep), 0.85, taper: true);
+                s.Stroke(PathBuilder.From(Cx - 112, n - 2).C(Cx - 82, n - 18, Cx - 40, n - 16, Cx - 12, n + 4), 1.6, Hex(p.SkinShade), 0.7, taper: true);
+                s.Stroke(PathBuilder.From(Cx + 112, n - 2).C(Cx + 82, n - 18, Cx + 40, n - 16, Cx + 12, n + 4), 1.6, Hex(p.SkinShade), 0.7, taper: true);
+                var dress = PathBuilder.From(Cx - sh - 40, 760).L(Cx - sh - 10, n + 6).C(Cx - sh + 30, n - 6, Cx - 150, n - 4, Cx - 128, n + 4)
+                    .C(Cx - 100, n - 8, Cx - 36, n - 2, Cx, n + 50).C(Cx + 36, n - 2, Cx + 100, n - 8, Cx + 128, n + 4)
+                    .C(Cx + 150, n - 4, Cx + sh - 30, n - 6, Cx + sh + 10, n + 6).L(Cx + sh + 40, 760).Points;
+                TwoTone(s, dress, p.Cloth, p.ClothShade, 60);
+                // The fabric rounds over the bust: a light on the upper curve, a fold under it.
+                s.SoftFill(Shapes.Ellipse(Cx - 74, n + 22, 46, 18), Hex("e8505c"), 0.55, 14, dress);
+                s.SoftFill(Shapes.Ellipse(Cx + 66, n + 24, 40, 16), Hex("e8505c"), 0.3, 14, dress);
+                s.Stroke(PathBuilder.From(Cx - 130, n + 78).C(Cx - 100, n + 92, Cx - 40, n + 92, Cx - 8, n + 70), 2, Hex(p.ClothShade), 0.7, taper: true);
+                s.Stroke(PathBuilder.From(Cx + 130, n + 78).C(Cx + 100, n + 92, Cx + 40, n + 92, Cx + 8, n + 70), 2, Hex(p.ClothShade), 0.7, taper: true);
+                s.Stroke(PathBuilder.From(Cx - 128, n + 4).C(Cx - 100, n - 8, Cx - 36, n - 2, Cx, n + 50).C(Cx + 36, n - 2, Cx + 100, n - 8, Cx + 128, n + 4), 2, Hex(p.ClothShade), 0.9);
+                if (p.Necklace)
+                {
+                    s.Stroke(PathBuilder.From(Cx - 40, p.ChinY + 30).C(Cx - 26, p.ChinY + 96, Cx + 26, p.ChinY + 96, Cx + 40, p.ChinY + 30), 1.6, Hex("d1a54a"));
+                    s.Fill(Shapes.Ellipse(Cx, p.ChinY + 94, 6, 7), Hex("d1a54a"));
+                    s.Fill(Shapes.Ellipse(Cx - 1.5, p.ChinY + 92, 1.6, 1.6), Hex("fff2c8"));
                 }
                 break;
             }

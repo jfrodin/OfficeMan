@@ -159,6 +159,15 @@ if (sets.Contains("sprites"))
     for (int i = 0; i < people.Count; i++) preview.Draw(PixelPeople.Sheet(people[i]), 0, i * PixelPeople.FrameH);
     Png.Save(preview.Scaled(6), Path.Combine(outDir, "sprites_preview.png"));
 
+    // One person up close: idle and walk frames side by side, big enough to judge.
+    foreach (var person in new[] { PixelPeople.Magda, PixelPeople.MagdaParty })
+    {
+        var close = new Canvas(PixelPeople.FrameW * 3, PixelPeople.FrameH);
+        close.Fill(Rgb.Hex("8a8478"));
+        for (int f = 0; f < 3; f++) close.Draw(PixelPeople.Frame(person, f * 2), f * PixelPeople.FrameW, 0);
+        Png.Save(close.Scaled(10), Path.Combine(outDir, $"sprite_{person.Name}.png"));
+    }
+
     // The office with everyone in it, to judge scale.
     var room = OfficeRoom.Draw().Albedo;
     foreach (var (person, x, y) in new[] { (PixelPeople.Magda, 96, 200), (PixelPeople.Teo, 200, 236), (PixelPeople.Kornel, 284, 204), (PixelPeople.Zdenka, 360, 202), (PixelPeople.Viktor, 440, 160) })

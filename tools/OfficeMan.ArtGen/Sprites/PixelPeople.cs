@@ -3,7 +3,7 @@ using OfficeMan.ArtGen.Raster;
 namespace OfficeMan.ArtGen.Sprites;
 
 public enum HairStyle { Messy, Perm, SweptBack, Bun, Combover, Bald }
-public enum TopStyle { Shirt, ShirtTie, Cardigan, Dress, SuitOpen, Suit, Vest }
+public enum TopStyle { Shirt, ShirtTie, Cardigan, Dress, SuitOpen, Suit, Vest, LowTop }
 
 /// <summary>A small walking person, described rather than drawn.</summary>
 public sealed record PersonSpec(
@@ -14,7 +14,8 @@ public sealed record PersonSpec(
     string Bottom, string BottomShade, string Shoes,
     int Build = 6, int Height = 2, bool Glasses = false, bool Earrings = false, bool Belly = false,
     string? Accent = null, string? GreyAt = null, string GlassesColor = "3a2e28", string? Moustache = null, bool Cigarette = false,
-    bool Veil = false, bool Sash = false);
+    bool Veil = false, bool Sash = false,
+    bool Curvy = false, bool LowNeck = false, string? Legs = null);
 
 /// <summary>
 /// Pixel people for the walkable world: 28×60 frames, people 47-52 px tall (about 30 px per metre), facing right (flip for left).
@@ -29,7 +30,13 @@ public static class PixelPeople
         TopStyle.Shirt, "b9cbdc", "8ea4ba", "4a4e58", "363a42", "2a2420", Build: 6, Height: 2, Belly: true);
 
     public static readonly PersonSpec Magda = new("magda", "f2c4a6", "d4977e", HairStyle.Perm, "a3304a", "6e1a33",
-        TopStyle.Cardigan, "e48aa0", "b8607a", "3c3a4a", "2a2836", "5a2a2a", Build: 8, Height: 0, Earrings: true, Belly: true);
+        TopStyle.LowTop, "e8609a", "b24476", "2a2430", "1c1822", "8a1a2a", Build: 8, Height: 0, Earrings: true, Belly: true,
+        Curvy: true, LowNeck: true, Legs: "f2c4a6");
+
+    /// <summary>Magda at the party: the red dress, tight, low-cut, above the knee; red heels.</summary>
+    public static readonly PersonSpec MagdaParty = new("magda_party", "f2c4a6", "d4977e", HairStyle.Perm, "a3304a", "6e1a33",
+        TopStyle.Dress, "d0303d", "97192c", "d0303d", "97192c", "a01020", Build: 8, Height: 0, Earrings: true, Belly: true,
+        Curvy: true, LowNeck: true, Legs: "f2c4a6");
 
     public static readonly PersonSpec Zdenka = new("zdenka", "ecd3c4", "c4a196", HairStyle.Bun, "a6a2a8", "77737a",
         TopStyle.Suit, "6c6e72", "4a4c50", "6c6e72", "4a4c50", "2a2828", Build: 5, Height: 4, Glasses: true, Accent: "ece7dc", GlassesColor: "c9a65a");
@@ -72,7 +79,7 @@ public static class PixelPeople
     public static readonly PersonSpec Waitress = new("waitress", "f0c8b0", "cca088", HairStyle.Bun, "2a1e18", "1a120e",
         TopStyle.Shirt, "eeeeee", "c8c8c8", "222226", "16161a", "141414", Build: 5, Height: 2);
 
-    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, Zdenka, Kornel, Viktor, Stojan, Ramona, Laci, Adrian, Maarten, Felicity, Denisa, HenBlonde, HenDark, Waitress };
+    public static IEnumerable<PersonSpec> All => new[] { Teo, Magda, MagdaParty, Zdenka, Kornel, Viktor, Stojan, Ramona, Laci, Adrian, Maarten, Felicity, Denisa, HenBlonde, HenDark, Waitress };
 
     /// <summary>People who also get a sitting sheet ("name_sit"): sitting on a chair, facing right.</summary>
     public static IEnumerable<PersonSpec> Sitters => new[] { Zdenka, Maarten, Felicity, HenBlonde, HenDark };
@@ -132,8 +139,8 @@ public static class PixelPeople
         {
             // Legs: back leg darker. Stride moves them apart.
             int backX = cx - 2 - legStride, frontX = cx + 1 + legStride;
-            Rect(backX - 1, hip, backX + 1, foot - 2, p.BottomShade);
-            Rect(frontX - 1, hip, frontX + 1, foot - 2, p.Bottom);
+            Rect(backX - 1, hip, backX + 1, foot - 2, p.Legs is null ? p.BottomShade : p.SkinShade);
+            Rect(frontX - 1, hip, frontX + 1, foot - 2, p.Legs ?? p.Bottom);
             Rect(backX - 1, foot - 1, backX + 2, foot, p.Shoes);
             Rect(frontX - 1, foot - 1, frontX + 2, foot, p.Shoes);
         }
@@ -143,15 +150,38 @@ public static class PixelPeople
 
         // Arms behind the body first (the far arm), swinging against the legs.
         int swing = walking ? -legStride / 2 : 0;
-        Rect(cx - w - 1 + swing, shoulder + 1, cx - w + 1 + swing, hip + 1, p.TopShade);
+        int armIn = p.Curvy ? 1 : 0;
+        Rect(cx - w - 1 + armIn + swing, shoulder + 1, cx - w + 1 + armIn + swing, hip + 1, p.TopShade);
         Px(cx - w + swing, hip + 2, p.SkinShade);
 
         // Torso.
-        Rect(cx - w + 1, shoulder, cx + w - 1, hip, p.TopColor);
-        Rect(cx - w + 1, shoulder, cx - w + 2, hip, p.TopShade);  // shaded far side
+        if (p.Curvy)
+            for (int y = shoulder; y <= hip; y++)
+            {
+                double t = (y - shoulder) / (double)Math.Max(1, hip - shoulder);
+                int half = t < 0.12 ? w - 2 : t < 0.5 ? w : t < 0.7 ? w - 1 : w;
+                Rect(cx - half + 1, y, cx + half - 1, y, p.TopColor);
+                Rect(cx - half + 1, y, cx - half + 2, y, p.TopShade);
+            }
+        else
+        {
+            Rect(cx - w + 1, shoulder, cx + w - 1, hip, p.TopColor);
+            Rect(cx - w + 1, shoulder, cx - w + 2, hip, p.TopShade);  // shaded far side
+        }
         if (p.Belly) { Rect(cx + w, shoulder + torsoLen / 2, cx + w, hip - 1, p.TopColor); }
         switch (p.Top)
         {
+            case TopStyle.Dress when p.Curvy:
+                for (int y = hip - 2; y <= hip + (sitting ? 3 : legLen * 40 / 100); y++)
+                    Rect(cx - w, y, cx + w + 1, y, y > hip + 1 && y % 4 == 0 ? p.TopShade : p.TopColor);
+                Rect(cx - w, hip - 2, cx - w + 1, hip + (sitting ? 3 : legLen * 40 / 100), p.TopShade);
+                break;
+            case TopStyle.LowTop:
+                // A fitted top tucked into a short, tight skirt.
+                for (int y = hip - 1; y <= hip + (sitting ? 3 : legLen * 35 / 100); y++)
+                    Rect(cx - w, y, cx + w + 1, y, p.Bottom);
+                Rect(cx - w, hip - 1, cx - w + 1, hip + (sitting ? 3 : legLen * 35 / 100), p.BottomShade);
+                break;
             case TopStyle.Dress:
                 for (int y = hip; y <= hip + (sitting ? 3 : legLen * 55 / 100); y++)
                     Rect(cx - w + 1 - (y - hip) / 4, y, cx + w - 1 + (y - hip) / 4 + (p.Belly ? 1 : 0), y, p.TopColor);
@@ -192,10 +222,29 @@ public static class PixelPeople
             Rect(cx - w + 1, hip, cx + w - 1, hip, p.BottomShade);
 
         // Near arm, swinging the other way, with a hand.
-        Rect(cx + w - 1 - swing, shoulder + 1, cx + w + 1 - swing, hip + 1, p.Top is TopStyle.ShirtTie or TopStyle.Vest ? p.Skin : p.TopColor);
+        Rect(cx + w - 1 - armIn - swing, shoulder + 1, cx + w + 1 - armIn - swing, hip + 1, p.Top is TopStyle.ShirtTie or TopStyle.Vest ? p.Skin : p.TopColor);
         if (p.Top is TopStyle.ShirtTie) Rect(cx + w - 1 - swing, shoulder + 1, cx + w + 1 - swing, shoulder + 3, p.TopColor); // short sleeve
         Px(cx + w - swing, hip + 2, p.Skin);
         Px(cx + w + 1 - swing, hip + 2, p.Skin);
+        if (p.LowNeck)
+        {
+            // A low neckline: skin in a deep V, the line of the cleavage.
+            for (int i = 0; i < 6; i++) Rect(cx - 1 + i / 2, shoulder + i, cx + 4 - i / 2, shoulder + i, p.Skin);
+            Px(cx + 2, shoulder + 3, p.SkinShade);
+            Px(cx + 2, shoulder + 4, p.SkinShade);
+        }
+        if (p.Curvy)
+        {
+            // The bust, past the line of the arm; a shadow under it.
+            int bx = cx + w + 1 - armIn - swing;
+            Rect(bx, shoulder + 3, bx, shoulder + 9, p.TopColor);
+            Rect(bx + 1, shoulder + 4, bx + 1, shoulder + 8, p.TopColor);
+            Rect(bx + 2, shoulder + 5, bx + 2, shoulder + 7, p.TopColor);
+            Px(bx + 2, shoulder + 7, p.TopShade);
+            Px(bx + 1, shoulder + 8, p.TopShade);
+            Px(bx, shoulder + 10, p.TopShade);
+            if (p.LowNeck) { Px(bx, shoulder + 3, p.Skin); Px(bx + 1, shoulder + 4, p.Skin); }
+        }
 
         // Neck and head, three-quarter view facing right.
         Rect(cx, headBottom + 1, cx + 2, shoulder - 1, p.SkinShade);

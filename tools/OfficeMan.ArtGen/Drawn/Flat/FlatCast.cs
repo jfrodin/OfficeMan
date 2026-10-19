@@ -21,7 +21,7 @@ public static class FlatCast
         BrowColor = "5a2430", BrowWidth = 4.2,
         NoseLength = 0.78, NoseWidth = 0.9, MouthWidth = 30, LipFullness = 0.9, LipUpper = "c4505a", LipLower = "d86a6a",
         Hair = FlatHair.Curls, HairColor = "8a2c42", HairShade = "5c1a2f", HairLight = "b6536a",
-        Clothes = FlatClothes.Scoop, Cloth = "d0303d", ClothShade = "97192c",
+        Clothes = FlatClothes.Sweetheart, Cloth = "d0303d", ClothShade = "97192c",
         Earrings = true, Necklace = true, DoubleChin = true,
     };
 

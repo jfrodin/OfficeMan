@@ -89,11 +89,19 @@ public partial class Main : Control
     private string? _shotPath;
     private string? _lookRoom;
     private string? _shotMenu;
+    private bool _reviewOnly;   // showing Review.bat's screenshots, not playing
     private int _lookAt = -1;
 
     public override void _Ready()
     {
         var args = OS.GetCmdlineUserArgs();
+        if (args.Length > 1 && args[0] == "--review")
+        {
+            Controls.Register();
+            _reviewOnly = true;
+            AddChild(new ReviewViewer(args[1]));
+            return;
+        }
         if (args.Length > 2 && args[0] == "--stitch")
         {
             Stitch(args[1], args[2..]);
@@ -621,6 +629,7 @@ public partial class Main : Control
 
     public override void _UnhandledInput(InputEvent e)
     {
+        if (_reviewOnly) return;
         if (e.IsActionPressed("quicksave")) { Save("quicksave"); Toast("Saved"); return; }
         if (e.IsActionPressed("quickload")) { if (Load("quicksave")) Toast("Loaded"); return; }
         if (MenuInput(e)) { GetViewport().SetInputAsHandled(); return; }
@@ -645,6 +654,7 @@ public partial class Main : Control
 
     public override void _Process(double delta)
     {
+        if (_reviewOnly) return;
         LayoutMenu();
         if (_typing && _mode != Mode.Menu)
         {
