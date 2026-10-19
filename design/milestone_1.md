@@ -81,6 +81,11 @@ The original Step 1 notes below still describe the conversation layer, which is 
 - The text player stays, for fast testing.
 
 ### Step 2: Who Teo is (traits and conditions, designed with the creator first)
+
+**Done (2026-10-19):** designed with the creator and built. Four traits (Nerve, Warmth, Appetite, Honesty), a
+slightly different Teo each life, conditions that push him for the moment, nine big moments that shift him for good,
+nine choices that depend on who he is, inner-voice variants, hindsight lines, and an end screen that says in words
+who Teo was. See `design/traits_build.md`.
 - **A design session first:** the final hidden trait list (4-5), fixed or slightly random starting values, how each trait *shows* without numbers.
 - Traits change what Teo notices, which options appear, and how he talks to himself.
 - Conditions v2: drunk, hungover, tired, mood, humiliated, plus whatever the session adds. Each has a monologue voice, so his state can be read from how he thinks.

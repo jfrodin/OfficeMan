@@ -32,7 +32,7 @@ public static class Teo
     public static readonly string[] DerivedNames =
     {
         "drunk", "tired", "hungover", "nerve", "warmth", "appetite", "honesty",
-        "tact", "judgment", "restraint", "time", "day", "hour",
+        "tact", "judgment", "restraint", "shifts", "time", "day", "hour",
     };
 
     /// <summary>Sets the baseline and nudges one or two traits a step, seeded, so a reload gives the same man.</summary>
@@ -58,6 +58,7 @@ public static class Teo
         s.Set("shifted:" + reason, 1);
         int before = s.Get("trait_" + trait);
         int after = Math.Clamp(before + Math.Sign(delta), TraitMin, TraitMax);
+        if (after == before) return false;   // already as far as he goes that way
         s.Set("trait_" + trait, after);
         s.TraitShifts.Add(new TraitShift(trait, after - before, reason, s.Day, s.Minute));
         return true;
@@ -132,6 +133,7 @@ public static class Teo
         "tact" => Tact(s),
         "judgment" => Judgment(s),
         "restraint" => Restraint(s),
+        "shifts" => s.TraitShifts.Count,
         "time" => s.Minute,
         "day" => s.Day,
         "hour" => s.Minute / 60,

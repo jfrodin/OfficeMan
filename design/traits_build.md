@@ -1,8 +1,11 @@
 # Traits in the game: what to switch on (for the creator's approval)
 
-**Status: proposal, 2026-10-19. Nothing here is in the game yet.** The engine part is built: four traits, the creator's
-baseline Teo nudged a step in one or two traits per life, conditions (drink, tiredness, mood, shame, hangover) pushing
-them for the moment, and a `shift` command for lasting change. Everything below waits for a yes, a no or a change.
+**Status: approved by the creator and built, 2026-10-19.** All of A, B and C is in the game. Engine: four traits, the
+creator's baseline Teo nudged a step in one or two traits per life, conditions (drink, tiredness, mood, shame,
+hangover) pushing them for the moment, `shift` for lasting change (once per reason, only if something changes),
+`why`/`hindsight()` for the hindsight lines, the `today` knot for the end screen. Thresholds for the inner-voice
+variants are relative to the baseline, so a nudged Teo hears them: bold nerve >= 0, careful <= -2; open warmth >= 2,
+closed <= 0; blunt honesty >= 0, smooth <= -2.
 
 Trait lines: **Nerve** (bold / careful), **Warmth** (open / closed), **Appetite** (hungry / held back),
 **Honesty** (blunt / smooth). Baseline: careful, open, held back, smooth.

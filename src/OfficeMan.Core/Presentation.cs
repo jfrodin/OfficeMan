@@ -60,4 +60,7 @@ public sealed class Presentation
     /// <summary>The phase this decision belongs to; front ends map it to a location backdrop.</summary>
     public string PhaseId { get; init; } = "";
     public IReadOnlyList<string> Headlines { get; init; } = Array.Empty<string>();
+
+    /// <summary>At the end: a few plain lines about who Teo was today.</summary>
+    public IReadOnlyList<string> Today { get; init; } = Array.Empty<string>();
 }

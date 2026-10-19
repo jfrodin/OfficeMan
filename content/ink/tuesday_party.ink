@@ -29,6 +29,12 @@ MAGDA: Two each! Viktor says! I'm the bank!
     ~ qadd("tickets_used", -1)
 }
 The river's going past, slow and brown and not interested.
+{
+- warmth() >= 2:
+    Everyone's here. I like them more than I'd ever say.
+- warmth() <= 0:
+    Everyone's here. I find the exits, like at a funeral.
+}
 { is("outsider_consultants"):
     At the next table, a group in linen shirts and lanyards is having what a laminated sign calls a <i>Team Alignment Evening</i>. They're foreigners. You can tell because they're photographing the bread.
 }
@@ -170,6 +176,7 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
         ~ remember("magda", "bad_dance")
         I dance like a man trying to get a wasp out of his shirt. Magda is very kind about it. The consultants film it.
         It'll be on a LinkedIn post by Thursday, captioned <i>local culture</i>.
+        ~ shift("nerve", -1, "public_humiliation")
     - else:
         ~ like("magda", 2)
         ~ remember("magda", "danced")
@@ -177,6 +184,7 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
         We dance. Badly, but together, and she laughs with her whole face for the first time today.
         For four minutes, nobody's looking at Viktor. Not even her.
     }
+    {hindsight()}
 * [Steer her away from Viktor. #cautious]
     ~ remember("magda", "steered")
     I keep moving us, slowly, to the far end of the terrace, like a sheepdog with a secret.
@@ -224,6 +232,7 @@ Ramona is at the bar with her back to all of it, which means she can see all of 
         ~ humiliate(1)
         {viktor_target()} just laughs. She knows. Of course she knows. Everyone knows, it's the national pastime.
         Viktor doesn't laugh. Viktor looks at me with complete calm, the way you look at a spreadsheet with an error in it.
+        ~ shift("nerve", -1, "burned_by_viktor")
     - else:
         ~ like("viktor", -3)
         ~ remember("viktor", "sabotaged")
@@ -232,7 +241,9 @@ Ramona is at the bar with her back to all of it, which means she can see all of 
         {viktor_target()} looks at the bar. At the white dress. At the handbag. Something adds up.
         She excuses herself. Viktor watches her go, and then turns to me, smiling. That's the scary part. The smile.
         VIKTOR: Good party, Teo? #mood:displeased
+        ~ shift("nerve", 1, "stood_up_to_viktor")
     }
+    {hindsight()}
 * [Leave him to it.]
     I go. Not my business. That's what I say about most things. It's on my headstone, probably. <i>Not My Business</i>.
 - -> DONE
@@ -268,7 +279,7 @@ MAGDA: Don't. I know. Don't. #mood:sad
 MAGDA: Thirty-four tickets. I had a plan. I don't know what the plan was. Get drunk with him. And then.
 MAGDA: And then what, Magda? Then nothing. Then Wednesday.
 She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. That's the worst part about Magda: she always gets the joke, even when she's the joke.
-* [Sit with her. Say nothing. #kind]
+* {warmth() >= 0} [Sit with her. Say nothing. #kind]
     ~ like("magda", 3)
     ~ remember("magda", "sat_with")
     ~ flag("magda_walk_offer")
@@ -277,7 +288,7 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
     TEO: It's going to a dam in Hungary.
     She laughs, properly this time. She leans on my shoulder. She smells of perfume and zhivka and something underneath, sadder, like a hospital corridor.
     MAGDA: Walk me home later? I don't want to get the tram looking like this.
-* [Tell her the truth about Viktor.]
+* {honesty() >= -1} [Tell her the truth about Viktor.]
     ~ temp r = check("magda_truth", "tact")
     TEO: He's not worth it, Magda. He's not even... He does this. He does this with everyone.
     { r:
@@ -295,8 +306,10 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
         TEO: It's not stupid.
         It is stupid. But it's the least stupid thing anyone's said tonight.
         MAGDA: Walk me home later?
+        ~ shift("honesty", 1, "told_magda")
     }
-* {drunk() >= 2} [Kiss her. #bold]
+    {hindsight()}
+* {drunk() >= 2 || appetite() >= 1} [Kiss her. #bold]
     ~ temp r2 = check("kiss_magda", "nerve")
     { r2:
     - 0:
@@ -306,6 +319,7 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
         She turns her face. Kindly. So kindly that I want to walk into the river.
         MAGDA: Oh, Teo. No. You're sweet. You're drunk and sweet.
         Sweet. Like a dog. Like a small, drunk dog.
+        ~ shift("nerve", -1, "public_humiliation")
     - else:
         ~ like("magda", 2)
         ~ remember("magda", "kissed")
@@ -315,6 +329,7 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
         She kisses me back. It tastes of zhivka and lipstick and of being second choice, for both of us. We both know it. We keep going anyway.
         MAGDA: Walk me home?
     }
+    {hindsight()}
 * [Go back up to the party.]
     ~ like("magda", -2)
     ~ remember("magda", "left_her")
@@ -344,14 +359,14 @@ RAMONA: Do you know what this bag cost?
 TEO: No.
 RAMONA: Four thousand euro. I bought it in March. In March he went to a conference in Vienna for four days.
 RAMONA: There's a bag for every conference. I have a whole wardrobe of conferences.
-* [Listen. #kind]
+* {warmth() >= 0} [Listen. #kind]
     ~ remember("ramona", "listened")
     ~ like("ramona", 2)
     I listen. She talks about Vienna, and about a wardrobe, and about a girl from Viktor's gym in 2009. She talks like a woman reading out the minutes of a long meeting.
     RAMONA: You're easy to talk to. Nobody talks to me at these things. They're frightened I'll tell Viktor something.
     RAMONA: I never tell Viktor anything. That's the arrangement.
     ~ flag("ramona_confided")
-* {drunk() >= 2 || nerve() >= 2} [Flirt with her. #bold]
+* {drunk() >= 2 || appetite() >= 1} [Flirt with her. #bold]
     ~ temp r = check("flirt_ramona", "tact")
     { r:
     - 0:
@@ -366,6 +381,7 @@ RAMONA: There's a bag for every conference. I have a whole wardrobe of conferenc
         RAMONA: Careful. I'm the boss's wife. That's the most dangerous woman in any building.
         But she's smiling. Properly, with the tired eyes too.
     }
+    {hindsight()}
 * [Ask her why she stays. #bold]
     ~ temp r2 = check("ask_ramona", "tact")
     { r2:
@@ -440,10 +456,11 @@ He unfolds a piece of A4. Typed. Double-spaced. It has a title.
 KORNEL: "Ode to Permits."
 Somebody at the hen party whoops. It's not a good whoop.
 KORNEL: "In a building made of concrete, in a city by the Vel..."
-* [Go up and stand beside him. In solidarity. #kind]
+* {not (nerve() <= -2 && warmth() <= -1)} [Go up and stand beside him. In solidarity. #kind]
     ~ flag("stood_with_kornel")
     ~ remember("kornel", "stood_with")
     ~ like("kornel", 4)
+    ~ shift("warmth", 1, "stood_with_kornel")
     ~ temp r = check("kornel_poem_saved", "nerve")
     I walk up and stand next to him. I don't know why. My legs did it. Kornel looks at me like I've pulled him out of a well.
     { r:
@@ -458,12 +475,14 @@ KORNEL: "In a building made of concrete, in a city by the Vel..."
         Zdenka, for one second, looks almost moved.
         ~ headline("Kornel's poem brought the house down. Teo stood next to him.")
     }
+    {hindsight()}
 * [Film it. #bold]
     ~ flag("filmed_kornel")
     ~ remember("kornel", "filmed")
     ~ like("kornel", -2)
     ~ qset("kornel_poem", 0)
     ~ headline("Teo filmed Kornel's poem. The video exists.")
+    ~ shift("warmth", -1, "filmed_kornel")
     I film it. Everybody films it. That's the thing. If you're the only one not filming, you're the weird one.
     Kornel sees the phones. All of them. He reads to the end anyway. That's the bravest thing I've seen in years and I recorded it for laughs.
 * [Look away.]
@@ -505,7 +524,7 @@ Resilient. That's what they call you when they'd never live where you live.
     FELICITY: That's incredible. I'm putting that in the deck.
     It's going to be in the deck. Page sixty-one. <i>Activating cultural heritage.</i>
     ~ headline("Teo invented a national custom. It's going in a consultant's deck.")
-* [Tell them the Innovation Bench costs four hundred thousand euro.]
+* {honesty() >= 1 || drunk() >= 1} [Tell them the Innovation Bench costs four hundred thousand euro.]
     ~ remember("consultants", "bench")
     MAARTEN: Yes, but it's not just a bench. It's a platform.
     FELICITY: It's a conversation starter.
@@ -623,6 +642,7 @@ I lean on the railing. The railing leans back.
 - else:
     I hold on. The world swings, then settles, like a boat with a bad captain.
     That was nearly something. That was nearly a story people tell.
+    {hindsight()}
     -> DONE
 }
 
@@ -630,6 +650,7 @@ I lean on the railing. The railing leans back.
 I lean a bit further. To see the lights. The lights are very beautiful from here, upside down.
 Then the railing isn't there, and the river is.
 ~ flag("fell_in_river")
+~ shift("appetite", -1, "river")
 ~ headline("Teo went into the river.")
 ~ goto_phase("night_river")
 -> DONE
@@ -659,6 +680,7 @@ KORNEL: I've got you. I've got the car. Come on. Mind the step. There's a step. 
 I walk away from it all, down to the river, to feel the air, to make the terrace stop doing that.
 The river's very close now. Very friendly.
 ~ flag("fell_in_river")
+~ shift("appetite", -1, "river")
 ~ headline("Teo went into the river.")
 ~ goto_phase("night_river")
 -> DONE

@@ -781,7 +781,9 @@ public partial class Main : Control
         SetPortrait(null);
         _speaker.Visible = true;
         _speaker.Text = "To be continued";
-        _text.Text = string.Join("\n", _view.Headlines.Select(h => "·  " + h).DefaultIfEmpty("Nothing much happened. That's also a life."));
+        string today = string.Join("\n", _view.Today.Select(Bbcode));
+        string happened = string.Join("\n", _view.Headlines.Select(h => "·  " + h).DefaultIfEmpty("Nothing much happened. That's also a life."));
+        _text.Text = today.Length == 0 ? happened : $"[i]{today}[/i]\n\n{happened}";
         _text.VisibleRatio = 1;
         AddChoice("Live another Tuesday", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
         AddChoice("Quit", () => GetTree().Quit());

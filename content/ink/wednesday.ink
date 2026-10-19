@@ -21,6 +21,9 @@
 - else:
     I wake up at ten past seven, rested, which feels like cheating. Like I skipped something everyone else had to sit through.
 }
+{ hungover():
+    Everything is too bright and slightly my fault.
+}
 { is("wearing_sash"):
     I'm still wearing the sash. <i>BRIDESMAID</i>. I leave it on for a while. Nobody can see me.
 }
@@ -120,6 +123,7 @@ At half seven, a nurse gives me my clothes in a plastic bag, still damp, and an 
 The invoice will be posted to my employer. That's the law. The nurse says it like she's telling me the weather.
 NURSE: Have a good day, Mr Halász. Maybe less river.
 ~ flag("station_invoice")
+~ shift("appetite", -1, "station")
 ~ headline("The sobering-up station is sending the invoice to Teo's office.")
 -> phone_check
 

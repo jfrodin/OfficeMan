@@ -85,6 +85,12 @@ Shower. Coffee. The good shirt, because of the party, then the other shirt, beca
 Stojan is on the landing in a vest, smoking under the sign that says <i>No Smoking in the Stairwell</i>. He put the sign up.
 STOJAN: Teo! Mr Permit!
 Nobody calls me that. Stojan calls me that.
+{
+- nerve() >= 0:
+    I could tell him no. I won't. But I could.
+- nerve() <= -2:
+    I already know I'm going to say yes to whatever this is.
+}
 STOJAN: Listen. Small thing. The balcony.
 The "balcony" is a room now. It has a window, a roof and, since May, a toilet.
 STOJAN: People from your office came. Took pictures. Very rude. Very professional. You make this go away, yes? Neighbours.
@@ -94,7 +100,7 @@ STOJAN: People from your office came. Took pictures. Very rude. Very professiona
     -> names
 * ["I'll see what I can do." #kind]
     -> promise
-* {mood() >= 0 || drunk() >= 1} ["What's in it for me?" #bold]
+* {mood() >= 0 || drunk() >= 1 || nerve() >= 0} ["What's in it for me?" #bold]
     -> bargain
 
 = refuse

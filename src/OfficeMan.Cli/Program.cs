@@ -151,6 +151,11 @@ sealed partial class TextUi
     {
         Console.WriteLine();
         Console.WriteLine($"{Bold}{Yellow}── To be continued ──{Reset}");
+        if (view.Today.Count > 0)
+        {
+            Console.WriteLine();
+            foreach (string t in view.Today) Console.WriteLine($"  {Markup(t)}");
+        }
         if (view.Headlines.Count > 0)
         {
             Console.WriteLine();

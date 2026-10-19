@@ -96,6 +96,9 @@ public sealed class Game : IConditionContext
         if (IsOver) throw new InvalidOperationException("The game is over.");
         if (index < 0 || index >= Current.Choices.Count) throw new ArgumentOutOfRangeException(nameof(index));
 
+        foreach (string tag in Current.Choices[index].Tags)
+            if (tag.Trim() is "bold" or "kind" or "cautious" or "drink") State.Add("chose_" + tag.Trim(), 1);
+
         if (Current.Kind == PresentationKind.Dialogue)
         {
             _story.ChooseChoiceIndex(index);
@@ -349,7 +352,22 @@ public sealed class Game : IConditionContext
         Clock = Teo.Clock(State),
         When = Teo.DayPart(State),
         Headlines = State.Headlines.ToList(),
+        Today = Collect("today"),
     };
+
+    /// <summary>Runs a knot that only prints (no choices) and returns its lines.</summary>
+    private List<string> Collect(string knot)
+    {
+        var lines = new List<string>();
+        if (!Content.KnotNames.Contains(knot)) return lines;
+        _story.ChoosePathString(knot);
+        while (_story.canContinue)
+        {
+            string text = _story.Continue().Trim();
+            if (text.Length > 0) lines.Add(text);
+        }
+        return lines;
+    }
 
     private List<StoryLine> TakePending()
     {
@@ -391,7 +409,25 @@ public sealed class Game : IConditionContext
         int tier = total < 0 ? 0 : total >= 2 ? 2 : 1;
 
         CheckLog.Add($"{id}: {stat}={value} roll={a + b:+0;-0;0} → {new[] { "bad", "mixed", "good" }[tier]}");
+        _lastCause = Cause(stat, value, a + b, tier);
         return tier;
+    }
+
+    private string _lastCause = "";
+
+    /// <summary>
+    /// What decided a check, for the hindsight line: luck when the dice went against the odds, otherwise the drink,
+    /// tiredness or (for nerve) his nature. Empty when nothing stands out.
+    /// </summary>
+    private string Cause(string stat, int value, int roll, int tier)
+    {
+        if (tier == 0 && value >= 1 && roll <= -2) return "luck_bad";
+        if (tier == 2 && value <= 0 && roll >= 2) return "luck_good";
+        if (Teo.Drunk(State) >= 2) return "drink";
+        if (tier == 0 && Teo.Tired(State) >= 2) return "tired";
+        if (stat == "nerve" && State.Get("trait_nerve") >= 0) return "bold";
+        if (stat == "nerve" && State.Get("trait_nerve") <= -2 && tier == 0) return "careful";
+        return "";
     }
 
     private void BindExternals()
@@ -425,6 +461,7 @@ public sealed class Game : IConditionContext
         });
         _story.BindExternalFunction("headline", (string text) => State.Headlines.Add(text));
         _story.BindExternalFunction("played", (string id) => State.Plays(id), lookaheadSafe: true);
+        _story.BindExternalFunction("why", () => { string c = _lastCause; _lastCause = ""; return c; });
         _story.BindExternalFunction("shift", (string trait, int delta, string reason) => OfficeMan.Core.World.Teo.Shift(State, trait, delta, reason));
     }
 }
