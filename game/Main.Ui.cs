@@ -58,6 +58,7 @@ public partial class Main
         box.AddChild(_speaker);
         box.AddChild(_text);
         box.AddChild(_choices);
+        _barBox = box;
         _barMargin.AddChild(box);
         _panel.AddChild(_barMargin);
         AddChild(_panel);
@@ -119,6 +120,7 @@ public partial class Main
         _toast = MakeLabel(22, new Color(1, 1, 1, 0.85f));
         _toast.Position = new Vector2(1600, 40);
         AddChild(_toast);
+        BuildColumn();
     }
 
     private static Label MakeLabel(int size, Color color)
@@ -145,6 +147,14 @@ public partial class Main
     /// </summary>
     private void Layout(double delta)
     {
+        if (UseColumn)
+        {
+            LayoutColumn(delta);
+            _roomView.Lift += (float)((0 - _roomView.Lift) * (1 - Math.Exp(-delta * 4)));
+            if (_note.Visible || _heard.Visible) LayoutCaptions();
+            return;
+        }
+        _roomView.Pan += (float)((0 - _roomView.Pan) * (1 - Math.Exp(-delta * 4)));
         bool portrait = _portraitCard.Visible && _panel.Visible;
         _barMargin.AddThemeConstantOverride("margin_left", portrait ? (int)PortraitW + 90 : 150);
         _text.CustomMinimumSize = new Vector2(1920 - (portrait ? PortraitW + 90 : 150) - 150, 40);
@@ -186,6 +196,15 @@ public partial class Main
         // Small differences are ignored, so the view doesn't drift line by line.
         if (need > _liftTarget + 6 || need < _liftTarget - 40 || need == 0) _liftTarget = need;
         _roomView.Lift += (float)((_liftTarget - _roomView.Lift) * (1 - Math.Exp(-delta * 4)));
+    }
+
+    /// <summary>The thought note and the overheard caption, when they show outside the column.</summary>
+    private void LayoutCaptions()
+    {
+        _note.Size = Vector2.Zero;
+        _note.Position = new Vector2((1920 - _note.Size.X) / 2, 1080 - 60 - _note.Size.Y);
+        _heard.Size = Vector2.Zero;
+        _heard.Position = new Vector2((1920 - _heard.Size.X) / 2, 110);
     }
 
     private Vector2 AboveThing(string anchor, Vector2 size)

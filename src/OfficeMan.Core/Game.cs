@@ -96,8 +96,7 @@ public sealed class Game : IConditionContext
         if (IsOver) throw new InvalidOperationException("The game is over.");
         if (index < 0 || index >= Current.Choices.Count) throw new ArgumentOutOfRangeException(nameof(index));
 
-        foreach (string tag in Current.Choices[index].Tags)
-            if (tag.Trim() is "bold" or "kind" or "cautious" or "drink") State.Add("chose_" + tag.Trim(), 1);
+        CountChoiceTags(Current.Choices[index].Tags);
 
         if (Current.Kind == PresentationKind.Dialogue)
         {
@@ -110,6 +109,12 @@ public sealed class Game : IConditionContext
         }
         Current = Advance();
         return Current;
+    }
+
+    private void CountChoiceTags(IEnumerable<string> tags)
+    {
+        foreach (string tag in tags)
+            if (tag.Trim() is "bold" or "kind" or "cautious" or "drink") State.Add("chose_" + tag.Trim(), 1);
     }
 
     // ───────────────────────── director ─────────────────────────
@@ -125,6 +130,13 @@ public sealed class Game : IConditionContext
                 {
                     if (Content.Get(_activeStorylet).Kind == StoryletKind.Offstage)
                         throw new ContentException($"offstage storylet '{_activeStorylet}' must not offer choices");
+                    if (_story.currentChoices.Count == 1)
+                    {
+                        // Nothing to decide: it just happens, and the text runs on (the creator, 2026-10-26).
+                        CountChoiceTags(_story.currentChoices[0].tags ?? new List<string>());
+                        _story.ChooseChoiceIndex(0);
+                        continue;
+                    }
                     return DialoguePresentation();
                 }
                 FinishStorylet();

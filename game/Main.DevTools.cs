@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,6 +19,7 @@ public partial class Main
     private bool _reviewOnly;   // showing Review.bat's screenshots, not playing
     private int _lookAt = -1;
     private string? _lookDoing;
+    private string? _layoutArg;   // "bar" or "column": overrides the setting for screenshots
 
     /// <summary>
     /// Command line (after --): --seed N; --shot path.png --steps N (play N steps automatically, then screenshot);
@@ -50,6 +51,7 @@ public partial class Main
             else if (args[i] == "--menu" && i + 1 < args.Length) _shotMenu = args[++i];
             else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
             else if (args[i] == "--doing" && i + 1 < args.Length) _lookDoing = args[++i];
+            else if (args[i] == "--layout" && i + 1 < args.Length) _layoutArg = args[++i];
         }
         return false;
     }

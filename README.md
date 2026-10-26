@@ -21,11 +21,12 @@ lives elsewhere).
 | | Keyboard | Controller |
 |---|---|---|
 | Walk | Arrows / WASD | Left stick / d-pad |
-| Interact, continue | E / Enter / Space | A |
+| Interact, continue | E / Enter / Space, or click | A |
 | Choose | 1-9, mouse, or arrows + Enter | d-pad + A |
 | Back out of a menu | Esc | B |
 | Pause menu (save, load, settings) | Esc | Start |
 | Quick save / load | F5 / F9 | |
+| Text in a column / in a bar along the bottom | F2 (also in Settings) | |
 
 Every choice autosaves. Teo's flat, the stairwell, the office and the party are walkable rooms; the night scenes are
 still pictures with a list of choices.

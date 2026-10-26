@@ -36,7 +36,19 @@ public partial class Main
             ShowBar(false);
         }
         string? scene = Tag(line, "scene");
-        if (scene is not null && !_roomView.Visible) SetScene(_art.Scene(_phase, scene));
+        if (scene is not null)
+        {
+            // A place of its own inside a phase that's otherwise a room (waking up somewhere else): show its picture.
+            _roomView.Visible = false;
+            _scene.Visible = true;
+            SetScene(_art.Scene(_phase, scene));
+        }
+
+        if (UseColumn)
+        {
+            ColumnLine(line);
+            return;
+        }
 
         string? speaker = line.Speaker;
         string? heardFrom = HeardFrom(line);
@@ -146,6 +158,11 @@ public partial class Main
 
     private void OpenChoices(List<(string text, int index)> options, bool allowBack)
     {
+        if (UseColumn)
+        {
+            OpenColumnChoices(options, allowBack);
+            return;
+        }
         SetMode(Mode.Choosing);
         _note.Visible = false;
         _heard.Visible = false;
@@ -172,6 +189,30 @@ public partial class Main
         }
         if (allowBack) AddChoice("Not now.", StartWalking);
         _choices.Columns = _choices.GetChildCount() >= 3 ? 2 : 1;
+        if (_choices.GetChildCount() > 0) ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
+    }
+
+    private void OpenColumnChoices(List<(string text, int index)> options, bool allowBack)
+    {
+        SetMode(Mode.Choosing);
+        _note.Visible = false;
+        _heard.Visible = false;
+        ShowColumn(true);
+        if (_view.Kind == PresentationKind.Hub && !_roomView.Visible && !allowBack) ColumnHeading("What now?");
+        int n = 1;
+        foreach (var (text, index) in options)
+        {
+            int i = index;
+            string chosen = text;
+            AddChoice($"{n++}.  {text}", () =>
+            {
+                ColumnEcho(chosen);
+                Choose(i);
+            });
+        }
+        if (allowBack) AddChoice("Not now.", StartWalking);
+        _choices.Columns = 1;
+        ScrollToEnd();
         if (_choices.GetChildCount() > 0) ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
     }
 }

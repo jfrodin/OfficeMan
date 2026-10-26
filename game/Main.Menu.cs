@@ -18,6 +18,7 @@ public partial class Main
     {
         public bool Fullscreen { get; set; }
         public int TextSpeed { get; set; } = 1;   // index into TextSpeeds
+        public int TextLayout { get; set; }       // 0 the column on the right, 1 the bar along the bottom
     }
 
     private static readonly (string name, double cps)[] TextSpeeds = { ("Slow", 32), ("Normal", 55), ("Fast", 90), ("Instant", 100000) };
@@ -72,6 +73,9 @@ public partial class Main
     {
         _settings.TextSpeed = Math.Clamp(_settings.TextSpeed, 0, TextSpeeds.Length - 1);
         _cps = TextSpeeds[_settings.TextSpeed].cps;
+        if (_layoutArg is not null) _settings.TextLayout = _layoutArg == "bar" ? 1 : 0;
+        _settings.TextLayout = Math.Clamp(_settings.TextLayout, 0, 1);
+        ApplyTextLayout();
         if (_lookRoom is null && _shotPath is null)
             DisplayServer.WindowSetMode(_settings.Fullscreen ? DisplayServer.WindowMode.Fullscreen : DisplayServer.WindowMode.Windowed);
     }
@@ -147,6 +151,11 @@ public partial class Main
             ApplySettings();
             SaveSettings();
             ShowSettingsMenu(1);
+        }),
+        ($"Text:  {(UseColumn ? "Column" : "Bottom bar")}   (F2)", () =>
+        {
+            ToggleTextLayout();
+            ShowSettingsMenu(2);
         }),
         ("Back", ShowMainMenu),
     });

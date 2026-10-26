@@ -42,14 +42,29 @@ public partial class RoomView : Control
 
     public bool TeoVisible => _teo.Visible;
 
-    private float _lift;
+    private float _lift, _pan;
 
     /// <summary>How far the view is raised (screen pixels), to keep people clear of the dialogue bar.</summary>
     public float Lift
     {
         get => _lift;
-        set { _lift = value; if (_screen is not null) _screen.Position = new Vector2(0, -Mathf.Round(value)); }
+        set { _lift = value; Place(); }
     }
+
+    /// <summary>How far the view is slid left (screen pixels), to keep people clear of the text column.</summary>
+    public float Pan
+    {
+        get => _pan;
+        set { _pan = value; Place(); }
+    }
+
+    private void Place()
+    {
+        if (_screen is not null) _screen.Position = new Vector2(-Mathf.Round(_pan), -Mathf.Round(_lift));
+    }
+
+    /// <summary>Teo's horizontal position on screen (unpanned).</summary>
+    public float TeoScreenX => _room is null ? 960 : _teo.Position.X * ScreenScale;
 
     private float ScreenScale => _room is null ? 4 : 1920f / _room.Width;
 

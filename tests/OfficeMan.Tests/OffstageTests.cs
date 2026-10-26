@@ -188,6 +188,33 @@ public class OffstageTests
         Assert.True(game.IsOver);
     }
 
+    [Fact]
+    public void ASingleChoiceJustHappens()
+    {
+        var game = Game.New(Load("""
+            === wake
+            # phase: evening
+            # kind: hub
+            # choice: Wake up.
+            I lie there.
+            * [Get up.]
+            - I get up.
+            -> DONE
+
+            === leave
+            # phase: evening
+            # kind: exit
+            # choice: Leave.
+            Bye.
+            -> DONE
+            """), seed: 1);
+
+        game.Choose(game.Current.Choices.ToList().FindIndex(c => c.Text == "Wake up."));
+        Assert.Equal(PresentationKind.Hub, game.Current.Kind);   // no stop at "Get up."
+        Assert.Contains(game.Current.Lines, l => l.Text == "I lie there.");
+        Assert.Contains(game.Current.Lines, l => l.Text == "I get up.");
+    }
+
     private static ContentBundle Load(string ink)
     {
         string dir = Path.Combine(Path.GetTempPath(), "officeman-test-" + Guid.NewGuid().ToString("N"));

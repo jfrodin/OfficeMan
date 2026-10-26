@@ -97,6 +97,8 @@ public partial class Main : Control
         _saveDir = Path.Combine(OS.GetUserDataDir(), "saves");
         Directory.CreateDirectory(_saveDir);
 
+        // Clicks that land on no button reach the input handlers below.
+        MouseFilter = MouseFilterEnum.Ignore;
         Controls.Register();
         BuildUi();
         BuildMenu();
@@ -112,6 +114,7 @@ public partial class Main : Control
         _seed = seed;
         _game = OfficeMan.Core.Game.New(_content, seed);
         _phase = "";
+        ClearLog();
         _moods.Clear();
         _lifeLabel.Text = $"life #{seed}";
         Show(_game.Current);
@@ -143,6 +146,7 @@ public partial class Main : Control
         _conversing = false;
         _moods.Clear();
         Arrive(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
+        if (UseColumn) ColumnHeading(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
         SetMode(_mode); // refresh the dim layer for the new kind of place
     }
 
@@ -199,6 +203,7 @@ public partial class Main : Control
         _heard.Visible = false;
         _note.Visible = false;
         ShowBar(false);
+        ShowColumn(false);
         SetMode(Mode.Walking);
     }
 
@@ -217,6 +222,7 @@ public partial class Main : Control
         {
             _speaker.Visible = true;
             _speaker.Text = thing.Name;
+            if (UseColumn) ColumnHeading(thing.Name);
             OpenChoices(options, allowBack: true);
             return;
         }
@@ -269,11 +275,12 @@ public partial class Main : Control
         if (_reviewOnly) return;
         if (e.IsActionPressed("quicksave")) { Save("quicksave"); Toast("Saved"); return; }
         if (e.IsActionPressed("quickload")) { if (Load("quicksave")) Toast("Loaded"); return; }
+        if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F2 } && _mode != Mode.Menu) { ToggleTextLayout(); return; }
         if (MenuInput(e)) { GetViewport().SetInputAsHandled(); return; }
 
         switch (_mode)
         {
-            case Mode.Talking when e.IsActionPressed("interact") || e is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left }:
+            case Mode.Talking when e.IsActionPressed("interact"):
                 Continue();
                 break;
             case Mode.Walking when e.IsActionPressed("interact"):
@@ -286,6 +293,17 @@ public partial class Main : Control
                 int i = (int)(k.Keycode - Key.Key1);
                 if (i < _choices.GetChildCount()) ((Button)_choices.GetChild(i)).EmitSignal(BaseButton.SignalName.Pressed);
                 break;
+        }
+    }
+
+    /// <summary>A left click anywhere moves the text on, over the text column too (buttons exist only when choosing).</summary>
+    public override void _Input(InputEvent e)
+    {
+        if (_reviewOnly || _mode != Mode.Talking) return;
+        if (e is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
+        {
+            Continue();
+            GetViewport().SetInputAsHandled();
         }
     }
 
@@ -313,6 +331,11 @@ public partial class Main : Control
 
     private void ShowEnding()
     {
+        if (UseColumn)
+        {
+            ShowColumnEnding();
+            return;
+        }
         SetMode(Mode.Ending);
         _note.Visible = false;
         _heard.Visible = false;
@@ -327,6 +350,25 @@ public partial class Main : Control
         _text.VisibleRatio = 1;
         AddChoice("Live another Tuesday", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
         AddChoice("Quit", () => GetTree().Quit());
+        ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
+    }
+
+    private void ShowColumnEnding()
+    {
+        SetMode(Mode.Ending);
+        _note.Visible = false;
+        _heard.Visible = false;
+        ShowColumn(true);
+        SetPortrait(null);
+        ColumnHeading("To be continued");
+        foreach (string line in _view.Today)
+            AddLogEntry($"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line)}[/i][/color]").VisibleRatio = 1;
+        foreach (string h in _view.Headlines.DefaultIfEmpty("Nothing much happened. That's also a life."))
+            AddLogEntry("·  " + Bbcode(h)).VisibleRatio = 1;
+        _choices.Columns = 1;
+        AddChoice("Live another Tuesday", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
+        AddChoice("Quit", () => GetTree().Quit());
+        ScrollToEnd();
         ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
     }
     // ───────────────────────── art ─────────────────────────
