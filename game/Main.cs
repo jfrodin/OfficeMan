@@ -128,6 +128,7 @@ public partial class Main : Control
         if (!arrives && view.PhaseId != _phase) EnterPhase(view.PhaseId, view.PhaseTitle, view.When);
         else if (_roomId is not null && _roomView.Visible) _roomView.Refresh(_game.Evaluate);
         _roomView.Drunk = OfficeMan.Core.World.Teo.Drunk(_game.State);
+        _roomView.Minute = _game.State.Minute % 1440;
         PlayLines(view.Lines, AfterStoryLines);
     }
 

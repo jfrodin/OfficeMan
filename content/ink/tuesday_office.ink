@@ -452,11 +452,32 @@ MAGDA: Come on, come on, the city is paying!
 # where: desk
 # choice: Look busy.
 # repeat
-# duration: 45
-{ shuffle:
-- I open a spreadsheet and look at it with the expression of a man reading a spreadsheet. Forty-five minutes pass. The spreadsheet doesn't change. Neither do I.
-- I reply to an email from 2023 that says only "Any update?" I write: "Following up." Following up is the national sport. Nobody has ever won.
-- I go to the kitchen and wash a mug that isn't mine. It's the most useful thing I do all day. Someone will think it was Magda.
-- I stand at the window. Below, a man is trying to parallel park a van. He tries for twenty minutes. I'm with him every inch of the way.
+# duration: 30
+{ shuffle once:
+-   I open a spreadsheet and look at it. Half an hour goes by. I couldn't tell you what was in it.
+-   I answer an email from March. It says "Any update?" I write "Following up." That's most of the job.
+-   I wash a mug in the kitchen. It isn't mine. It takes four minutes and it's the best part of the morning.
+-   Down in the street a man spends twenty minutes trying to park a van. I watch all of it. When he gets it in, I nearly clap.
+-   I print a form, so I can carry it to the printer and back. Walking with paper looks like work.
+-   Kornel asks if I've seen the stapler. I haven't. We look for it together for a while. It's on his desk.
+-   I read the minutes of a meeting I was in. I don't remember it. According to the minutes, I agreed.
+-   Zdenka walks past my desk. I scroll down, with purpose.
 }
+{ played("look_busy") >= 8:
+    I've run out of ways to look busy. I watch the screen until it goes dark, then I move the mouse.
+}
+-> DONE
+
+
+// The dead stretch of the afternoon, skipped in one go.
+=== head_down
+# phase: office
+# kind: hub
+# where: desk
+# choice: Keep your head down until it's time to go.
+# window: 13:30-15:45
+# duration: 0
+I keep my head down. Emails. A form about another form. At some point the sun moves off my desk and onto Kornel's.
+Then it's quarter to four, and people are starting to look at their coats.
+~ pass_time(15 * 60 + 45 - q("time"))
 -> DONE

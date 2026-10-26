@@ -8,6 +8,7 @@
   "glow": "art/game/rooms/office_glow.png",
   "front": "art/game/rooms/office_front.png",
   "walk": { "minX": 10, "maxX": 384, "minY": 190, "maxY": 256 },
+  "clock": [380, 40],
   "spawn": [20, 198],
 
   "ambient": [0.36, 0.37, 0.42],
@@ -48,7 +49,7 @@
     { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka", "x": 352, "y": 204, "faceLeft": true,
       "look": "Zdenka is measuring something. She doesn't look up. She knows it's me from the footsteps." },
     { "id": "clock", "name": "The clock", "x": 380, "y": 190, "wall": true,
-      "look": "The clock says {clock}. It feels later. It always feels later." },
+      "look": "The clock says {clock}. It feels later." },
     { "id": "viktor", "name": "Viktor's office", "sprite": "viktor", "x": 452, "y": 166, "faceLeft": true,
       "look": "Viktor's door stays open, so we can all see him being busy." }
   ]

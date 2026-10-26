@@ -144,11 +144,9 @@ public static class OfficeRoom
         for (int i = 0; i < 12; i++) a.Paint(345 + i, 70, BlueB, 0.9, 0);   // the stars, roughly
         a.FillRect(340, 75, 362, 76, Metal, (x, y) => 0.4, 0);
 
-        // Clock.
+        // Clock. The hands are drawn by the game and show the real time (content/rooms/office.json, "clock").
         foreach (var (x, y) in Circle(380, 40, 7)) a.Paint(x, y, Paper, 0.95, 0);
         foreach (var (x, y) in Ring(380, 40, 8)) a.Paint(x, y, Metal, 0.25, 0);
-        a.FillRect(380, 35, 381, 41, Metal, (x, y) => 0.05, 0);
-        a.FillRect(380, 40, 384, 41, Metal, (x, y) => 0.05, 0);
     }
 
     private static void ViktorsOffice(SceneCanvas a, Canvas e)

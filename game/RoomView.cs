@@ -29,11 +29,19 @@ public partial class RoomView : Control
     private Texture2D _shadow = null!;
     private double _clock;
     private Smoke _smoke = null!;
+    private ClockHands _hands = null!;
     private List<RoomLayout.RoomLight> _lights = new();
     private Vector4[] _lightPos = new Vector4[16];
 
     /// <summary>How drunk Teo is (0-4): he walks a little crooked.</summary>
     public int Drunk { get; set; }
+
+    /// <summary>The time of day in minutes, for wall clocks.</summary>
+    public int Minute
+    {
+        get => _hands.Minute;
+        set { _hands.Minute = value; _hands.QueueRedraw(); }
+    }
 
     /// <summary>When false, Teo stands still (conversations, menus).</summary>
     public bool Controllable { get; set; }
@@ -109,6 +117,8 @@ public partial class RoomView : Control
         _viewport.AddChild(_front);
         _smoke = new Smoke { ZIndex = 50 };
         _viewport.AddChild(_smoke);
+        _hands = new ClockHands { ZIndex = 1 };
+        _viewport.AddChild(_hands);
 
         _shadow = MakeShadow();
         _teo = new Actor(texture(art.Sprite("teo")), _shadow);
@@ -138,6 +148,8 @@ public partial class RoomView : Control
         _teo.Position = new Vector2(room.Spawn[0], room.Spawn[1]);
         _teo.FaceLeft = false;
         _teo.Visible = room.ShowTeo;
+        _hands.Visible = room.Clock is { Length: 2 };
+        if (room.Clock is { Length: 2 } c) _hands.Position = new Vector2(c[0], c[1]);
 
         var black = BlackTexture();
         _material.SetShaderParameter("canvas_size", new Vector2(room.Width, room.Height));
@@ -307,6 +319,32 @@ public partial class RoomView : Control
         var img = Image.CreateEmpty(4, 4, false, Image.Format.Rgb8);
         img.Fill(Colors.Black);
         return ImageTexture.CreateFromImage(img);
+    }
+
+    /// <summary>The hands of a wall clock, one pixel wide, showing the game's time.</summary>
+    private partial class ClockHands : Node2D
+    {
+        public int Minute { get; set; }
+
+        public override void _Draw()
+        {
+            var ink = new Color(0.1f, 0.1f, 0.12f);
+            double m = Minute % 60, h = (Minute / 60.0) % 12;
+            Hand(m / 60.0 * Math.Tau, 5.5f, ink);
+            Hand(h / 12.0 * Math.Tau, 3.5f, ink);
+            DrawRect(new Rect2(0, 0, 1, 1), ink);
+        }
+
+        private void Hand(double angle, float length, Color c)
+        {
+            // Step along the hand a pixel at a time, so it stays crisp at the room's native size.
+            for (float r = 0; r <= length; r += 0.5f)
+            {
+                float x = Mathf.Floor((float)(Math.Sin(angle) * r) + 0.5f);
+                float y = Mathf.Floor((float)(-Math.Cos(angle) * r) + 0.5f);
+                DrawRect(new Rect2(x, y, 1, 1), c);
+            }
+        }
     }
 
     /// <summary>Cigarette smoke: single pixels rising, drifting and thinning out.</summary>

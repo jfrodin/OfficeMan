@@ -20,6 +20,7 @@ public partial class Main
     private int _lookAt = -1;
     private string? _lookDoing;
     private string? _layoutArg;   // "bar" or "column": overrides the setting for screenshots
+    private bool _lookingAtRoom;  // --room: the room alone, no text, no camera moves
 
     /// <summary>
     /// Command line (after --): --seed N; --shot path.png --steps N (play N steps automatically, then screenshot);
@@ -79,6 +80,7 @@ public partial class Main
     {
         _autoSteps = -1;
         if (_lookAt >= 0) _game.State.Minute = _lookAt;
+        _roomView.Minute = _game.State.Minute % 1440;
         // "--doing magda=bar,viktor=bar,flag": where people's plans have got to, and flags, for looking at a room.
         foreach (string part in (_lookDoing ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries))
         {
@@ -93,6 +95,10 @@ public partial class Main
         _choices.Visible = false;
         _note.Visible = false;
         _heard.Visible = false;
+        _column.Visible = false;
+        _lookingAtRoom = true;
+        _typing = false;
+        _more.Visible = false;
         _dim.Visible = false;
         _arrival.Visible = false;
         SetPortrait(null);

@@ -14,7 +14,5 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-19 | The floors are completely open: tables, desks etc. should stand out in the room, not everything pushed against the walls. (Possible now with props: furniture as depth-sorted sprites, like the bar counter.) | All rooms |
 | 2026-10-19 | Portraits are end-of-project work: one expression per character is enough for now. | `design/portraits_flat.md` |
 | 2026-10-26 | Doesn't like how text is handled at all: the box. Asked for alternatives. (A text column is built and is now the default; the old bar is still in Settings / F2. Waiting for the creator's verdict.) | `game/Main.Column.cs`, `game/Main.Ui.cs` |
-| 2026-10-26 | The clock in the office doesn't move. | `content/rooms/office.json` (clock), office room art |
-| 2026-10-26 | Too little variation, and "Look busy" takes too long before things start happening in the office. | `content/ink/tuesday_office.ink`, `look_busy` (45 minutes, four lines) |
 | 2026-10-26 | The game looks bad, but that's known; later. Things must not stand along the walls (see the 2026-10-19 note on open floors). | All rooms |
 | 2026-10-26 | Go through all the text critically and rewrite it. The story is the game's most important ingredient. (In progress: `design/text_review.md`.) | `content/ink/*.ink` |

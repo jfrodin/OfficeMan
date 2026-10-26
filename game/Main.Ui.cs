@@ -147,7 +147,7 @@ public partial class Main
     /// </summary>
     private void Layout(double delta)
     {
-        if (UseColumn)
+        if (UseColumn && !_lookingAtRoom)
         {
             LayoutColumn(delta);
             _roomView.Lift += (float)((0 - _roomView.Lift) * (1 - Math.Exp(-delta * 4)));

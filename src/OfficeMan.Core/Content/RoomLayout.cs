@@ -26,6 +26,9 @@ public sealed class RoomLayout
     public bool ShowTeo { get; set; } = true;
 
     public float[] Ambient { get; set; } = { 0.45f, 0.45f, 0.45f };
+
+    /// <summary>A wall clock's centre (x, y): its hands are drawn live and show the game's time.</summary>
+    public int[]? Clock { get; set; }
     public List<RoomLight> Lights { get; set; } = new();
 
     /// <summary>
