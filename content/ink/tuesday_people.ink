@@ -272,7 +272,7 @@ KORNEL: It tastes like bread that's given up! #heard #from:right
 # duration: 5
 Zdenka's gone. The chair is pushed in, square to the table. Her glass is gone too. She took her glass.
 { is("zdenka_left_napkin"):
-    There's a napkin in the middle of the cloth, folded in half, and in half, and in half again, into a hard little square. Exactly in the middle. Like a full stop.
+    There's a napkin on the cloth, folded in half, and in half, and in half again, into a hard little square. Exactly in the middle.
     ~ flag("found_zdenka_napkin")
 }
 -> DONE

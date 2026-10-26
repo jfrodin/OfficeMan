@@ -69,7 +69,7 @@ each."* Trust the player.
 | 2 | The bar (`tuesday_party.ink`, `party_drink`) | 400 | **Sample done**: changes with drink and with each round; tickets work |
 | 3 | Stairwell, morning (`tuesday_home.ink`) | 400 | Two lines trimmed; the rest is creator-approved |
 | 4 | The office (`tuesday_office.ink`) | 3,200 | **Done** (logic unchanged, checked line by line) |
-| 5 | The party (`tuesday_party.ink`, `tuesday_people.ink`) | 5,800 | To do |
+| 5 | The party (`tuesday_party.ink`, `tuesday_people.ink`) | 5,800 | **Done** (logic unchanged) |
 | 6 | The night (`tuesday_night.ink`) | 2,400 | To do |
 | 7 | Wednesday (`wednesday.ink`) | 4,000 | To do |
 | 8 | Teo's end-of-day lines and hindsight (`lib.ink`) | 900 | To do |
