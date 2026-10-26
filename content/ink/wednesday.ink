@@ -296,7 +296,7 @@ Zdenka doesn't call me over. She just looks at me until I'm there.
     ZDENKA: The Petrovici file isn't on the trolley.
     TEO: Isn't it?
     ZDENKA: No. It's at the bottom of the trolley. Under eleven others. Which is not the same as on.
-    She looks at me with those winter eyes.
+    She looks at me with those pale eyes.
     ZDENKA: I'll find it Thursday. I find everything Thursday.
 - remembers("zdenka", "asked_to_bury"):
     ZDENKA: Your neighbour came here this morning. Seven-fifteen. With a sausage.
