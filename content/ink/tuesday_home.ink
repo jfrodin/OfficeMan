@@ -7,74 +7,70 @@
 # kind: scene
 {
 - mood() >= 1:
-    I wake up before the alarm and feel fine. Rested. Suspiciously fine.
+    I wake up before the alarm and I feel fine. Rested, even.
     Something's going to go wrong today, and I'm going to deserve it.
 - mood() <= -2:
-    The alarm goes off. I don't move. The ceiling has a crack shaped like Italy, or a leg.
-    Thirty-two years old and I've spent a meaningful part of it identifying this crack.
+    The alarm goes off. I don't move.
+    There's a crack in the ceiling shaped like Italy, or a leg. Six years I've lived here and I still haven't decided.
 - else:
-    The alarm goes off. I've been awake for twenty minutes, waiting for it. Like waiting for a bus I don't want to catch.
+    The alarm goes off. I've been awake for twenty minutes, waiting for it.
 }
-Tuesday. The summer party. Viktor put it on a Tuesday so nobody drinks.
+Tuesday. The summer party. Viktor put it on a Tuesday so nobody would drink.
 Viktor has met us, hasn't he?
 STOJAN: Because it's MY balcony! #heard:through the wall #from:right
-A door slams. Then the daughter's music through the wall. Just bass, and a girl singing in English about being disappointed.
+A door slams. Then the daughter's music through the wall: bass, and a girl singing in English about being disappointed.
 - (opts)
 * [Get up.]
     -> get_up
-* [Check phone.]
+* {not phone} [Check phone.]
     -> phone
-* [Lie here a bit longer.]
+* {phone and not phone_again} [Check phone again.]
+    -> phone_again
+* {not lie} [Lie here a bit longer.]
     -> lie
 
 = phone
 Two messages.
-Magda, office group: <i>PARTY TONITE!!! dont forget gift money 500 each!!! see u all xx</i>
-Gift for whom? We're the gift. We're giving ourselves five hundred each.
-Kornel, privately: <i>Good morning Teo. Would you like to share a taxi to the venue? I have calculated that it is cheaper.</i>
-He's calculated it. Of course he has. Somewhere there's a spreadsheet with my name in it.
+Magda, to the office group: <i>PARTY TONITE!!! dont forget gift money 500 each!!! see u all xx</i>
+Gift for who? Nobody's leaving. Nobody's getting married. Magda will have a reason by lunch.
+Kornel, just to me: <i>Good morning Teo. Would you like to share a taxi to the venue? I have calculated that it is cheaper.</i>
+He's calculated it. There's a spreadsheet somewhere with my name on it.
 * [Reply: "Sure."]
     ~ qset("kornel_taxi", 1)
     ~ remember("kornel", "taxi_yes")
     ~ like("kornel", 1)
-    The reply comes in four seconds. <i>Excellent. I will send you the cost breakdown.</i>
-    I've made a mistake. A small, cheap, well-documented mistake.
+    The answer comes in four seconds. He was holding the phone.
+    <i>Excellent. I will send you the cost breakdown.</i>
 * [Reply: "Might go straight from the office."]
     ~ qset("kornel_taxi", -1)
     ~ remember("kornel", "taxi_maybe")
     <i>Understood. The offer remains open.</i>
-    Like a wound.
 * [Don't reply.]
     ~ remember("kornel", "taxi_ignored")
     ~ like("kornel", -1)
-    I put the phone face down. It doesn't help. Kornel can sense being read.
+    I put the phone face down. He'll have seen the two blue ticks by now.
 - -> opts
 
 = lie
 Thirty-two. When my father was thirty-two he had a wife, two kids and a Lada.
 I have a ficus.
 The ficus is dying. We understand each other.
-* [Get up.]
-    -> get_up
-* {not phone} [Check phone.]
-    -> phone
-* {phone} [Check phone again.]
-    -> phone_again
+-> opts
 
 = phone_again
 { q("kornel_taxi") == 1:
-    One new message. Kornel: <i>Cost breakdown attached.</i> It's a PDF. It has a logo. He's made a logo.
+    One new message from Kornel. <i>Cost breakdown attached.</i>
+    It's a PDF. He's put a logo on it.
 - else:
-    Nothing new. Just the time, which has got later without asking me.
+    Nothing new. It's just later than it was.
 }
-* [Get up.]
-    -> get_up
+-> opts
 
 = get_up
 { played("wake") == 0 && mood() < 0:
     I get up the way old men get out of the sea.
 }
-Shower. Coffee. The good shirt, because of the party, then the other shirt, because the good shirt has a story on it.
+Shower. Coffee. I put on the good shirt for the party, then take it off again. The good shirt has a story on it.
 ~ pass_time(20)
 -> DONE
 
@@ -115,7 +111,7 @@ He nods as if I've said something wise. Then he looks at my door for slightly to
 ~ qset("stojan_asked", 1)
 ~ remember("stojan", "asked_names")
 STOJAN: A woman. Older. Grey suit. She measured everything twice and said nothing. Not even good morning.
-Zdenka. That's Zdenka. Zdenka measures everything twice. Some things three times, and nobody knows why.
+Zdenka. She measures everything twice. Some things three times, and nobody knows which.
 STOJAN: You know her?
 * ["She's good. She'll be fair."]
     STOJAN: Fair. Fair is for football.
@@ -128,8 +124,8 @@ STOJAN: You know her?
 ~ qset("stojan_promise", 1)
 ~ remember("stojan", "promised")
 ~ like("stojan", 2)
-That sentence has never once meant what it says. Everyone in this country knows it. Stojan knows it.
-Stojan smiles anyway. Stojan has decided to hear "yes."
+In this country that sentence has never once meant yes. Stojan knows that as well as I do.
+He smiles anyway. He's decided to hear it.
 STOJAN: Good man. I knew. I said to Dana, Teo is a good man. Quiet, but good.
 Through the wall, Dana says something that doesn't sound like agreement.
 -> DONE

@@ -41,7 +41,7 @@ MAGDA: Laci! I'm the bank! The bank says yes! #heard:by the door #from:left
 # when: doing(magda, bar) or doing(magda, hen)
 # duration: 20
 { doing("magda", "hen"):
-    The hen party has her now. Someone has put a veil on her. It's not her wedding. It's not anyone's wedding until Saturday.
+    The hen party has her now. Someone has put a veil on her, and the bride doesn't seem to mind.
     MAGDA: Teo! These are my friends! I met them twenty minutes ago!
 - else:
     She's on a stool at the bar with her shoes off and her lipstick back on, slightly to the left of where her mouth is.

@@ -15,6 +15,15 @@
 === function tickets_left()
     ~ return 2 - q("tickets_used")
 
+// Before the open bar, every drink costs a ticket.
+=== function use_ticket()
+    { not is("open_bar"):
+        { tickets_left() == 1:
+            My last ticket. I hold on to it a second too long before I hand it over.
+        }
+        ~ qadd("tickets_used", 1)
+    }
+
 
 === party_arrive
 # phase: party
@@ -103,43 +112,89 @@ It's never one. It's never been one in the whole history of this country.
 # repeat
 # duration: 15
 { played("party_drink") == 0:
-    The barman is called Laci. He's about twenty-three and has the face of a man who's seen this office party before, in other offices.
+    The barman is about twenty-three. His badge says LACI and under that, smaller, TRAINEE. He's done office parties before. You can tell by how he stands.
 }
+{ not is("open_bar") && tickets_left() <= 0:
+    -> no_tickets
+}
+// What the bar is like depends on how drunk Teo already is.
 {
 - drunk() >= 3:
-    LACI: Maybe water, boss?
-    TEO: Maybe you, Laci.
-    I don't know what that means. Laci doesn't either. He pours me something anyway, because tonight the city is paying.
+    { shuffle:
+    -   The bar is further away than it was. I get there in the end.
+        LACI: Water, boss?
+        TEO: Laci. You're a good man, Laci. Has anyone told you?
+        LACI: Tonight, four people.
+    -   I order something. I hear myself order it, very clearly, in a voice I use for funerals.
+        Laci waits. Then he puts a beer in front of me, which isn't what I asked for, but it's close.
+    -   I hold on to the bar with both hands. It's important that the bar stays where it is.
+        LACI: Same again?
+        I nod. The nod takes a while.
+    }
 - drunk() >= 2:
-    I lean on the bar like I lean on bars in films. The bar is wetter than in films.
+    { shuffle:
+    -   I lean on the bar the way people lean on bars in films. The bar is wetter than in films.
+    -   LACI: Same again?
+        I can't remember what I had. I say yes.
+    -   The music's better from here. Everything's better from here. I say so to Laci. He agrees, professionally.
+    }
+- drunk() == 1:
+    { shuffle:
+    -   Laci is already reaching for a glass. He remembers me. I don't know if that's good.
+    -   LACI: Back again.
+        It isn't a question.
+    }
 - else:
     LACI: What can I get you?
 }
-{ not is("open_bar") && tickets_left() <= 0:
-    I'm out of tickets. Two tickets. It's like a ration book from the war.
-}
 + [A beer. #drink]
-    ~ have_drink(1)
-    { not is("open_bar"):
-        ~ qadd("tickets_used", 1)
+    ~ use_ticket()
+    { drunk() >= 2:
+        I drink half of it standing at the bar, so I don't have to carry as much.
+    - else:
+        Cold. Fine. A beer.
     }
-    Cold. Fine. Exactly what a beer is.
+    ~ have_drink(1)
 + [Wine. White. #drink]
+    ~ use_ticket()
+    { played("party_drink") <= 1:
+        Local white. The vineyard got EU money to stop being sour, and spent it on a sign.
+    - else:
+        Another white. It's getting less sour as the evening goes on, or I am.
+    }
     ~ have_drink(1)
-    { not is("open_bar"):
-        ~ qadd("tickets_used", 1)
-    }
-    It's local white, from a vineyard that got EU money to stop being sour. They spent the money on a sign.
 + [Zhivka. #drink]
-    ~ have_drink(2)
-    { not is("open_bar"):
-        ~ qadd("tickets_used", 1)
+    ~ use_ticket()
+    { drunk() >= 2:
+        LACI: Another one?
+        It goes down like water. That's a bad sign. I know it's a bad sign and I have another sip anyway.
+    - else:
+        LACI: Brave.
+        It's plum, and then it's fire, and then I feel brave.
     }
-    LACI: Brave.
-    It's not brave. It's plum. Then it's fire. Then it's brave.
+    ~ have_drink(2)
 + [Just water. #cautious]
     ~ qadd("alcohol", -1)
-    Water. Laci looks at me with something like respect. Or pity. On Laci they're the same face.
+    { drunk() >= 2:
+        Water. Laci looks relieved. He's been worried about me, I realise. Laci, who I met three hours ago.
+    - else:
+        Water. Laci looks at me with something like respect. Or pity. On Laci they're the same face.
+    }
+- -> DONE
+
+// Both tickets gone, before Viktor opens the bar.
+= no_tickets
+LACI: Ticket?
+I haven't got one. Two tickets, and I've used them both. It's like a ration book from the war.
++ [Pay for a beer yourself. #drink]
+    ~ qadd("money", -8)
+    Eight euro for a beer. I pay. Laci doesn't watch me count it out, which is kind of him.
+    ~ have_drink(1)
++ [Just water. #cautious]
+    ~ qadd("alcohol", -1)
+    Water is free. Laci gives it to me in a wine glass, so nobody can tell.
++ [Leave it.]
+    I leave it. I stay at the bar anyway, so I've got somewhere to stand.
 - -> DONE
 
 
