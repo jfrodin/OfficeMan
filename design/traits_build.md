@@ -14,6 +14,11 @@ Trait lines: **Nerve** (bold / careful), **Warmth** (open / closed), **Appetite*
 
 Once per life each. Only moments the player sees.
 
+**Made rarer, 2026-10-26 (creator):** at most one lasting shift a day, and the common moments need a second sign:
+A5 only if standing by Kornel worked; A6 only if Teo also pretends nothing happened on Wednesday; A7 only if he got
+away with burying the file, or showed Stojan the photo; A9 only the second humiliation of the evening (any kind).
+Simulator, random lives: about 43 lasting shifts per 100 lives (was 72).
+
 | # | Moment (already in the script) | Shift | Why |
 |---|---|---|---|
 | A1 | Teo ruins Viktor's evening, and it works | Nerve → bold | The first time he stands up to Viktor |

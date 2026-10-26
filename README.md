@@ -54,7 +54,7 @@ dotnet run --project tools/OfficeMan.Sim -- --runs 500 --persona drinker
 
 Reports crashes, dead ends, unreachable storylets, how the night and the closing hook are
 distributed, and how many distinct lives were produced, for five play styles
-(random, drinker, cautious, kind, bold). Exits non-zero on any crash or dead end.
+(random, drinker, cautious, kind, bold, and late: a player who stays to the end of everything). Exits non-zero on any crash or dead end.
 
 ## Tests
 
@@ -77,7 +77,7 @@ dotnet test
 | `tools/OfficeMan.ArtGen` | All the art, built from code: rooms, sprites, temporary portraits (see its `Program.cs`) |
 | `art/game/` | The generated in-game art (committed) |
 | `art/reference/` | The two reference images the creator chose. Never change them or their sources |
-| `design/` | Design documents; `design/noted.md` lists what the creator has pointed out, to fix when asked |
+| `design/` | Design documents. Start with `design/milestone_1.md` section 1: what's done, what's next, what waits for the creator. `design/noted.md` lists what the creator has pointed out, to fix when asked |
 | `tests/OfficeMan.Tests` | Unit and content tests |
 | `third_party/ink` | Vendored ink runtime and compiler (MIT) |
 
@@ -95,7 +95,8 @@ Storylets are ordinary ink knots with metadata tags directly under the header:
 She's on a bench...
 ```
 
-`kind` is one of `scene`, `enter`, `hub`, `exit`, `interrupt`, `timeout`. See
+`kind` is one of `scene`, `enter`, `hub`, `exit`, `interrupt`, `timeout`, `offstage` (something other people do on
+their own; no choices, only overheard lines). See
 `src/OfficeMan.Core/Content/Storylet.cs` for every tag and `content/ink/lib.ink` for the
 functions ink can call (`check`, `remember`, `like`, `drink`, `headline`, …).
 

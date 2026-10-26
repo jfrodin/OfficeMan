@@ -14,7 +14,7 @@ namespace OfficeMan.Core.World;
 /// </list>
 /// Every life starts from the creator's baseline Teo with one or two traits nudged a step. Conditions (drink,
 /// tiredness, mood, shame, a hangover) push the traits for the moment; lasting change is rare and comes only from
-/// big moments the script marks with <c>shift</c>. Content reads the effective values by name ("nerve", "warmth", …)
+/// big moments the script marks with <c>shift</c>, at most one a day. Content reads the effective values by name ("nerve", "warmth", …)
 /// and the skills the checks use ("tact", "judgment", "restraint").
 /// </remarks>
 public static class Teo
@@ -50,12 +50,16 @@ public static class Teo
         }
     }
 
-    /// <summary>A lasting change after a big moment: one step, once per reason. Returns false if already applied.</summary>
+    /// <summary>
+    /// A lasting change after a big moment: one step, once per reason, and at most one per day (the creator,
+    /// 2026-10-26: lasting change is rare). Returns false if nothing changed.
+    /// </summary>
     public static bool Shift(WorldState s, string trait, int delta, string reason)
     {
         if (!Traits.Contains(trait)) throw new ArgumentException($"unknown trait '{trait}'");
         if (s.Get("shifted:" + reason) != 0) return false;
         s.Set("shifted:" + reason, 1);
+        if (s.TraitShifts.Exists(t => t.Day == s.Day)) return false;   // he's already changed once today
         int before = s.Get("trait_" + trait);
         int after = Math.Clamp(before + Math.Sign(delta), TraitMin, TraitMax);
         if (after == before) return false;   // already as far as he goes that way

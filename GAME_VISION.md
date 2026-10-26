@@ -142,6 +142,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[AGREED 2026-10-19]** Starting values: the creator's baseline Teo, with one or two traits nudged a step at random per life. Always Teo, never quite the same man. No character-creation screen.
 - **[AGREED 2026-10-19]** Lasting change is rare: a trait shifts a step only after a big moment the player saw (the first time he stands up to Viktor, a night he can't remember, a public humiliation). Day to day, conditions (drink, tiredness, mood) push him instead.
 - **[AGREED 2026-10-19]** At the end of the day, a few plain lines say who Teo was today. No numbers.
+- **[AGREED 2026-10-26]** Lasting change is rarer: at most one shift a day, and the common moments need a second sign (humiliated twice in an evening; the favour delivered or got away with; filming Kornel and then pretending nothing happened; standing by Kornel and it working).
 - **[AGREED 2026-10-19]** Four traits for now. Pride (can't lose face ↔ can laugh at himself) only later, if a story needs it.
 
 ## 8. Gameplay and interaction
@@ -155,6 +156,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[AGREED 2026-10-18]** Narration: Office Man's inner monologue.
 - **[AGREED 2026-10-18]** Opening: a Tuesday with the office summer party that evening. The Boss scheduled it on a weekday so nobody would drink. Everyone gets hammered anyway.
 - **[AGREED 2026-10-18]** Gameplay format, modelled on the creator's earlier prototype *Deadhouse* (`E:\Dev\RPG`): a **pixel-art world with direct control** (arrows/WASD/controller), side-on view with depth, small pixel characters visible in the scene, walk up to people and objects and interact. Spoken lines float above characters. **Conversations open over the live scene**: a large illustrated portrait bottom-left, text and choices bottom-right. No combat. (A visual-novel-style dialogue screen was built first by mistake; it is being rearranged into this.)
+- **[AGREED 2026-10-26]** The people at the party follow plans of their own, whether Teo is there or not. At most one person comes to Teo on their own per evening. The party runs 17:00 to 01:00.
 - **[PREFERENCE 2026-10-18]** No visible clock. Time exists in the engine (events need it) but is felt, not read: the world changes (light, people leaving), Teo's monologue notices, clocks are objects you can look at, and arrival cards say "Tuesday · evening". Time moves only when Teo does something; walking is free. Proposed by the assistant after the creator asked whether time needs displaying; pending objection.
 
 ## 9. Visual direction
@@ -231,13 +233,21 @@ Plan: `design/milestone_1.md` (approved 2026-10-18). The story and cast are not 
 
 ## Open questions
 
-Discovery round 2 started 2026-10-18.
+Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and what waits for the creator is listed in
+`design/milestone_1.md`, section 1.
 
-1. **Who Office Man is.** Name, backstory, how the player learns his past. Suggested and not yet decided: the player learns him through how others treat him, with no amnesia.
-2. **Attribute visibility.** Leaning towards indirect communication; the inner monologue is a natural channel for it. Deliberately not settled; to be found through prototyping.
-3. **Setting details.** A fictional Eastern European country? Proposed satire rule: people are never the punchline for being from here, only for who they are.
-4. **Prototype cast.** Boss, Secretary, Veteran, Awkward Colleague, Boss's Wife. Possibly someone from outside work.
-5. **Trait system.** Tensions agreed; starting-value approach proposed (baseline + small random nudge + drift through play). Fifth trait open.
+1. **Who Office Man is.** Name chosen provisionally (Teo Halász). Backstory and how the player learns his past are
+   open. Suggested and not yet decided: the player learns him through how others treat him, with no amnesia.
+2. **Attribute visibility.** Settled for now: hidden, shown through the inner voice, choices and hindsight lines (§7).
+   To be tested in play.
+3. **Setting details.** Settled: a contemporary EU-newcomer country (§3), provisional names Kaslovia / Novizar.
+   Proposed satire rule, not yet confirmed: people are never the punchline for being from here, only for who they are.
+4. ~~Prototype cast~~: settled in the prototype (Viktor, Magda, Zdenka, Kornel, Ramona, the neighbours, the party
+   outsiders).
+5. ~~Trait system~~: agreed 2026-10-19 (§7). Open: whether lasting shifts are rare enough (see the milestone status).
+6. ~~Step 3: people's own plans for the evening~~: agreed 2026-10-26 and built (`design/agendas_build.md`).
+7. **When can Teo go home from the party?** From 18:30; someone may stop him once (agreed 2026-10-26). Most
+   simulated lives still leave before ten. To check in the playtest.
 
 ## Decision log
 
@@ -282,3 +292,9 @@ Discovery round 2 started 2026-10-18.
 | 2026-10-19 | Stojan's daughter is Lenka. His wife Dana is her opposite: modest, slim, worn out because she does all the housework. | §5 |
 | 2026-10-19 | No Grok or other image AI for the game's art. Keep making our own (code-built art, the drawn_flat line for portraits). Grok tests were only for exploring. | §9, §10 |
 | 2026-10-19 | Traits: keep four; small random variation per life; lasting change only after big moments; end-of-day description in words. | §7 |
+| 2026-10-26 | Step 3: everyone at the party follows a plan of their own (all of `design/agendas_build.md`). | §8 |
+| 2026-10-26 | People may come to Teo on their own, at most one per evening. | §8 |
+| 2026-10-26 | When nobody takes Magda home, she may leave with someone else. Who it is, is left to chance, not decided in advance. | §5 |
+| 2026-10-26 | The party goes on until 01:00 (was 23:30). | §8 |
+| 2026-10-26 | Lasting trait shifts made rarer: at most one a day, common moments need a second sign. | §7 |
+| 2026-10-26 | Leaving the party early: by chance, someone may try to make Teo stay. He can always go. | §8 |

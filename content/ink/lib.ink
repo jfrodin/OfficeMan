@@ -15,10 +15,17 @@ EXTERNAL chance(id, percent)     // seeded coin; same answer on reload
 EXTERNAL drink(units)
 EXTERNAL pass_time(minutes)
 EXTERNAL goto_phase(id)
+EXTERNAL stay()                  // in an exit storylet: he doesn't leave after all (the exit can be offered again)
 EXTERNAL headline(text)
 EXTERNAL played(storylet)
 EXTERNAL why()                   // what decided the last check: drink, tired, bold, careful, luck_good, luck_bad, or ""
 EXTERNAL shift(trait, delta, reason)   // a lasting change to a trait after a big moment: one step, once per reason
+
+// Other people's own day (for # kind: offstage and anything that reacts to it).
+EXTERNAL doing(who, what)        // is their plan at this point? e.g. doing("magda", "river")
+EXTERNAL set_doing(who, what)
+EXTERNAL feels(who)              // how their own evening is going, -5..5 (not what they think of Teo)
+EXTERNAL feel(who, delta)
 
 // Where Teo wakes up on Wednesday.
 CONST AT_HOME = 1
@@ -99,9 +106,13 @@ CONST AT_STATION = 4
         ~ qset("peak_drunk", drunk())
     }
 
+// Once is embarrassing. The second time in one evening, it stays with him (a lasting shift).
 === function humiliate(amount)
     ~ qadd("shame", amount)
     ~ qadd("mood", -1)
+    { q("shame") >= 2:
+        ~ shift("nerve", -1, "public_humiliation")
+    }
 
 // ── End of the day: who Teo was ─────────────────────────────
 // Up to three lines, picked by what actually happened. Shown on the end screen above the headlines.

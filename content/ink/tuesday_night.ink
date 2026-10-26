@@ -267,12 +267,21 @@ The stairwell at half past nine. Somebody's frying onions. The daughter's music,
         STOJAN: Fourteen square metres. They measured. Who measures like this?
         ~ remember("stojan", "saw_report")
         ~ like("stojan", 2)
+        ~ shift("honesty", -1, "first_favour")
     - else:
         TEO: I'm working on it.
         STOJAN: Of course. Of course. Working.
     }
 }
-I go in. I sit on the bed in my clothes. Through the wall, Dana says something, and Stojan laughs, and for a moment they sound like a couple in a film. Then the moment goes.
+I go in. I sit on the bed in my clothes.
+{
+- doing("stojan", "building"):
+    -> next_door_building ->
+- doing("stojan", "celebrating"):
+    -> next_door_party ->
+- else:
+    Through the wall, Dana says something, and Stojan laughs, and for a moment they sound like a couple in a film. Then the moment goes.
+}
 ~ qset("slept_at", AT_HOME)
 -> DONE
 
@@ -338,6 +347,27 @@ STOJAN: He's not my friend, he's from Permits.
 { drunk() >= 3:
     I find my door. It's my door. I'm so proud of it.
 }
+{
+- doing("stojan", "building"):
+    -> next_door_building ->
+- doing("stojan", "celebrating"):
+    -> next_door_party ->
+}
 I'm asleep before I've finished lying down.
 ~ qset("slept_at", AT_HOME)
 -> DONE
+
+// Stojan's evening, heard through the wall (design/agendas_build.md, S1 and S2).
+= next_door_building
+Through the wall, a drill. Then a hammer. Then the drill again, as if it lost the argument the first time.
+DANA: Stojan, it's midnight. #heard:through the wall #from:right
+STOJAN: Concrete doesn't know what time it is! #heard:through the wall #from:right
+He's building it anyway. Faster, so it's finished before anyone can say no to it again.
+->->
+
+= next_door_party
+Through the wall, music. Accordion, then a pop song, then the accordion again, fighting it. Glasses. Somebody singing in a key that doesn't exist.
+STOJAN: To Teo! To Permits! #heard:through the wall #from:right
+LENKA: Some people need their sleep! For their skin! #heard:through the wall #from:right
+He's celebrating. He's celebrating something I said I'd look at.
+->->

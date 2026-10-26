@@ -6,6 +6,7 @@ INCLUDE lib.ink
 INCLUDE tuesday_home.ink
 INCLUDE tuesday_office.ink
 INCLUDE tuesday_party.ink
+INCLUDE tuesday_people.ink
 INCLUDE tuesday_night.ink
 INCLUDE wednesday.ink
 

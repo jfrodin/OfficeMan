@@ -121,7 +121,12 @@ public sealed class Game : IConditionContext
             if (_activeStorylet is not null)
             {
                 CollectLines();
-                if (_story.currentChoices.Count > 0) return DialoguePresentation();
+                if (_story.currentChoices.Count > 0)
+                {
+                    if (Content.Get(_activeStorylet).Kind == StoryletKind.Offstage)
+                        throw new ContentException($"offstage storylet '{_activeStorylet}' must not offer choices");
+                    return DialoguePresentation();
+                }
                 FinishStorylet();
                 continue;
             }
@@ -149,8 +154,10 @@ public sealed class Game : IConditionContext
                 continue;
             }
 
-            // Hub: entry storylets, then interrupts, then timeout, then the menu.
+            // Hub: entry storylets, then what other people do on their own, then interrupts, then timeout, then the menu.
             var auto = Eligible(phase, StoryletKind.Enter).FirstOrDefault()
+                       ?? Eligible(phase, StoryletKind.Offstage)
+                           .FirstOrDefault(s => Rng.Percent(State.Seed, $"offstage:{s.Id}:{State.Steps}", s.Chance))
                        ?? Eligible(phase, StoryletKind.Interrupt)
                            .FirstOrDefault(s => Rng.Percent(State.Seed, $"interrupt:{s.Id}:{State.Steps}", s.Chance));
             if (auto is not null)
@@ -254,6 +261,13 @@ public sealed class Game : IConditionContext
 
         State.PlayCounts[s.Id] = State.Plays(s.Id) + 1;
         State.History.Add(s.Id);
+
+        // An exit where someone talked him into staying: he doesn't leave, and the walk home doesn't happen.
+        if (s.Kind == StoryletKind.Exit && State.Get("_stay") != 0)
+        {
+            State.Set("_stay", 0);
+            return;
+        }
         Teo.PassTime(State, s.Duration);
 
         var phase = Content.Schedule.Get(State.PhaseId);
@@ -273,11 +287,19 @@ public sealed class Game : IConditionContext
             }
             var tags = _story.currentTags.Where(t => !IsMetadataTag(t)).ToList();
             if (text.Length == 0) continue;
+            if (Content.Get(_activeStorylet!).Kind == StoryletKind.Offstage && !tags.Exists(IsHeard))
+                throw new ContentException($"offstage storylet '{_activeStorylet}': only overheard lines (#heard) are allowed: \"{text}\"");
             // The first line of each storylet says so: front ends end the previous conversation there.
             if (_beginning) tags.Add("begin:" + _activeStorylet);
             _beginning = false;
             _pending.Add(new StoryLine(text, tags));
         }
+    }
+
+    private static bool IsHeard(string tag)
+    {
+        string t = tag.Trim();
+        return t.Equals("heard", StringComparison.OrdinalIgnoreCase) || t.StartsWith("heard:", StringComparison.OrdinalIgnoreCase);
     }
 
     private static bool IsMetadataTag(string tag)
@@ -388,6 +410,8 @@ public sealed class Game : IConditionContext
             "played" => State.Plays(Arg(0)),
             "remembers" => State.Character(Arg(0)).Remembers(Arg(1)) ? 1 : 0,
             "regard" => State.Character(Arg(0)).Regard,
+            "doing" => State.Character(Arg(0)).Doing == Arg(1) ? 1 : 0,
+            "feels" => State.Character(Arg(0)).Feels,
             "q" => Value(Arg(0)),
             _ => throw new FormatException($"Unknown condition function '{function}'"),
         };
@@ -448,11 +472,20 @@ public sealed class Game : IConditionContext
             var c = State.Character(who);
             c.Regard = Math.Clamp(c.Regard + delta, -10, 10);
         });
+        _story.BindExternalFunction("doing", (string who, string what) => State.Character(who).Doing == what, lookaheadSafe: true);
+        _story.BindExternalFunction("set_doing", (string who, string what) => { State.Character(who).Doing = what; });
+        _story.BindExternalFunction("feels", (string who) => State.Character(who).Feels, lookaheadSafe: true);
+        _story.BindExternalFunction("feel", (string who, int delta) =>
+        {
+            var c = State.Character(who);
+            c.Feels = Math.Clamp(c.Feels + delta, -5, 5);
+        });
         _story.BindExternalFunction("check", (string id, string stat) => Check(id, stat));
         _story.BindExternalFunction("chance", (string id, int percent) =>
             Rng.Percent(State.Seed, $"chance:{id}:{State.Day}", percent));
         _story.BindExternalFunction("drink", (int units) => State.Add("alcohol", units));
         _story.BindExternalFunction("pass_time", (int minutes) => Teo.PassTime(State, minutes));
+        _story.BindExternalFunction("stay", () => State.Set("_stay", 1));
         _story.BindExternalFunction("goto_phase", (string id) =>
         {
             if (!Content.Schedule.Contains(id) && id != PhaseSchedule.EndPhase)

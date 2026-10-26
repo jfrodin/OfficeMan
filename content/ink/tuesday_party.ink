@@ -22,6 +22,9 @@
 # priority: 100
 Terasa Velka sits on the river like it's waiting for a yacht. Glass, decking, little lights strung between poles. A brass plaque by the door: <i>Co-financed by the European Union</i>.
 Everything nice in this city has that plaque. If they ever put one on a person, I'll know they've made it.
+~ set_doing("magda", "door")
+~ set_doing("viktor", "railing")
+~ set_doing("zdenka", "table")
 Magda is at the entrance with an envelope of drink tickets, handing them out two at a time, like communion.
 MAGDA: Two each! Viktor says! I'm the bank!
 { is("magda_paid"):
@@ -54,6 +57,7 @@ The river's going past, slow and brown and not interested.
 # priority: 35
 A black car pulls up at the kerb. The kind of black that costs extra.
 Ramona Baranyi gets out like the pavement owes her money.
+~ set_doing("ramona", "bar")
 She's Viktor's age. White dress. Big sunglasses at a quarter to six. A handbag that, by my estimate, is a year of my salary in leather.
 Viktor goes to kiss her cheek. She turns her head a perfect amount, so he gets air.
 RAMONA: Darling. You didn't say it was outdoors.
@@ -176,7 +180,6 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
         ~ remember("magda", "bad_dance")
         I dance like a man trying to get a wasp out of his shirt. Magda is very kind about it. The consultants film it.
         It'll be on a LinkedIn post by Thursday, captioned <i>local culture</i>.
-        ~ shift("nerve", -1, "public_humiliation")
     - else:
         ~ like("magda", 2)
         ~ remember("magda", "danced")
@@ -200,6 +203,7 @@ She's wearing it. The red dress. She looks good, genuinely, in the way people lo
 # where: viktor
 # kind: hub
 # choice: Viktor is holding court by the railing.
+# when: doing(viktor, railing)
 # window: 18:00-21:30
 # duration: 25
 Viktor has a cigar he doesn't light. It's a prop. It works.
@@ -237,6 +241,8 @@ Ramona is at the bar with her back to all of it, which means she can see all of 
         ~ like("viktor", -3)
         ~ remember("viktor", "sabotaged")
         ~ flag("viktor_foiled")
+        ~ set_doing("viktor", "bar")
+        ~ feel("viktor", -2)
         ~ headline("Teo ruined Viktor's evening. On purpose.")
         {viktor_target()} looks at the bar. At the white dress. At the handbag. Something adds up.
         She excuses herself. Viktor watches her go, and then turns to me, smiling. That's the scary part. The smile.
@@ -263,6 +269,9 @@ Magda stands there with nothing in her hands.
 Then she goes down the steps to the river walk, quickly, not running, because running would mean something.
 ~ flag("magda_crushed")
 ~ remember("magda", "viktor_turned_away")
+~ set_doing("magda", "river")
+~ feel("magda", -3)
+~ qset("magda_went_down", q("time"))
 -> DONE
 
 
@@ -271,7 +280,7 @@ Then she goes down the steps to the river walk, quickly, not running, because ru
 # where: steps
 # kind: hub
 # choice: Go down to the river walk, where Magda went.
-# when: magda_crushed
+# when: doing(magda, river)
 # duration: 30
 She's on a bench. Not the Innovation Bench. That doesn't exist yet. An old one, with a plaque for someone who died in 1991 and "loved this view."
 Her mascara has gone. Not dramatically. Just gone, like it gave up.
@@ -319,7 +328,6 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
         She turns her face. Kindly. So kindly that I want to walk into the river.
         MAGDA: Oh, Teo. No. You're sweet. You're drunk and sweet.
         Sweet. Like a dog. Like a small, drunk dog.
-        ~ shift("nerve", -1, "public_humiliation")
     - else:
         ~ like("magda", 2)
         ~ remember("magda", "kissed")
@@ -347,7 +355,7 @@ She laughs. It's a terrible laugh. It's also, a bit, funny. She knows it is. Tha
 # kind: hub
 # choice: Ramona is alone at the bar.
 # when: played("ramona_arrives") > 0
-# window: 19:00-23:30
+# window: 19:00-25:00
 # duration: 25
 Ramona is on her third glass of champagne, which she's holding by the stem like a professional.
 Up close she's fifty, and has decided fifty is something that happens to other people. The work is good. Expensive. The eyes are tired in a way no clinic does.
@@ -359,6 +367,10 @@ RAMONA: Do you know what this bag cost?
 TEO: No.
 RAMONA: Four thousand euro. I bought it in March. In March he went to a conference in Vienna for four days.
 RAMONA: There's a bag for every conference. I have a whole wardrobe of conferences.
+{ is("ramona_saw_viktor_go"):
+    She has a bottle now, not a glass.
+    RAMONA: He's gone dancing. He doesn't dance. He goes to watch other people dance and pick one.
+}
 * {warmth() >= 0} [Listen. #kind]
     ~ remember("ramona", "listened")
     ~ like("ramona", 2)
@@ -415,6 +427,7 @@ RAMONA: There's a bag for every conference. I have a whole wardrobe of conferenc
 # where: zdenka
 # kind: hub
 # choice: Zdenka is sitting alone, with mineral water.
+# when: not doing(zdenka, gone)
 # duration: 20
 Zdenka has a table to herself. She's chosen it so the river's behind her and the whole party is in front, like a stage.
 ZDENKA: Sit, if you're going to.
@@ -460,7 +473,6 @@ KORNEL: "In a building made of concrete, in a city by the Vel..."
     ~ flag("stood_with_kornel")
     ~ remember("kornel", "stood_with")
     ~ like("kornel", 4)
-    ~ shift("warmth", 1, "stood_with_kornel")
     ~ temp r = check("kornel_poem_saved", "nerve")
     I walk up and stand next to him. I don't know why. My legs did it. Kornel looks at me like I've pulled him out of a well.
     { r:
@@ -471,6 +483,7 @@ KORNEL: "In a building made of concrete, in a city by the Vel..."
         Someone films it. The consultants, or the hen party, or God.
     - else:
         ~ qset("kornel_poem", 2)
+        ~ shift("warmth", 1, "stood_with_kornel")
         I start clapping on the rhymes. Then Magda does. Then the hen party, ironically, and then not ironically, because it's actually quite catchy, and by "...and Zdenka, who has measured all of us, and found us well," the whole terrace is cheering.
         Zdenka, for one second, looks almost moved.
         ~ headline("Kornel's poem brought the house down. Teo stood next to him.")
@@ -482,7 +495,6 @@ KORNEL: "In a building made of concrete, in a city by the Vel..."
     ~ like("kornel", -2)
     ~ qset("kornel_poem", 0)
     ~ headline("Teo filmed Kornel's poem. The video exists.")
-    ~ shift("warmth", -1, "filmed_kornel")
     I film it. Everybody films it. That's the thing. If you're the only one not filming, you're the weird one.
     Kornel sees the phones. All of them. He reads to the end anyway. That's the bravest thing I've seen in years and I recorded it for laughs.
 * [Look away.]
@@ -670,7 +682,11 @@ Laci is saying something. Laci's got two faces, and both of them are worried.
 }
 
 = kornel_catch
-And then Kornel is there. Kornel, who doesn't drink, who's had three Fantas and a philosophy about each.
+{ is("kornel_first_beer"):
+    And then Kornel is there. Kornel, who had one beer, two hours ago, and has done the maths.
+- else:
+    And then Kornel is there. Kornel, who doesn't drink, who's had three Fantas and a philosophy about each.
+}
 KORNEL: I've got you. I've got the car. Come on. Mind the step. There's a step. That was the step.
 ~ headline("Kornel took Teo home. To Kornel's home.")
 ~ goto_phase("night_kornel")
@@ -693,18 +709,81 @@ The river's very close now. Very friendly.
 # where: gate
 # kind: exit
 # choice: Go home.
-# window: 18:30-23:30
+# window: 18:30-25:00
 # duration: 30
+# repeat
+// Before ten, someone may stop him at the gate. Once an evening, and he can always go anyway.
+{ q("time") < 22 * 60 && not is("stopped_at_gate") && chance("stopped_at_gate", 60):
+    ~ flag("stopped_at_gate")
+    -> stopped
+}
+-> going
+
+= going
 { drunk() >= 2:
     I go home the long way, by accident. The city's very beautiful at night if you don't know where you are.
 - else:
     I go home. Nobody notices I've gone. That's the advantage of being me. You can leave anywhere.
 }
-{ played("magda_river") == 0 && is("magda_crushed"):
+{ played("magda_river") == 0 && doing("magda", "river"):
     On the way out, I see Magda's shoes on the steps down to the river. Just the shoes. I keep walking.
     ~ remember("magda", "teo_left_early")
 }
 -> DONE
+
+// Who stops him depends on who's there and what's still to come.
+= stopped
+{
+- doing("magda", "door"):
+    ~ qset("stopper", 1)
+    MAGDA: You can't go! You've still got a ticket! It's against the rules to go home with a ticket.
+    She says it like it's a real rule. Here, it might be.
+- played("kornel_poem") == 0 && not is("kornel_talked_down"):
+    ~ qset("stopper", 2)
+    KORNEL: You're going? I'm reading at eight. I mean, it's nothing. It's a short thing. It rhymes.
+    He's holding a piece of A4, folded in four. He's been holding it all evening.
+- doing("viktor", "railing"):
+    ~ qset("stopper", 3)
+    VIKTOR: Teo! Nobody leaves before me. That's not a rule. It's a tradition. I started it tonight.
+- is("outsider_hen") && q("time") < 23 * 60:
+    ~ qset("stopper", 4)
+    DENISA: Office man! Where are you going? We haven't finished with you!
+- else:
+    -> going
+}
+* [Stay a bit longer.]
+    ~ stay()
+    ~ pass_time(5)
+    { q("stopper"):
+    - 1:
+        ~ like("magda", 1)
+        MAGDA: Good. Now you have to use it. Those are also the rules.
+    - 2:
+        ~ like("kornel", 1)
+        KORNEL: Oh. Good. Not for the poem. Just generally. Good.
+    - 3:
+        ~ like("viktor", 1)
+        He's already turned back to his company. He just wanted to win.
+    - 4:
+        They cheer. I don't know what I've agreed to.
+    }
+* [Go anyway.]
+    { q("stopper"):
+    - 1:
+        ~ remember("magda", "teo_left_early")
+        MAGDA: Fine. Leave me with the bank.
+    - 2:
+        ~ remember("kornel", "left_before_poem")
+        KORNEL: No, of course. It's late. It's not late. But of course.
+    - 3:
+        ~ remember("viktor", "left_early")
+        VIKTOR: Go on, then. Sleep is for the people who work for me.
+    - 4:
+        DENISA: Coward!
+        She means it nicely. Mostly.
+    }
+    -> going
+- -> DONE
 
 
 === leave_club
@@ -712,8 +791,8 @@ The river's very close now. Very friendly.
 # where: viktor
 # kind: exit
 # choice: Go on to Club Schengen with Viktor.
-# when: viktor_invite or regard(viktor) >= 5
-# window: 21:00-23:30
+# when: (viktor_invite or regard(viktor) >= 5) and not doing(viktor, club)
+# window: 21:00-25:00
 # duration: 20
 Viktor puts an arm round me like I'm a son he chose.
 VIKTOR: Come on. The night is young and we're not.
@@ -727,7 +806,7 @@ VIKTOR: Come on. The night is young and we're not.
 
 === leave_magda
 # phase: party
-# where: steps
+# where: gate
 # kind: exit
 # choice: Walk Magda home.
 # when: magda_walk_offer
@@ -743,7 +822,7 @@ Magda's carrying her shoes. I carry her bag. It weighs about the same as a small
 # kind: exit
 # choice: Take Ramona's lift.
 # when: ramona_offer_ride
-# window: 21:00-23:30
+# window: 21:00-25:00
 # duration: 10
 Ramona doesn't say goodbye to anyone. She walks to the car like she's leaving a hotel that has disappointed her.
 Viktor watches her go in the mirror behind the bar. Then he sees me following her. His face doesn't change. That's how I know.
@@ -755,7 +834,7 @@ Viktor watches her go in the mirror behind the bar. Then he sees me following he
 === party_closing
 # phase: party
 # kind: timeout
-At half eleven, the staff start stacking chairs around the last people, like a wall going up.
+At one o'clock, the staff start stacking chairs around the last people, like a wall going up.
 Laci turns the music off. In the silence, you can hear the river. It's been there the whole time.
 { drunk() >= 3 && regard("kornel") >= 0:
     KORNEL: Teo. I'm driving. I've had Fanta. Let me drive you.

@@ -4,7 +4,7 @@ using OfficeMan.Core;
 using OfficeMan.Core.Content;
 
 // Plays many lives automatically and reports on the content.
-//   dotnet run --project tools/OfficeMan.Sim -- [--runs 1000] [--seed 1] [--persona random|drinker|cautious|kind|bold|all]
+//   dotnet run --project tools/OfficeMan.Sim -- [--runs 1000] [--seed 1] [--persona random|drinker|cautious|kind|bold|late|all]
 // Exit code 1 if any run crashed or hit a dead end.
 
 int runs = 1000;
@@ -52,6 +52,8 @@ sealed record Persona(string Name, IReadOnlyDictionary<string, double> TagWeight
         new("cautious", new Dictionary<string, double> { ["cautious"] = 5, ["drink"] = 0.2, ["bold"] = 0.3 }, 1.0),
         new("kind", new Dictionary<string, double> { ["kind"] = 5, ["bold"] = 0.5 }, 0.5),
         new("bold", new Dictionary<string, double> { ["bold"] = 5, ["drink"] = 2, ["cautious"] = 0.2 }, 0.4),
+        // Stays to the end of everything: the player who wants to see what happens next.
+        new("late", new Dictionary<string, double>(), 0.05),
     };
 
     public double Weight(ChoiceView c)
@@ -82,6 +84,9 @@ sealed class Report
     public readonly ConcurrentDictionary<string, int> PeakDrunk = new();
     public readonly ConcurrentDictionary<string, int> StartingTeo = new();
     public readonly ConcurrentDictionary<string, int> Shifts = new();
+    public readonly ConcurrentDictionary<string, int> People = new();
+    public readonly ConcurrentDictionary<string, int> LateNights = new();
+    public int StayedLate;
     public readonly ConcurrentDictionary<string, int> NightByNerve = new();
     public readonly ConcurrentDictionary<string, int> NerveCount = new();
     public readonly ConcurrentDictionary<string, byte> UniqueLives = new();
@@ -98,12 +103,16 @@ sealed class Report
         foreach (string f in Failures.Take(5)) Console.WriteLine($"    ! {f}");
 
         Section("how Tuesday night went", Nights);
+        Console.WriteLine($"  still at the party at 22:00: {100.0 * StayedLate / Math.Max(1, Runs):0.0}%; their nights (share of them):");
+        foreach (var (key, n) in LateNights.OrderByDescending(kv => kv.Value).Take(8))
+            Console.WriteLine($"    {100.0 * n / Math.Max(1, StayedLate),5:0.0}%  {key}");
         Section("woke up on Wednesday", WokeAt);
         Section("closing hook", Endings);
         Section("peak drunkenness (0 sober … 4 wrecked)", PeakDrunk);
         Section("most common headlines", Headlines, 12);
         Section("starting Teo (traits nudged from the baseline)", StartingTeo, 12);
         Section("lasting trait shifts", Shifts, 12);
+        if (!People.IsEmpty) Section("where other people's day ended up (their own plans)", People, 30);
         Console.WriteLine("  how the night went, by starting nerve (share within each nerve level):");
         foreach (var (key, n) in NightByNerve.OrderBy(kv => kv.Key).ThenByDescending(kv => kv.Value))
         {
@@ -145,8 +154,10 @@ static class Simulator
                 Count(report.StartingTeo, string.Join(", ", start));
                 string startNerve = game.State.Get("trait_nerve").ToString();
                 int decisions = 0;
+                bool late = false;
                 while (!game.IsOver)
                 {
+                    late |= game.State.PhaseId == "party" && game.State.Minute >= 22 * 60;
                     if (++decisions > 2000) throw new InvalidOperationException("over 2000 decisions; probable loop");
                     var choices = game.Current.Choices;
                     var weights = choices.Select(c => (int)Math.Round(persona.Weight(c) * 100)).ToList();
@@ -160,9 +171,16 @@ static class Simulator
                 foreach (string id in s.History) report.StoryletPlays.AddOrUpdate(id, 1, (_, n) => n + 1);
                 Count(report.WokeAt, WakePlaces[Math.Clamp(s.Get("slept_at"), 0, WakePlaces.Length - 1)]);
                 Count(report.Nights, string.Join(" → ", s.History.Where(NightStorylets.Contains)));
+                if (late)
+                {
+                    Interlocked.Increment(ref report.StayedLate);
+                    Count(report.LateNights, string.Join(" → ", s.History.Where(NightStorylets.Contains)));
+                }
                 Count(report.Endings, s.History.LastOrDefault(h => h.StartsWith("end_")) ?? "(none)");
                 Count(report.PeakDrunk, s.Get("peak_drunk").ToString());
                 foreach (string h in s.Headlines.Distinct()) Count(report.Headlines, h);
+                foreach (var (who, c) in s.Characters.Where(kv => kv.Value.Doing.Length > 0))
+                    Count(report.People, $"{who}: {c.Doing}");
                 foreach (var shift in s.TraitShifts) Count(report.Shifts, $"{shift.Trait} {shift.Delta:+0;-0} ({shift.Reason})");
                 Count(report.NerveCount, startNerve);
                 string night = string.Join(" → ", s.History.Where(NightStorylets.Contains));

@@ -218,16 +218,17 @@ And there's the bus stop.
     ~ temp r = check("bury_file", "judgment")
     ~ flag("file_buried")
     ~ headline("Teo buried the Petrovici file.")
-    ~ shift("honesty", -1, "first_favour")
     I slide it under eleven other files. It's the most decisive thing I've done this year.
     { r == 0:
         ~ flag("file_seen")
         When I turn round, Zdenka is at the printer. Facing me. The printer isn't printing.
+    - else:
+        Nobody saw. Nobody ever sees. That's how it starts.
+        ~ shift("honesty", -1, "first_favour")
     }
 * [Take a photo of the report for Stojan.]
     ~ flag("file_photo")
     ~ headline("Teo leaked an inspection report to his neighbour.")
-    ~ shift("honesty", -1, "first_favour")
     Click. Now Stojan will know what's coming. That's a favour, technically. That's what you do for neighbours, technically.
     It doesn't feel like a favour. It feels like I've stolen a stapler from a church.
 * [Leave it where it is. #cautious]

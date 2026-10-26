@@ -11,32 +11,59 @@ characters without the creator.
 
 ---
 
-## 1. Where we are
+## 1. Status (updated 2026-10-26)
 
-### Works today (tested)
+The list to check before starting work. Update it whenever something is done or decided.
 
-| Area | State |
-|---|---|
-| Engine | Phases, scene and hub storylets, a director, conditions in tags, seeded randomness (reloading replays the same luck), save/load |
-| World state | Qualities, per-character regard and memories, alcohol/tiredness/mood/shame, provisional traits, hidden tiered checks |
-| Content | Full Tuesday and Wednesday morning in ink: 6 night routes, 3 outsider threads, 15 closing hooks, memories paid off on Wednesday |
-| Tools | Text player with reading pace; simulator (5 play styles, coverage, outcome spread); 33 tests |
-| Health | 10,000 simulated lives: 0 crashes, 0 dead ends, every storylet reachable, generic ending 1-4% |
+### Done
 
-### Weak (evidence)
+| What | When | Where |
+|---|---|---|
+| Engine: phases, storylets, director, conditions, seeded randomness, save/load | 2026-10-18 | `src/OfficeMan.Core` |
+| Full Tuesday and Wednesday morning in ink (6 night routes, 3 outsider threads, 15 closing hooks) | 2026-10-18 | `content/ink` |
+| Text player, simulator, tests | 2026-10-18 | `src/OfficeMan.Cli`, `tools/OfficeMan.Sim`, `tests` |
+| Step 1: walkable rooms (flat, stairwell day and night, office, terrace), sprites, conversations over the scene | 2026-10-19 | `game/`, `content/rooms` |
+| Step 2: traits (four, nudged per life, conditions, nine big moments, choices by trait, inner voice, hindsight, end-of-day words) | 2026-10-19 | `design/traits_build.md` |
+| Clean-up: old art experiments removed, `Main.cs` split by job | 2026-10-19 | |
+| Step 3: everyone at the party follows a plan of their own; one person at most comes to Teo per evening; Magda may leave with someone, by chance; Stojan's evening heard through the wall | 2026-10-26 | `design/agendas_build.md` |
+| The party runs until 01:00 | 2026-10-26 | `content/phases.json` |
+| Lasting trait shifts made rarer (one a day, a second sign) | 2026-10-26 | `design/traits_build.md` |
+| Simulator: a sixth play style, "late", that stays to the end | 2026-10-26 | `tools/OfficeMan.Sim` |
+| Stopped at the gate: before ten, someone may talk Teo into staying (once an evening, he can always go) | 2026-10-26 | `design/agendas_build.md` |
 
-| Problem | Evidence |
-|---|---|
-| **Traits barely matter** | Four provisional traits with fixed values; they only nudge a few checks. Teo doesn't feel like a specific person. |
-| **The world doesn't move without Teo** | Magda, Viktor, Ramona and the rest only act inside Teo's storylets. If you stand at the bar all night, nothing happens to them. |
-| **Causes aren't legible** | Checks resolve silently. A bad outcome rarely tells you *why* (drunk? tactless? unlucky?), which is what makes a disaster feel fair. |
-| **Conditions are mostly alcohol** | Mood, tiredness and shame exist but rarely change what Teo thinks or can do. |
-| **Memory stays private** | Characters remember Teo, but nothing spreads. By Wednesday the whole office should "know" things, rightly or wrongly. |
-| **The big threads are hard to reach** | Viktor's club, Ramona, a night at Magda's: 1-10% of random lives. Some of that is right (rare is good), some is just hidden. |
-| **Some failures are simply bad** | Several refusals and failed checks close a door without opening another. That breaks *No Optimal Life*. |
-| **It's played in a terminal** | Fine for testing, poor for evaluating a game. No portraits, no sense of place. |
+Health on 2026-10-26: 54 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
+storylet reached.
 
----
+### Next
+
+| # | What | Waiting for |
+|---|---|---|
+| 1 | **Playtest of step 3** in the window: stay at the party past ten and see who comes to Teo | The creator |
+| 2 | Step 1, last part: spoken lines floating above people (the overheard lines from step 3 are the first use) | Nothing; can start |
+| 3 | People move when the text says so (Viktor's clap, Teo walking to Viktor's office) | The creator asking (`design/noted.md`) |
+| 4 | Step 4: memory that spreads (gossip, reputation) | Nothing; next big step |
+| 5 | Step 5: every bad outcome opens something; end-of-day "where Teo's life stands" | Step 4 |
+| 6 | Step 6: the creator plays several lives, then we tune | Step 5 |
+
+### Needs the creator
+
+1. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
+   most simulated lives leave before ten (5 to 24% are there at ten). The playtest will show whether a real player
+   does the same. If so: open "Go home" later.
+2. **Your notes** (`design/noted.md`): nine items, fixed only when you ask.
+
+### Known weak spots (evidence)
+
+| Problem | Evidence | Fixed by |
+|---|---|---|
+| Most lives leave the party early | 59 to 94% of lives go home through the stairwell; of those still there at ten, 36 to 63% | Partly: stopped at the gate. Open (see "Needs the creator") |
+| The same headline every time | "The two-ticket rule lasted one hour and forty minutes": 94 to 99% of lives | Open: the open bar could depend on Viktor's evening |
+| Memory stays private | By Wednesday only witnesses know anything | Step 4 |
+| Some failures just close a door | Several refusals and failed checks lead nowhere | Step 5 |
+| ~~The world doesn't move without Teo~~ | | Step 3, done |
+| ~~Lasting trait shifts too common~~ | | 2026-10-26, done |
+| ~~Traits barely matter~~ | | Step 2, done |
+| ~~Played in a terminal~~ | | Step 1, done |
 
 ## 2. What to build, in order
 
@@ -61,7 +88,7 @@ words and choices bottom-right); keyboard and controller. Story moves between pl
 in the text, so the scene switches exactly where the story does.
 
 **Done (2026-10-19):** the flat (Teo in bed), the stairwell (day and night, Stojan smoking) and the terrace are
-rooms too. The party at Terasa Velka is walkable from 17:00 to 23:30: the light goes from golden sun through dusk
+rooms too. The party at Terasa Velka is walkable from 17:00 to 23:30 (01:00 since 2026-10-26): the light goes from golden sun through dusk
 (the string lights come on) to night. Every party situation is tied to a person or place: the bar (Laci), Magda by
 the door, Viktor at the railing with whoever he's after tonight, Ramona at the bar, Zdenka at her table, the
 consultants, the hen party, the developer, the railing, the steps down to the river; ways out at the door (home),
@@ -93,6 +120,8 @@ who Teo was. See `design/traits_build.md`.
 - Small permanent shifts: a humiliation or a triumph can change a trait for the rest of the life.
 
 ### Step 3: A world that moves (NPC agendas)
+
+**Done (2026-10-26).** Approved by the creator and built; see `design/agendas_build.md`.
 - Each main character at the party (Magda, Viktor, Ramona, Kornel, Zdenka) and Stojan at home gets **a small plan for the day**: goals, a mood, and states that advance with time and events, whether or not Teo is there.
 - Their storylets key off their state as well as Teo's actions, so the evening unfolds differently even for a passive Teo.
 - The director picks between "what Teo seeks out" and "what happens to him".
@@ -127,7 +156,4 @@ who Teo was. See `design/traits_build.md`.
 
 ## 4. Needs the creator
 
-1. **Approve this milestone** (or change the order). I'd start with Step 1 so every later playtest is in a real window.
-2. **Trait design session** (before Step 2): proposal in `design/traits_proposal.md`.
-3. ~~Magda's new age~~: decided (21; children 5 and 2 with their fathers). Content updated.
-4. **Playtests** after Steps 1, 3 and 5.
+See "Needs the creator" in section 1. Playtests are planned after Steps 3 and 5.

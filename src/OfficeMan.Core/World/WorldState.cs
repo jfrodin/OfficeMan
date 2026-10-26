@@ -74,13 +74,19 @@ public sealed class WorldState
     public int Plays(string storyletId) => PlayCounts.TryGetValue(storyletId, out int n) ? n : 0;
 }
 
-/// <summary>What one person thinks of Teo, and what they remember.</summary>
+/// <summary>What one person thinks of Teo, what they remember, and how their own day is going.</summary>
 public sealed class CharacterState
 {
     /// <summary>How they feel about Teo. Roughly -10 (hatred) to 10 (love).</summary>
     public int Regard { get; set; }
 
     public List<Memory> Memories { get; set; } = new();
+
+    /// <summary>Where their plan for the day has got to, in a word ("door", "river", "gone"). Empty until content sets it.</summary>
+    public string Doing { get; set; } = "";
+
+    /// <summary>How their own evening is going, whatever they think of Teo. -5 (awful) to 5 (wonderful).</summary>
+    public int Feels { get; set; }
 
     public bool Remembers(string tag) => Memories.Exists(m => m.Tag == tag);
 }

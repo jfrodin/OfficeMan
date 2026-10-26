@@ -191,6 +191,17 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
 - q("slept_at") == 2:
     MAGDA: You found the coffee!
     She's pleased about the coffee. She's pleased I slept on her sofa. She's going to tell people. In a nice way. It'll be worse in a nice way.
+- is("magda_left_with_someone"):
+    She's wearing yesterday's earrings. She sees me see them.
+    MAGDA: Don't. I had a nice time. I'm allowed a nice time.
+    She is. I just wish it looked more like one.
+    { is("magda_left_with_adrian"):
+        On her desk there's a thick card, embossed. Kovál Development. Card like that is a message by itself.
+    }
+- remembers("magda", "sat_with_later"):
+    MAGDA: Thank you. For sitting with me. At the bar.
+    She says it quietly, without looking at me, and then loudly asks if anyone wants a coffee.
+    ~ like("magda", 1)
 - remembers("magda", "sat_with") || remembers("magda", "truth"):
     MAGDA: Thank you. For last night. On the bench.
     She says it quietly, without looking at me, and then loudly asks if anyone wants a coffee.
@@ -223,6 +234,9 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
     I've got a friend. I'm thirty-two and I appear to have made a friend, and he's Kornel.
 - q("kornel_poem") == 2:
     Kornel is different today. He's sitting up straighter. People keep saying "Ode to Permits" to him as they walk past, and they mean it nicely, mostly.
+    { is("kornel_first_beer"):
+        KORNEL: I had a beer. My first. I don't think I'll have another. I might have another.
+    }
     { is("stood_with_kornel"):
         KORNEL: You stood next to me. Nobody's ever stood next to me.
         He says it like he's reporting a fact for the minutes. Then he goes red to the ears.
@@ -232,6 +246,9 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
 - q("kornel_poem") == 0 && played("kornel_poem") > 0:
     KORNEL: I've decided not to read any more poems at work. I've made a note.
     He shows me the note. It's on his hand.
+    { is("zdenka_said_it_rhymed"):
+        KORNEL: Zdenka said it rhymed. Zdenka doesn't say things.
+    }
 - else:
     KORNEL: Good morning, Teo. Did you have a nice evening? I had an adequate evening.
 }
@@ -254,6 +271,7 @@ He's seen the video. He's seen who sent the laughing emoji.
     }
 * [Pretend nothing happened.]
     ~ like("kornel", -1)
+    ~ shift("warmth", -1, "filmed_kornel")
     I walk past. He doesn't look up. Two men pretending at each other, ten metres apart, for the rest of our careers.
 - -> DONE
 

@@ -1,8 +1,9 @@
-// Terasa Velka, the summer party, 17:00 to 23:30. Pictures: art/game/rooms/terrace*.png, drawn by
+// Terasa Velka, the summer party, 17:00 to 01:00. Pictures: art/game/rooms/terrace*.png, drawn by
 // tools/OfficeMan.ArtGen/Rooms/TerraceRoom.cs; positions here must match it.
 // The evening is in the timeline: golden sun, dusk, the string lights, night.
-// Who is where follows the story: Ramona after she arrives, Magda until she goes down to the river,
-// the outsiders only on nights they're here, Viktor's company by the railing while he's holding court.
+// Who is where follows each person's plan (doing(...), design/agendas_build.md): Ramona at the bar until she
+// leaves, Magda at the door, then the river, then back at the bar or with the hen party, Viktor by the railing
+// until the club (or sulking at the bar), Zdenka until ten. Outsiders only on nights they're here.
 {
   "id": "terrace",
   "image": "art/game/rooms/terrace.png",
@@ -35,27 +36,31 @@
   "things": [
     { "id": "gate", "name": "The way out", "x": 18, "y": 190 },
     { "id": "magda", "name": "Magda", "sprite": "magda_party", "x": 64, "y": 196, "when": "not magda_crushed" },
+    { "id": "magda_bar", "anchor": "magda", "name": "Magda", "sprite": "magda_party", "x": 128, "y": 198, "faceLeft": true, "when": "doing(magda, bar)" },
+    { "id": "magda_hen", "anchor": "magda", "name": "Magda", "sprite": "magda_party", "x": 398, "y": 204, "when": "doing(magda, hen)" },
     { "id": "bar", "name": "The bar", "sprite": "laci", "x": 104, "y": 174 },
     { "id": "bar_counter", "name": "", "sprite": "terrace_bar", "x": 111, "y": 180, "prop": true },
-    { "id": "developer", "name": "The man in the very good suit", "sprite": "adrian", "x": 78, "y": 194, "when": "outsider_developer" },
-    { "id": "ramona", "name": "Ramona", "sprite": "ramona", "x": 150, "y": 192, "faceLeft": true, "when": "played(\"ramona_arrives\") > 0" },
-    { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka_sit", "x": 213, "y": 184, "faceLeft": true },
+    { "id": "developer", "name": "The man in the very good suit", "sprite": "adrian", "x": 78, "y": 194, "when": "outsider_developer and time < 22:30" },
+    { "id": "ramona", "name": "Ramona", "sprite": "ramona", "x": 150, "y": 192, "faceLeft": true, "when": "doing(ramona, bar)" },
+    { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka_sit", "x": 213, "y": 184, "faceLeft": true, "when": "not doing(zdenka, gone)" },
+    { "id": "zdenka_table", "name": "Zdenka's table", "x": 213, "y": 184, "when": "doing(zdenka, gone)" },
     { "id": "kornel", "name": "Kornel", "sprite": "kornel", "x": 260, "y": 196, "faceLeft": true },
-    { "id": "viktor", "name": "Viktor", "sprite": "viktor", "x": 292, "y": 192 },
+    { "id": "viktor", "name": "Viktor", "sprite": "viktor", "x": 292, "y": 192, "when": "not doing(viktor, bar) and not doing(viktor, club)" },
+    { "id": "viktor_bar", "anchor": "viktor", "name": "Viktor", "sprite": "viktor", "x": 176, "y": 196, "faceLeft": true, "when": "doing(viktor, bar)" },
     { "id": "viktor_felicity", "anchor": "viktor", "name": "Viktor", "sprite": "felicity", "x": 308, "y": 192, "faceLeft": true,
-      "when": "outsider_consultants and time >= 18:00 and time < 21:30 and not viktor_foiled" },
+      "when": "outsider_consultants and time >= 18:00 and doing(viktor, railing)" },
     { "id": "viktor_maid", "anchor": "viktor", "name": "Viktor", "sprite": "hen_blonde", "x": 308, "y": 192, "faceLeft": true,
-      "when": "outsider_hen and not outsider_consultants and time >= 18:00 and time < 21:30 and not viktor_foiled" },
+      "when": "outsider_hen and not outsider_consultants and time >= 18:00 and doing(viktor, railing)" },
     { "id": "viktor_waitress", "anchor": "viktor", "name": "Viktor", "sprite": "waitress", "x": 308, "y": 192, "faceLeft": true,
-      "when": "not outsider_consultants and not outsider_hen and time >= 18:00 and time < 21:30 and not viktor_foiled" },
+      "when": "not outsider_consultants and not outsider_hen and time >= 18:00 and doing(viktor, railing)" },
     { "id": "railing", "name": "The railing", "x": 338, "y": 186, "wall": true },
-    { "id": "consultants", "name": "The Team Alignment Evening", "sprite": "maarten_sit", "x": 362, "y": 184, "when": "outsider_consultants" },
+    { "id": "consultants", "name": "The Team Alignment Evening", "sprite": "maarten_sit", "x": 362, "y": 184, "when": "outsider_consultants and time < 22:30" },
     { "id": "consultants_felicity", "anchor": "consultants", "name": "The Team Alignment Evening", "sprite": "felicity_sit", "x": 402, "y": 184, "faceLeft": true,
-      "when": "outsider_consultants and (time < 18:00 or time >= 21:30 or viktor_foiled)" },
-    { "id": "hen", "name": "The hen party", "sprite": "denisa", "x": 436, "y": 202, "when": "outsider_hen" },
+      "when": "outsider_consultants and time < 22:30 and (time < 18:00 or viktor_foiled)" },
+    { "id": "hen", "name": "The hen party", "sprite": "denisa", "x": 436, "y": 202, "when": "outsider_hen and time < 23:00" },
     { "id": "hen_blonde", "anchor": "hen", "name": "The hen party", "sprite": "hen_blonde_sit", "x": 418, "y": 184,
-      "when": "outsider_hen and (outsider_consultants or time < 18:00 or time >= 21:30 or viktor_foiled)" },
-    { "id": "hen_dark", "anchor": "hen", "name": "The hen party", "sprite": "hen_dark_sit", "x": 454, "y": 184, "faceLeft": true, "when": "outsider_hen" },
+      "when": "outsider_hen and time < 23:00 and (outsider_consultants or time < 18:00 or viktor_foiled)" },
+    { "id": "hen_dark", "anchor": "hen", "name": "The hen party", "sprite": "hen_dark_sit", "x": 454, "y": 184, "faceLeft": true, "when": "outsider_hen and time < 23:00" },
     { "id": "steps", "name": "The steps down to the river", "x": 466, "y": 190 }
   ]
 }

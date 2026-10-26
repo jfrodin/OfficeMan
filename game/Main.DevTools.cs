@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -18,6 +18,7 @@ public partial class Main
     private string? _shotMenu;
     private bool _reviewOnly;   // showing Review.bat's screenshots, not playing
     private int _lookAt = -1;
+    private string? _lookDoing;
 
     /// <summary>
     /// Command line (after --): --seed N; --shot path.png --steps N (play N steps automatically, then screenshot);
@@ -48,6 +49,7 @@ public partial class Main
             else if (args[i] == "--room" && i + 1 < args.Length) _lookRoom = args[++i];
             else if (args[i] == "--menu" && i + 1 < args.Length) _shotMenu = args[++i];
             else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
+            else if (args[i] == "--doing" && i + 1 < args.Length) _lookDoing = args[++i];
         }
         return false;
     }
@@ -75,6 +77,13 @@ public partial class Main
     {
         _autoSteps = -1;
         if (_lookAt >= 0) _game.State.Minute = _lookAt;
+        // "--doing magda=bar,viktor=bar,flag": where people's plans have got to, and flags, for looking at a room.
+        foreach (string part in (_lookDoing ?? "").Split(',', StringSplitOptions.RemoveEmptyEntries))
+        {
+            var kv = part.Split('=', 2);
+            if (kv.Length == 2) _game.State.Character(kv[0].Trim()).Doing = kv[1].Trim();
+            else _game.State.Set(kv[0].Trim(), 1);
+        }
         _roomView.Visible = true;
         _scene.Visible = false;
         _roomView.Load(_rooms[id], _game.Evaluate);

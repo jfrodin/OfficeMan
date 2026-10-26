@@ -7,7 +7,7 @@
     { "id": "home_morning",      "title": "Teo's flat",                 "mode": "scene", "day": 0, "start": "06:47", "next": "stairwell_morning" },
     { "id": "stairwell_morning", "title": "The stairwell",              "mode": "scene", "day": 0, "start": "07:35", "next": "office" },
     { "id": "office",            "title": "City Planning Office, Permits Section", "mode": "hub", "day": 0, "start": "08:30", "end": "16:30", "next": "party" },
-    { "id": "party",             "title": "Terasa Velka, on the river", "mode": "hub",   "day": 0, "start": "17:00", "end": "23:30", "next": "night_home" },
+    { "id": "party",             "title": "Terasa Velka, on the river", "mode": "hub",   "day": 0, "start": "17:00", "end": "25:00", "next": "night_home" },
 
     { "id": "night_club",        "title": "Club Schengen",              "mode": "scene", "day": 0, "next": "night_home" },
     { "id": "night_magda",       "title": "Outside Magda's building",   "mode": "scene", "day": 0, "next": "wed_wake" },

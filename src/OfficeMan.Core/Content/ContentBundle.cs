@@ -108,6 +108,12 @@ public sealed class ContentBundle
                 if (!schedule.Contains(p)) errors.Add($"storylet '{s.Id}': unknown phase '{p}'");
             if (s.Kind is StoryletKind.Hub or StoryletKind.Exit && string.IsNullOrEmpty(s.ChoiceText))
                 errors.Add($"storylet '{s.Id}': hub storylets need a '# choice:' tag");
+            if (s.Kind == StoryletKind.Offstage && s.MaxPlays == 0)
+                errors.Add($"storylet '{s.Id}': offstage storylets can't repeat (use '# max: N')");
+            if (s.Kind == StoryletKind.Offstage)
+                foreach (string p in s.Phases)
+                    if (schedule.Contains(p) && schedule.Get(p).Mode != PhaseMode.Hub)
+                        errors.Add($"storylet '{s.Id}': offstage storylets belong in hub phases, not '{p}'");
         }
     }
 

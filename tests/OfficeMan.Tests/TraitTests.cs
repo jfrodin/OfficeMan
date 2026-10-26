@@ -48,6 +48,19 @@ public class TraitTests(ContentFixture fixture)
     }
 
     [Fact]
+    public void AtMostOneLastingShiftADay()
+    {
+        var s = new WorldState { Seed = 1 };
+        Assert.True(Teo.Shift(s, "nerve", 1, "stood_up"));
+        Assert.False(Teo.Shift(s, "warmth", 1, "stood_by_kornel"));       // same day
+        Assert.Equal(0, s.Get("trait_warmth"));
+        s.Day = 1;
+        Assert.False(Teo.Shift(s, "warmth", 1, "stood_by_kornel"));       // that moment has passed
+        Assert.True(Teo.Shift(s, "honesty", 1, "told_magda"));            // a new day, a new moment
+        Assert.Equal(2, s.TraitShifts.Count);
+    }
+
+    [Fact]
     public void DrinkMakesHimBolderForTheMoment()
     {
         var s = new WorldState { Seed = 1 };

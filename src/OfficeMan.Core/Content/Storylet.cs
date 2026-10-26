@@ -16,6 +16,12 @@ public enum StoryletKind
     Interrupt,
     /// <summary>Plays when a hub phase runs out of time, then ends the phase.</summary>
     Timeout,
+    /// <summary>
+    /// Something other people do on their own, whether Teo is there or not (hub phases only). Fires like an
+    /// interrupt, before interrupts, and takes no time. No choices; the only lines allowed are overheard ones
+    /// (<c>#heard</c>), what Teo happens to catch of it.
+    /// </summary>
+    Offstage,
 }
 
 /// <summary>
@@ -25,13 +31,13 @@ public enum StoryletKind
 /// Recognised tags (one per line, directly under the knot header):
 /// <code>
 /// # phase: office            phase id(s), comma-separated
-/// # kind: hub                scene | enter | hub | exit | interrupt | timeout
+/// # kind: hub                scene | enter | hub | exit | interrupt | timeout | offstage
 /// # choice: Talk to Magda    hub menu text
 /// # where: magda             the person or thing in the room it belongs to (walkable front ends)
 /// # when: drunk >= 2         eligibility condition (see Condition)
 /// # window: 08:30-12:00      time of day it is available
-/// # at: 18:00                interrupt: earliest time it may fire
-/// # chance: 30               interrupt: percent chance per hub step once eligible
+/// # at: 18:00                interrupt, offstage: earliest time it may fire
+/// # chance: 30               interrupt, offstage: percent chance per hub step once eligible
 /// # priority: 10             higher wins (scene choice, interrupt order, menu order)
 /// # weight: 3                relative odds among equal priority (scene)
 /// # duration: 20             minutes that pass when it finishes
