@@ -30,8 +30,12 @@ The list to check before starting work. Update it whenever something is done or 
 | Lasting trait shifts made rarer (one a day, a second sign) | 2026-10-26 | `design/traits_build.md` |
 | Simulator: a sixth play style, "late", that stays to the end | 2026-10-26 | `tools/OfficeMan.Sim` |
 | Stopped at the gate: before ten, someone may talk Teo into staying (once an evening, he can always go) | 2026-10-26 | `design/agendas_build.md` |
+| Text, first pass: every line read critically and rewritten (fewer punchlines and similes, people in their own voices); the bar changes with drink | 2026-10-26 | `design/text_review.md` |
+| A text column on the right (a log you can scroll back), now the default; the old bar in Settings / F2. Click moves text on; a single choice just happens | 2026-10-26 | `game/Main.Column.cs` |
+| Office: a wall clock that shows the time; Look busy shorter and varied; the dead afternoon can be skipped | 2026-10-26 | |
+| Waking at Magda's, Kornel's or the station shows that place | 2026-10-26 | |
 
-Health on 2026-10-26: 54 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
+Health on 2026-10-26: 55 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
 storylet reached.
 
 ### Next
@@ -47,10 +51,12 @@ storylet reached.
 
 ### Needs the creator
 
-1. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
+1. **Play it.** The text (first pass) and the text column are both new. Is the voice right? Column or bar?
+   (`design/text_review.md`, F2 to switch.)
+2. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
    most simulated lives leave before ten (5 to 24% are there at ten). The playtest will show whether a real player
    does the same. If so: open "Go home" later.
-2. **Your notes** (`design/noted.md`): nine items, fixed only when you ask.
+3. **Your notes** (`design/noted.md`): the open ones, fixed only when you ask.
 
 ### Known weak spots (evidence)
 

@@ -8,7 +8,7 @@
 ~ pass_time(30)
 Club Schengen is in a former customs warehouse. The theme is "borderless." The bouncer is the biggest border I've ever seen.
 He looks at me. Then at Viktor. Then he unhooks the rope, for Viktor.
-Inside it's loud and blue and full of people twenty years younger than us. Viktor is not twenty years younger than anyone. He moves through it anyway like it's his living room.
+Inside it's loud and blue and everyone is twenty years younger than us. Viktor moves through them like it's his living room.
 VIKTOR: Teo. Teo! This is life. Look at it.
 He gets a table. He gets a bottle, with a sparkler in it, carried by a girl who looks embarrassed for all of us.
 { not is("viktor_foiled"):
@@ -19,7 +19,7 @@ He gets a table. He gets a bottle, with a sparkler in it, carried by a girl who 
 
 = with_target
 {viktor_target()} arrives twenty minutes later. Viktor stands up for her. He never stands up for anyone at work.
-After a while they're not talking anymore. After a while they're in a corner, and it's not my business, and I'm watching it like it's the only programme on.
+After a while they stop talking. After a while they're in a corner. It's none of my business, and I watch it anyway.
 * [Take a photo. #bold]
     ~ flag("photo_of_viktor")
     ~ headline("Teo has a photo of Viktor that Viktor doesn't know about.")
@@ -35,7 +35,7 @@ After a while they're not talking anymore. After a while they're in a corner, an
 - -> deal
 
 = alone_with_viktor
-Viktor's evening didn't go to plan. He doesn't mention whose fault that is. He doesn't need to.
+Viktor's evening didn't go to plan. He doesn't say whose fault that is.
 VIKTOR: You know your problem, Teo? You think being honest makes you good.
 He pours me a drink. A big one.
 VIKTOR: It doesn't. It just makes you honest.
@@ -47,10 +47,10 @@ VIKTOR: It doesn't. It just makes you honest.
 - -> home
 
 = deal
-Later, maybe two. Viktor drops into the seat next to me, shirt open another button. Fresh. He's always fresh. He has a gift.
+Later, maybe two o'clock, Viktor drops into the seat next to me with his shirt open another button. He looks fresh. He always looks fresh.
 VIKTOR: I'm restructuring. After summer. Deputy head of section. Somebody who's good, somebody who's loyal.
 VIKTOR: You've been loyal tonight.
-He doesn't say <i>you saw nothing</i>. He doesn't have to. That's the job description.
+He doesn't say <i>you saw nothing</i>. That's part of the job.
 * [Thank him.]
     ~ flag("viktor_promise")
     ~ like("viktor", 2)
@@ -58,7 +58,7 @@ He doesn't say <i>you saw nothing</i>. He doesn't have to. That's the job descri
     ~ headline("Viktor half-promised Teo a promotion. In a nightclub. At two in the morning.")
     TEO: Thanks, Viktor.
     VIKTOR: Don't thank me. Earn it.
-    He means: keep earning it. Forever.
+    He means keep earning it.
 * [Say nothing.]
     ~ flag("viktor_promise")
     ~ remember("viktor", "deal_silent")
@@ -76,7 +76,7 @@ The taxi home costs more than the gift for Viktor. The driver tells me about his
 # kind: scene
 ~ pass_time(35)
 Magda lives in Block C of the Florian estate. Eleven storeys. The lift works on odd days.
-We walk there. It's warm. She tells me about the estate when it was new, in 1983, when her mother thought it was the future. It was the future. This is what the future looked like.
+We walk. It's warm. She tells me about the estate when it was new, in 1983, and her mother thought it was the future.
 At the door of Block C, she stops. Keys in her hand. All of them.
 {
 - is("kissed_magda"):
@@ -96,7 +96,7 @@ At the door of Block C, she stops. Keys in her hand. All of them.
 = up_together
 We go up. Eleven floors, because it's an even day.
 Her flat is small and very clean. There are two children's drawings on the fridge, and no children.
-We're kind to each other. It isn't love, and it isn't nothing. It's two people being less alone for a few hours, which is most of what anyone gets.
+We're kind to each other, and careful, the way you are with someone you'll see at work in seven hours.
 Afterwards she cries a little, and laughs at herself for crying, and I hold her, and I think about Viktor, which is the most disgusting thought I've ever had, and I put it away.
 ~ qset("slept_at", AT_MAGDAS)
 ~ flag("slept_with_magda")
@@ -129,7 +129,7 @@ She goes in. Through the glass I watch her walk past the lift, because it's an e
 # phase: night_ramona
 # kind: scene
 ~ pass_time(25)
-The back of Ramona's car is quieter than my flat. Leather. Cool air. A driver called Bogdan who has heard everything and repeated nothing in nineteen years.
+The back of Ramona's car is quieter than my flat. The driver is called Bogdan. In nineteen years he has heard everything and repeated none of it.
 Ramona takes her shoes off and puts her feet on the seat like a teenager.
 RAMONA: Do you know what I wanted to be? At nineteen?
 RAMONA: An architect. I was going to build things. Then I married a man who decides what gets built. I thought that was the same thing.
@@ -157,7 +157,7 @@ She's looking at me. The streetlights go over her face, one, two, three, like so
         ~ remember("ramona", "kissed")
         ~ like("ramona", 2)
         ~ headline("Teo kissed his boss's wife in the back of her car.")
-        She kisses me back. It's not a revenge. Or it's a revenge that's been waiting thirty years and isn't about me at all.
+        She kisses me back. Whatever this is for her, it started thirty years before me.
         Bogdan turns the radio on. Very quietly. Bogdan is a professional.
     }
 * [Don't. #cautious]
@@ -176,8 +176,8 @@ She's looking at me. The streetlights go over her face, one, two, three, like so
     RAMONA: Men build things at fifty. Women get a bag.
     But she's quiet for a while after that. Not the bad kind of quiet.
 * [Ask about Viktor.]
-    RAMONA: Viktor is a weather system. You don't argue with weather. You dress for it.
-    She holds up the handbag. Point made.
+    RAMONA: Viktor? Viktor is Viktor. I knew that when I married him.
+    She holds up the handbag, as if that explains the rest.
 - -> drop
 
 = drop
@@ -192,14 +192,14 @@ She doesn't say which him. I don't ask.
 # phase: night_river
 # kind: scene
 ~ pass_time(40)
-The water is cold. Not cold like a shower. Cold like a fact.
+The water is cold. Properly cold, all at once.
 { drunk() >= 3:
     It's very hard to tell up from down. I choose one. It's the wrong one.
 }
 {
 - is("outsider_hen"):
-    Then there are hands. Lots of hands. Women's hands, with long nails, and the sound of a hen party screaming <i>OFFICE MAN</i> like a battle cry.
-    They pull me out. Denisa holds my head. Someone films it. Of course someone films it.
+    Then there are hands, a lot of them, with long nails, and a hen party screaming <i>OFFICE MAN</i>.
+    They pull me out. Denisa holds my head. Someone films it.
     DENISA: You're not allowed to die! It's my hen night!
     ~ headline("A hen party pulled Teo out of the river.")
 - else:
@@ -207,7 +207,7 @@ The water is cold. Not cold like a shower. Cold like a fact.
     LACI: Boss. Boss! Why? Why are you like this?
     ~ headline("Laci the barman pulled Teo out of the river.")
 }
-The police arrive, because someone called them, and then an ambulance, because someone else did. The paramedic shines a light in my eye and says I'm fine, I'm just drunk, which is both true and a diagnosis.
+The police arrive, because someone called them, and then an ambulance, because someone else did. The paramedic shines a light in my eye and says I'm fine, just drunk.
 The police have a solution for men who are fine and drunk.
 POLICEMAN: Name?
 TEO: Teo Halász. Permits.
@@ -225,7 +225,7 @@ I knew it. I knew they'd put one on a person.
 # kind: scene
 ~ pass_time(30)
 Kornel's car is a 2009 Dacia, brown, very clean, with an air freshener shaped like a tree that's never seen a tree.
-He drives at exactly the speed limit. Through every light. Even the ones that are just thinking about it.
+He drives at exactly the speed limit and stops at every amber light.
 KORNEL: I don't know your address. I'm going to take you to mine. I hope that's acceptable to you.
 { drunk() >= 3:
     I tell him it's acceptable. I tell him he's a great man. I tell him about my father. I don't know which parts are out loud.
@@ -302,14 +302,14 @@ It's the middle of the night. He's asking me about a toilet.
     STOJAN: Good man.
 * ["Stojan, it's the middle of the night."]
     STOJAN: Problems don't sleep, Teo.
-    He's right. That's the worst thing about Stojan. He's often right in a terrible way.
+    He's right. Stojan is often right, in a terrible way.
 * ["I'm not going to fix it." #bold]
     ~ remember("stojan", "teo_said_no")
     ~ like("stojan", -3)
     ~ flag("told_stojan_no")
     He looks at me for a long time. Then he stubs the cigarette out, carefully, on the No Smoking sign.
     STOJAN: Okay. Okay, Teo.
-    He goes in. He closes the door very quietly. That's worse than slamming.
+    He goes in and closes the door very quietly.
 - -> bed
 
 = very_drunk

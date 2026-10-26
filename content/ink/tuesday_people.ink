@@ -154,7 +154,7 @@ VIKTOR: You. You're coming. You owe me an evening. #mood:displeased
     ~ like("viktor", 1)
     ~ remember("viktor", "came_anyway")
     ~ set_doing("viktor", "club")
-    I go with him. Of course I go with him. I ruined his evening; the least I can do is watch him fix it.
+    I go with him. I ruined his evening. The least I can do is watch him fix it.
     ~ goto_phase("night_club")
 * [Not tonight, Viktor.]
     ~ like("viktor", -1)

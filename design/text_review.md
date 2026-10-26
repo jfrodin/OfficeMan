@@ -3,7 +3,9 @@
 The creator asked for every line to be read critically and rewritten. The story is the game's most important
 ingredient. This is what's wrong, the rules for the rewrite, and where it stands.
 
-**Status: the morning, the bar and the office are rewritten (2026-10-26, overnight, with the creator's go-ahead to carry on). Each file is its own commit, so any of it can be rolled back if the direction is wrong.**
+**Status: first pass done for all of Tuesday and Wednesday (2026-10-26, overnight, with the creator's go-ahead to carry on). Each file is its own commit, so any of it can be rolled back if the direction is wrong.** After the pass: "like a" similes 45 to 25, "of course" 21 to 6 (all in dialogue), "genuinely" 7 to 0, "It's not X. It's Y." gone.
+
+A first pass is not the end. The next pass should come after the creator has played it: what still sounds wrong is easier to hear in the game than on paper.
 
 ## What's wrong
 
@@ -70,6 +72,6 @@ each."* Trust the player.
 | 3 | Stairwell, morning (`tuesday_home.ink`) | 400 | Two lines trimmed; the rest is creator-approved |
 | 4 | The office (`tuesday_office.ink`) | 3,200 | **Done** (logic unchanged, checked line by line) |
 | 5 | The party (`tuesday_party.ink`, `tuesday_people.ink`) | 5,800 | **Done** (logic unchanged) |
-| 6 | The night (`tuesday_night.ink`) | 2,400 | To do |
-| 7 | Wednesday (`wednesday.ink`) | 4,000 | To do |
-| 8 | Teo's end-of-day lines and hindsight (`lib.ink`) | 900 | To do |
+| 6 | The night (`tuesday_night.ink`) | 2,400 | **Done** (logic unchanged) |
+| 7 | Wednesday (`wednesday.ink`) | 4,000 | **Done** (logic unchanged) |
+| 8 | Teo's end-of-day lines and hindsight (`lib.ink`) | 900 | Left as is: the creator approved these lines (`design/traits_build.md`) |

@@ -15,4 +15,4 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-19 | Portraits are end-of-project work: one expression per character is enough for now. | `design/portraits_flat.md` |
 | 2026-10-26 | Doesn't like how text is handled at all: the box. Asked for alternatives. (A text column is built and is now the default; the old bar is still in Settings / F2. Waiting for the creator's verdict.) | `game/Main.Column.cs`, `game/Main.Ui.cs` |
 | 2026-10-26 | The game looks bad, but that's known; later. Things must not stand along the walls (see the 2026-10-19 note on open floors). | All rooms |
-| 2026-10-26 | Go through all the text critically and rewrite it. The story is the game's most important ingredient. (In progress: `design/text_review.md`.) | `content/ink/*.ink` |
+| 2026-10-26 | Go through all the text critically and rewrite it. The story is the game's most important ingredient. (First pass done for everything, 2026-10-26: `design/text_review.md`. Waiting for the creator to play it.) | `content/ink/*.ink` |

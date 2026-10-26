@@ -19,7 +19,7 @@
 - hangover() >= 2:
     I wake up at ten past seven with a headache shaped like Viktor.
 - else:
-    I wake up at ten past seven, rested, which feels like cheating. Like I skipped something everyone else had to sit through.
+    I wake up at ten past seven, rested, which feels like cheating.
 }
 { hungover():
     Everything is too bright and slightly my fault.
@@ -30,7 +30,7 @@
 { is("kissed_ramona"):
     I lie there and remember the car. The leather. The radio, very quietly.
     I kissed my boss's wife. On a Tuesday. With the driver watching.
-    I put the pillow over my face. It doesn't help. The pillow knows too.
+    I put the pillow over my face. It doesn't help.
 }
 -> phone_check
 
@@ -57,7 +57,7 @@ MAGDA: I didn't know how you take it. I put sugar. Everyone wants sugar, they ju
     ~ remember("magda", "morning_kiss")
     ~ like("magda", 2)
     ~ flag("magda_hopeful")
-    She goes pink. Twenty-one, two kids, and she goes pink. It's the best and worst thing I've ever caused.
+    She goes pink. Twenty-one, two kids, and she goes pink.
 * [Say this was a mistake. #cautious]
     ~ temp r = check("magda_mistake", "tact")
     { r:
@@ -99,7 +99,7 @@ They're not wrong. They're perfect. They're the best eggs I've ever had and I wa
     ~ remember("kornel", "thanked")
     ~ flag("kornel_friend")
     TEO: Kornel. Thank you. Really.
-    He goes still, holding the spatula. Like a man who's heard a sound in the forest he's never heard before.
+    He goes still, holding the spatula.
     KORNEL: You're welcome.
     KORNEL: You're very welcome, Teo.
 * [Eat fast and get out.]
@@ -130,7 +130,7 @@ NURSE: Have a good day, Mr Halász. Maybe less river.
 
 === phone_check
 { played("kornel_poem") > 0 && (is("filmed_kornel") || q("kornel_poem") == 0):
-    Twelve notifications. The office group chat. Someone's posted a video of Kornel's poem with the word <i>LEGEND</i>. It's not clear which way they mean it. It's never clear.
+    Twelve notifications. The office group chat. Someone's posted a video of Kornel's poem with the word <i>LEGEND</i>. It isn't clear which way they mean it.
     { is("filmed_kornel"):
         Under it, a laughing emoji from eight people. Including me, apparently, at 1:14 in the morning.
     }
@@ -147,7 +147,7 @@ NURSE: Have a good day, Mr Halász. Maybe less river.
 }
 { is("magda_paid") == false && remembers("magda", "didnt_pay"):
     A message from Magda, from 06:02: <i>dont worry about gift money!! i covered u xx</i>
-    She covered me. Of course she did.
+    She covered me.
 }
 -> DONE
 
@@ -160,10 +160,10 @@ NURSE: Have a good day, Mr Halász. Maybe less river.
 # priority: 100
 The office on the morning after looks like a crime scene where everyone is both the victim and the suspect.
 Grey faces. Sunglasses indoors. Someone has brought a family-sized bottle of mineral water and is drinking it with both hands.
-Viktor is fresh. Viktor is shaved and tanned and has had a run. Viktor is a medical mystery.
+Viktor has shaved, and been for a run, and looks fresh. Nobody understands how.
 Zdenka has been here since six.
 { q("slept_at") == 3:
-    Kornel and I arrive together. Everyone notices. Nobody says anything. That's worse than saying something.
+    Kornel and I arrive together. Everyone notices. Nobody says anything.
 }
 -> DONE
 
@@ -179,7 +179,7 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
 - is("slept_with_magda") && is("magda_hurt"):
     She doesn't look up. She's typing. She types very fast when she's upset. It sounds like rain on a car.
     MAGDA: Morning, Teo.
-    Just that. Professional. I didn't know she could do professional. It's the most frightening thing I've seen her do.
+    Just that. I didn't know she could do professional. It frightens me.
     ~ like("magda", -1)
 - is("slept_with_magda") && is("magda_hopeful"):
     She looks up and smiles. A little smile. A secret smile, in an office where nothing has ever been a secret.
@@ -262,7 +262,7 @@ He's seen the video. He's seen who sent the laughing emoji.
     { r:
     - 0:
         KORNEL: It's fine. It's absolutely fine. It's a free country.
-        It's not fine. And it's barely a free country.
+        It isn't fine.
     - else:
         ~ like("kornel", 2)
         ~ remember("kornel", "apology")
@@ -291,7 +291,7 @@ Zdenka doesn't call me over. She just looks at me until I'm there.
     ZDENKA: I've filed it today, instead of Thursday. Since it was in such a hurry to be noticed.
     ~ flag("file_filed_early")
     ~ headline("Zdenka filed the Petrovici report early. She knows why.")
-    She doesn't say anything else. She doesn't report me. That's worse. Now she has something, and Zdenka keeps things.
+    She doesn't say anything else. She doesn't report me. Now she has something, and Zdenka keeps things.
 - is("file_buried"):
     ZDENKA: The Petrovici file isn't on the trolley.
     TEO: Isn't it?
@@ -339,7 +339,7 @@ VIKTOR: Teo. A moment.
 - is("station_invoice"):
     He's holding an envelope. Municipal Sobering-Up Station, Kollár Street. Co-financed by the European Union.
     VIKTOR: Teo, Teo, Teo.
-    He's delighted. He's genuinely delighted. He hasn't been this happy since the minister went to prison.
+    He's delighted. He hasn't been this happy since the minister went to prison.
     VIKTOR: We've all been there. Well. I haven't. But people have.
     ~ flag("hook_station")
 - is("bench_dots_connected") && is("flagged_bench"):
@@ -351,7 +351,7 @@ VIKTOR: Teo. A moment.
     VIKTOR: Good party?
     TEO: Good party.
     VIKTOR: Good. Good. Back to it.
-    That's it. That's the whole conversation. I was part of the furniture of his evening. Somehow that's a relief.
+    That's the whole conversation. I was part of the furniture of his evening, and I'm relieved.
 }
 -> DONE
 
@@ -366,7 +366,7 @@ Reception calls. There's a man asking for "Mr Permit."
 {
 - is("told_stojan_no"):
     Stojan's in the lobby in a suit. A real one, from a wedding a long time ago. He's not here for me. He's asking for "the woman who measures."
-    He's going round me. Of course he is. That's what you do with a man who said no.
+    He's going round me.
 - is("wrong_door"):
     Stojan's in the lobby with a cake. A whole cake. Dana made it.
     STOJAN: She says, for the door. No hard feelings. And for the balcony. Hard feelings if not.
@@ -375,7 +375,7 @@ Reception calls. There's a man asking for "Mr Permit."
     Stojan's in the lobby holding a sausage the length of my arm, wrapped in newspaper.
     STOJAN: For the woman who measures. To say thank you in advance.
     TEO: Stojan, you can't.
-    STOJAN: It's a sausage, Teo. It's not a bribe. A bribe is money. This is culture.
+    STOJAN: Bribe is money, Teo. Sausage is culture.
     ~ flag("stojan_sausage")
 }
 -> DONE
@@ -401,7 +401,7 @@ I sit down. I open my email. There are forty-one unread messages.
 # priority: 50
 # when: hook_viktor
 At five to twelve, an email from Viktor. Subject: <i>September</i>. No text. Just a calendar invite, for a meeting with no name, in a room I didn't know we had.
-I accept it. Of course I accept it.
+I accept it.
 On the other side of the room, Magda is watching Viktor's door. Zdenka is watching Magda. Kornel is watching me. Nobody is watching Zdenka.
 -> finale
 
@@ -435,7 +435,7 @@ I'm being blackmailed by a seventeen-year-old for a toilet. This is the most imp
 # when: hook_station or station_invoice
 By lunch, the whole office knows. Somebody's printed the invoice and put it on the noticeboard, next to the fire drill instructions.
 Underneath, in Magda's handwriting: <i>We love you Teo!! xx</i>. And under that, in Kornel's: <i>Hygienic intervention is a normal medical procedure.</i>
-I've never been so famous. I've never been so loved. I want to die. It's going quite well.
+I've never been so famous in this building, or so loved. I'd like the floor to open.
 -> finale
 
 
@@ -468,7 +468,7 @@ I don't know what it means. I'm going to think about it for a year.
 At twelve, Kornel appears at my desk.
 KORNEL: Lunch? It's soup. Both soups.
 TEO: Yeah. Yeah, all right.
-He looks so happy I have to look at the EU poster. The family on the bridge. They look happy too. They've always looked happy. I think I finally get it. They're just glad someone came with them.
+He looks so happy that I have to look at the EU poster again. The family on the bridge. I'd never noticed they were holding hands.
 -> finale
 
 
@@ -492,7 +492,7 @@ Magda looks at me across the office with enormous sympathy. Zdenka doesn't look 
 At twelve, a call from a number with a lot of zeros in it.
 WOMAN: Mr Halász? Kovál Development. Mr Kovál asked me to invite you to a viewing. Saturday. Riverside Residences, the show flat. Just to look.
 WOMAN: There's no obligation. There's coffee.
-I haven't said yes. I haven't said no. She takes it as a yes. Everybody does.
+I haven't said yes. She writes me down anyway.
 -> finale
 
 
@@ -509,10 +509,10 @@ I haven't said yes. I haven't said no. She takes it as a yes. Everybody does.
 - is("file_photo"):
     At twelve, a message from Stojan. A photo of the balcony, from below, with a bus stop in it. He's drawn an arrow on it.
     <i>bus stop is very far, they exaggerate. thank you for information Teo. you are good neighbour. we will discuss</i>
-    We will discuss. In Kaslovia that's not a sentence. It's a sentence.
+    We will discuss. Stojan is going to discuss.
 - else:
     At twelve, Zdenka walks past my desk carrying the sausage, wrapped in newspaper, to the cleaner.
-    She doesn't say anything. She doesn't need to. The sausage says it.
+    She doesn't say anything. She carries it like evidence.
 }
 -> finale
 
