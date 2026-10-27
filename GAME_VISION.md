@@ -301,4 +301,5 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-26 | Leaving the party early: by chance, someone may try to make Teo stay. He can always go. | §8 |
 | 2026-10-27 | The currency is the euro (the country is new in the EU). | §3 |
 | 2026-10-27 | Running out of money changes the evening, it doesn't end it: people lend, tabs run, Teo walks home. | §8 |
+| 2026-10-27 | No frozen scenes: Teo talks to someone only after walking up to them, or after they visibly walk up to him (as in Disco Elysium). Scenes that play over a fixed picture get rewritten. Order and scope to agree. | §8 |
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
