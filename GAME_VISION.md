@@ -183,7 +183,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 
 - **[REQUIRED]** Runs on Windows.
 - **[REQUIRED]** Works fully offline. No AI services, no paid external APIs required by players.
-- **[AGREED 2026-10-27]** One exception, in playtest builds only: F1 sends a tester's note to the playtest Discord (a webhook) with a picture of the screen and the life's log. The game works the same without a connection (notes wait and go later), and none of it is in a release build. The playtest has its own Discord server, "Office Man · Playtest". Modelled on the creator's One More Year (`E:\Dev\Spel\OneMoreYear`, `game/scripts/Playtest.cs`, `docs/discord.md`).
+- **[AGREED 2026-10-27]** One exception, in playtest builds only: F1 sends a tester's note to the playtest Discord (a webhook) with a picture of the screen and the life's log. The game works the same without a connection (notes wait and go later), and none of it is in a release build. The notes go to a private Discord server of the creator's own, "Office Man · Playtest", that testers don't join: they only press F1. No chat, no community for now. Modelled on the creator's One More Year (`E:\Dev\Spel\OneMoreYear`, `game/scripts/Playtest.cs`, `docs/discord.md`).
 - **[REQUIRED]** Technology stack chosen on merit. No engine is assumed correct.
 - **[REQUIRED]** Consider save/load, accessibility, localisation readiness and robust narrative state.
 - **[REQUIRED]** Prefer maintainable architecture over technical sophistication.
