@@ -84,7 +84,7 @@ The ficus is dying. We understand each other.
 { played("wake") == 0 && mood() < 0:
     I get up the way old men get out of the sea.
 }
-Shower. Coffee. I put on the good shirt for the party, then take it off again. The good shirt has a story on it.
+Shower. Coffee. I put on the good shirt for the party. Then I see the wine stain from last year's party, and take it off again.
 ~ pass_time(20)
 -> DONE
 
@@ -96,8 +96,29 @@ Shower. Coffee. I put on the good shirt for the party, then take it off again. T
 # where: door
 # choice: Go to work.
 # duration: 5
-Keys, wallet, phone. I check the hob is off. It's always off. I check it anyway.
+Keys, wallet, phone. I check the stove is off. It's always off. I check it anyway.
 -> DONE
+
+
+// The man at the window opposite. What Teo does is remembered for later in the game (not used yet).
+=== flat_window
+# phase: home_up
+# kind: hub
+# where: window
+# choice: The window.
+# duration: 2
+The blocks opposite, all the same. In one of them a big man with long blond hair is standing at his window in a vest, looking straight at mine.
+* [Wave. #kind]
+    ~ flag("waved_at_neighbour")
+    I wave. He doesn't move. Then, slowly, he waves back.
+    I don't know what we've agreed to.
+* [Give him the finger. #bold]
+    ~ flag("fingered_neighbour")
+    I give him the finger. He doesn't move for a long time.
+    Then he gives it back, without any hurry, and stays there.
+* [Ignore him.]
+    I look at the sky over his block instead. When I look back, his curtains are closed.
+- -> DONE
 
 
 // The landing is a room Teo walks through. Stojan calls out when he comes near (content/rooms/stairwell.json,

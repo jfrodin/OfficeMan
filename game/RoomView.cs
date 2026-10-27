@@ -361,7 +361,7 @@ public partial class RoomView : Control
             if (thing.Prop) continue;
             // People and things are hit from their feet up to about head height.
             float half = thing.Hit is { Length: 2 } hit ? hit[0] : 14;
-            float dx = Math.Abs(p.X - thing.X), bottom = thing.Y + 8;
+            float dx = Math.Abs(p.X - thing.X), bottom = thing.Y + (thing.Art is null ? 8 : 2);
             float top = thing.Y - (thing.Hit is { Length: 2 } h ? h[1] : thing.Wall ? 44 : 54);
             if (dx > half || p.Y < top || p.Y > bottom) continue;
             if (dx < bestDist) { best = thing; bestDist = dx; }
@@ -378,15 +378,21 @@ public partial class RoomView : Control
         if (thing is null)
         {
             var p = ScreenToArt(screen);
-            _clickGoal = new Vector2(Math.Clamp(p.X, _room.Walk.MinX, _room.Walk.MaxX), Math.Clamp(p.Y, _room.Walk.MinY, _room.Walk.MaxY));
+            WalkTo(new Vector2(Math.Clamp(p.X, _room.Walk.MinX, _room.Walk.MaxX), Math.Clamp(p.Y, _room.Walk.MinY, _room.Walk.MaxY)));
             return;
         }
         float y = thing.Wall ? _room.Walk.MinY + 4 : Math.Clamp(thing.Y + 10, _room.Walk.MinY, _room.Walk.MaxY);
         float side = _teo.Position.X <= thing.X ? -18 : 18;
         var goal = new Vector2(Math.Clamp(thing.X + (thing.Wall ? 0 : side), _room.Walk.MinX, _room.Walk.MaxX), y);
-        foreach (var r in _blocks)
-            if (Inside(r, goal)) goal.Y = Math.Min(r.End.Y + 1, _room.Walk.MaxY);
-        _clickGoal = goal;
+        WalkTo(goal);
+    }
+
+    /// <summary>Teo finds his own way there, round the furniture.</summary>
+    private void WalkTo(Vector2 goal)
+    {
+        _path.Clear();
+        _path.AddRange(FindPath(_teo.Position, goal));
+        _clickGoal = _path.Count > 0 ? _path[^1] : _teo.Position;
     }
 
     /// <summary>
@@ -448,12 +454,18 @@ public partial class RoomView : Control
             return;
         }
         if (Controllable) _approachTo = null;
-        if (!Controllable || dir.LengthSquared() > 0.04f) _clickGoal = null;   // the keys take over from the mouse
+        if (!Controllable || dir.LengthSquared() > 0.04f) { _clickGoal = null; _path.Clear(); }   // the keys take over from the mouse
         else if (_clickGoal is Vector2 click)
         {
-            var to = click - _teo.Position;
+            var to = (_path.Count > 0 ? _path[0] : click) - _teo.Position;
+            if (to.Length() < 2 && _path.Count > 1)
+            {
+                _path.RemoveAt(0);
+                to = _path[0] - _teo.Position;
+            }
             if (to.Length() < 2)
             {
+                _path.Clear();
                 _clickGoal = null;
                 _teo.Walking = false;
                 if (_clickThing is { } t)
@@ -473,16 +485,18 @@ public partial class RoomView : Control
             next.Y = Math.Clamp(next.Y, _room.Walk.MinY, _room.Walk.MaxY);
             // Round furniture: slide along it rather than stop dead.
             var from = _teo.Position;
-            if (Blocked(next))
-                next = !Blocked(new Vector2(next.X, from.Y)) ? new Vector2(next.X, from.Y)
-                     : !Blocked(new Vector2(from.X, next.Y)) ? new Vector2(from.X, next.Y)
+            // Keep half a body from furniture, so he doesn't walk half into it; if he's already that close, just not through it.
+            Func<Vector2, bool> blocked = BlockedWithRoom(from) ? Blocked : BlockedWithRoom;
+            if (blocked(next))
+                next = !blocked(new Vector2(next.X, from.Y)) ? new Vector2(next.X, from.Y)
+                     : !blocked(new Vector2(from.X, next.Y)) ? new Vector2(from.X, next.Y)
                      : from;
             if (Math.Abs(dir.X) > 0.1f) _teo.FaceLeft = dir.X < 0;
             // Walking to a click and furniture won't let him through: give up rather than walk on the spot.
             if (_clickGoal is not null)
             {
                 _stuck = (next - from).Length() < 0.05f ? _stuck + delta : 0;
-                if (_stuck > 0.3) { _clickGoal = null; _clickThing = null; }
+                if (_stuck > 0.3) { _clickGoal = null; _clickThing = null; _path.Clear(); }
             }
             _teo.Position = next;
             _teo.Walking = true;

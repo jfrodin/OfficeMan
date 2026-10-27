@@ -352,5 +352,9 @@ public partial class Main
         _roomView.Zoom = Math.Abs(zoom - _roomView.Zoom) < 0.004f ? zoom : _roomView.Zoom + (zoom - _roomView.Zoom) * k;
         _roomView.Shift = (shift - _roomView.Shift).Length() < 1 ? shift : _roomView.Shift + (shift - _roomView.Shift) * k;
         _roomView.Pan += (float)((_panTarget - _roomView.Pan) * (1 - Math.Exp(-delta * 7)));
+        // The picture always reaches the column's edge: as the column slides away, the room comes back with it,
+        // never leaving an empty strip between them.
+        float covered = 1920 - ColumnW * _columnOut;
+        _roomView.Pan = Math.Max(0, Math.Min(_roomView.Pan, _roomView.Shift.X + 1920 * _roomView.Zoom - covered));
     }
 }

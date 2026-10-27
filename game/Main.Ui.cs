@@ -357,7 +357,7 @@ public partial class Main
         _placeCard.Visible = true;
         _placeCard.Modulate = Colors.White;
         _placeTween = CreateTween();
-        _placeTween.TweenInterval(1.3);
+        _placeTween.TweenInterval(2.6);
         _placeTween.TweenProperty(_placeCard, "modulate:a", 0.0, 0.9);
         _placeTween.TweenCallback(Callable.From(() => _placeCard.Visible = false));
     }
