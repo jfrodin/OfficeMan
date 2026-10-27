@@ -118,6 +118,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **The Boss's Wife.** About 50, same as the Boss. Used to be attractive; age has worked against her. They have money, and she has become a typical Eastern European new-money woman who overcompensates. She knows about his affairs very well, and swallows her pride with money and handbags.
 - **The Boss.** About 50. Good-looking and knows it, "big dick aura". Married. Constantly sleeps around. Thinks nobody knows; everybody knows. Really great at his job, a genuinely good boss. Macho. Thinks his wife is too old.
 - **The Secretary (Magda).** 21. Two children, aged 5 and 2, by different men; both live with their fathers. This is the root of her darker personality and angst. Overweight. Desperate for attention: low self-esteem, and she seeks gratification through sex. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat"). Her darker personality will be developed much more later in the game.
+  - **[AGREED 2026-10-27]** Teo isn't interested in Magda. If they end up in bed, it's because he's drunk, and she's drunk and desperate because Viktor ignores her.
   - **[REQUIRED]** We never make fun of her. We laugh with her, and we feel for her tragic life.
 
 ## 6. Dialogue and narrative systems
@@ -305,6 +306,7 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | No frozen scenes: Teo never lands straight in a conversation. He talks to someone only after walking up to them, after they visibly walk up to him, or as the continuation of something he chose (leaving with Ramona carries on in her car). Moving between places by cutting from picture to picture is fine; no big continuous world. Order and scope to agree. | §8 |
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
 | 2026-10-27 | The gift collection is 10 euro each (replaces 50): closer to what a real office collects. | §3 |
+| 2026-10-27 | Teo isn't interested in Magda; if they sleep together it's drink on his side and drink and desperation (Viktor ignoring her) on hers. | §5 |
 | 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |
 | 2026-10-27 | The look: the game's current pixel art (option A in `design/art_direction.md`), with depth from layers and furniture out on the floor. No 3D. | §9 |
 | 2026-10-27 | Playtest builds may go online for one thing: F1 notes to the playtest's own Discord server, with a screenshot and the life's log. Release builds stay fully offline. | §11 |
