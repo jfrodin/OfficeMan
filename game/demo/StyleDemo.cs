@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Godot;
 
 namespace OfficeMan.Game.Demo;
@@ -28,6 +29,12 @@ public partial class StyleDemo : Node
             if (args[i] == "--style") _style = args[i + 1];
             if (args[i] == "--shot") _shot = args[i + 1];
         }
+        int compare = Array.IndexOf(args, "--compare");
+        if (compare >= 0)
+        {
+            Compare(args[(compare + 1)..].TakeWhile(a => !a.StartsWith("--")).ToArray());
+            return;
+        }
 
         var size = _style switch { "c3" or "hp" => new Vector2I(480, 270), "c2" => new Vector2I(640, 360), _ => new Vector2I(1920, 1080) };
         var vp = new SubViewport
@@ -53,6 +60,47 @@ public partial class StyleDemo : Node
 
         if (_shot is not null)
             GetTree().CreateTimer(2.0).Timeout += () =>
+            {
+                GetViewport().GetTexture().GetImage().SavePng(_shot);
+                GetTree().Quit();
+            };
+    }
+
+    /// <summary>
+    /// Up to four finished pictures in a grid, numbered 1-4, for choosing between them:
+    ///   ... res://demo/StyleDemo.tscn -- --compare a.png h.png hp.png hf.png --shot sheet.png
+    /// </summary>
+    private void Compare(string[] pictures)
+    {
+        var screen = GetViewport().GetVisibleRect().Size;
+        const float gap = 12;
+        float w = (screen.X - 3 * gap) / 2, h = (screen.Y - 3 * gap) / 2;
+        var layer = new CanvasLayer();
+        AddChild(layer);
+        layer.AddChild(new ColorRect { Color = new Color("141416"), Size = screen });
+        for (int i = 0; i < pictures.Length && i < 4; i++)
+        {
+            var at = new Vector2(gap + i % 2 * (w + gap), gap + i / 2 * (h + gap));
+            layer.AddChild(new TextureRect
+            {
+                // Expand mode before size, or the size is clamped to the picture's own.
+                ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.Scale,
+                Texture = ImageTexture.CreateFromImage(Image.LoadFromFile(pictures[i])), Position = at, Size = new Vector2(w, h),
+            });
+            var badge = new PanelContainer { Position = at + new Vector2(14, 14) };
+            badge.AddThemeStyleboxOverride("panel", new StyleBoxFlat
+            {
+                BgColor = new Color(0.05f, 0.05f, 0.06f, 0.85f), CornerRadiusTopLeft = 10, CornerRadiusTopRight = 10,
+                CornerRadiusBottomLeft = 10, CornerRadiusBottomRight = 10, ContentMarginLeft = 22, ContentMarginRight = 22,
+            });
+            var number = new Label { Text = (i + 1).ToString() };
+            number.AddThemeFontSizeOverride("font_size", 64);
+            number.AddThemeColorOverride("font_color", new Color("f2e6cc"));
+            badge.AddChild(number);
+            layer.AddChild(badge);
+        }
+        if (_shot is not null)
+            GetTree().CreateTimer(1.0).Timeout += () =>
             {
                 GetViewport().GetTexture().GetImage().SavePng(_shot);
                 GetTree().Quit();

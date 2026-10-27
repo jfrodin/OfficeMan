@@ -18,7 +18,7 @@ Made by `game/demo/StyleDemo.cs` (a dev tool, not part of the game):
 
     godot --path game --rendering-method forward_plus res://demo/StyleDemo.tscn -- --style c1 --shot out.png
 
-Pictures in `art/out/style/` (scratch, not committed): `a.png`, `c1.png`, `c2.png`, `c3.png`, `h.png`, `hp.png`, `hf.png`. The redrawn people: `art/out/people_sheet.png` (ArtGen `people`).
+Pictures in `art/out/style/` (scratch, not committed): `a.png`, `c1.png`, `c2.png`, `c3.png`, `h.png`, `hp.png`, `hf.png`. All four in one numbered sheet (1 A, 2 H, 3 HP, 4 HF): `--compare a.png h.png hp.png hf.png --shot compare.png`. The redrawn people: `art/out/people_sheet.png` (ArtGen `people`).
 
 | | Look | Depth | Cost |
 |---|---|---|---|
