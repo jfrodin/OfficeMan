@@ -139,7 +139,11 @@ public partial class Main : Control
         bool room = _roomId is not null && _rooms.ContainsKey(_roomId);
         _roomView.Visible = room;
         _scene.Visible = !room;
-        if (room) _roomView.Load(_rooms[_roomId!], _game.Evaluate);
+        if (room)
+        {
+            _roomView.Load(_rooms[_roomId!], _game.Evaluate);
+            _hailed.Clear();
+        }
         else SetScene(_art.Scene(_phase));
         SetPortrait(null);
         _listener = null;
@@ -326,6 +330,7 @@ public partial class Main : Control
         }
         Layout(delta);
         UpdatePrompt();
+        UpdateHail();
         if (_autoSteps >= 0) RunAutomation();
     }
 

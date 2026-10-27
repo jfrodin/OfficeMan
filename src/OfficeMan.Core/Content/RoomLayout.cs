@@ -130,6 +130,12 @@ public sealed class RoomLayout
         /// <summary>Presence condition, e.g. "time &lt; 11:15".</summary>
         public string? When { get; set; }
 
+        /// <summary>
+        /// Something this person calls out when Teo walks near, once a visit, while they have something for him.
+        /// A line in the air above them, not a conversation: Teo can go over or walk on.
+        /// </summary>
+        public string? Hail { get; set; }
+
         /// <summary>What Teo thinks when he looks at it and there's nothing else to do. {clock} is replaced by the time.</summary>
         public string? Look { get; set; }
 

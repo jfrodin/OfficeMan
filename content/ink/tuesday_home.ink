@@ -78,9 +78,14 @@ Shower. Coffee. I put on the good shirt for the party, then take it off again. T
 -> DONE
 
 
+// The landing is a room Teo walks through. Stojan calls out when he comes near (content/rooms/stairwell.json,
+// "hail"); going over to him is Teo's choice. Walking on past him is the other one (stairwell_down).
 === stairwell_stojan
 # phase: stairwell_morning
-# kind: scene
+# kind: hub
+# where: stojan
+# choice: Stojan.
+# duration: 10
 Stojan is on the landing in a vest, smoking under the sign that says <i>No Smoking in the Stairwell</i>. He put the sign up.
 STOJAN: Teo! Mr Permit!
 Nobody calls me that. Stojan calls me that.
@@ -145,4 +150,21 @@ TEO: She's seventeen, Stojan.
 STOJAN: So you have one year to fix it. I'm a patient man.
 Through the wall, something breaks. Stojan doesn't flinch.
 He's a patient man.
+-> DONE
+
+
+=== stairwell_down
+# phase: stairwell_morning
+# kind: exit
+# where: stairs
+# choice: Go down to work.
+# duration: 5
+{ played("stairwell_stojan") == 0:
+    ~ remember("stojan", "walked_past")
+    ~ like("stojan", -1)
+    STOJAN: Later, Mr Permit! Later we talk! #heard:behind me
+    I take the stairs two at a time, like a man with somewhere to be.
+- else:
+    I take the stairs down. Four floors. The lift has been "nearly fixed" since March.
+}
 -> DONE

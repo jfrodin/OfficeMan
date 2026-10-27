@@ -49,6 +49,13 @@ public partial class RoomView : Control
 
     public Vector2 TeoPosition => _teo.Position;
 
+    /// <summary>The people and things in the room right now.</summary>
+    public IEnumerable<RoomLayout.RoomThing> Present => _present.Select(x => x.thing);
+
+    /// <summary>A point in the room's pixels, on screen, after pan, lift and close-up.</summary>
+    public Vector2 ArtToScreen(Vector2 art) =>
+        art * ScreenScale * _zoom + new Vector2(-Mathf.Round(_pan) + _shift.X, -Mathf.Round(_lift) + _shift.Y);
+
     public bool TeoVisible => _teo.Visible;
 
     private float _lift, _pan;

@@ -120,7 +120,52 @@ public partial class Main
         _toast = MakeLabel(22, new Color(1, 1, 1, 0.85f));
         _toast.Position = new Vector2(1600, 40);
         AddChild(_toast);
+        // Someone calling out to Teo as he walks past: a line in the air above them.
+        _hail = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
+        _hail.AddThemeStyleboxOverride("panel", Box(new Color(0.03f, 0.03f, 0.04f, 0.6f), 6, 0, default, 16, 8));
+        _hailText = new RichTextLabel { BbcodeEnabled = true, FitContent = true, ScrollActive = false, AutowrapMode = TextServer.AutowrapMode.Off, MouseFilter = MouseFilterEnum.Ignore };
+        _hailText.AddThemeFontSizeOverride("normal_font_size", BodySize - 4);
+        _hailText.AddThemeColorOverride("default_color", Spoken);
+        _hail.AddChild(_hailText);
+        AddChild(_hail);
         BuildColumn();
+    }
+
+    private PanelContainer _hail = null!;
+    private RichTextLabel _hailText = null!;
+    private RoomLayout.RoomThing? _hailBy;
+    private readonly HashSet<string> _hailed = new();
+
+    /// <summary>
+    /// People with a "hail" call out once when Teo walks near them, if they have something for him. It's only a line
+    /// above their head; walking up to them is still his choice.
+    /// </summary>
+    private void UpdateHail()
+    {
+        if (_mode == Mode.Walking && _roomView.Visible)
+            foreach (var t in _roomView.Present)
+            {
+                if (t.Hail is null || _hailed.Contains(t.Id) || Math.Abs(_roomView.TeoPosition.X - t.X) > 80 || Options(t).Count == 0) continue;
+                _hailed.Add(t.Id);
+                _hailBy = t;
+                string colour = (UseColumn ? NameColour(t.Name.ToUpperInvariant()) : Accent).ToHtml(false);
+                _hailText.Text = $"[color=#{colour}]{Bbcode(t.Name.ToUpperInvariant())}[/color]   {Bbcode(t.Hail)}";
+                _hail.Size = Vector2.Zero;
+                _hail.Visible = true;
+                _hail.Modulate = new Color(1, 1, 1, 0);
+                var tween = CreateTween();
+                tween.TweenProperty(_hail, "modulate:a", 1.0, 0.25);
+                tween.TweenInterval(3.5);
+                tween.TweenProperty(_hail, "modulate:a", 0.0, 0.8);
+                tween.TweenCallback(Callable.From(() => _hail.Visible = false));
+            }
+        if (_mode != Mode.Walking) _hail.Visible = false;
+        if (_hail.Visible && _hailBy is not null)
+        {
+            var head = _roomView.ArtToScreen(new Vector2(_hailBy.X, _hailBy.Y - 60));
+            _hail.Size = Vector2.Zero;
+            _hail.Position = new Vector2(Math.Clamp(head.X - _hail.Size.X / 2, 20, 1900 - _hail.Size.X), head.Y - _hail.Size.Y - 8);
+        }
     }
 
     private static Label MakeLabel(int size, Color color)
