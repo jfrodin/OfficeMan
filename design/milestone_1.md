@@ -69,6 +69,35 @@ storylet reached.
    does the same. If so: open "Go home" later.
 4. **Your notes** (`design/noted.md`): the open ones, fixed only when you ask.
 
+### Towards a test build for other people (plan, 2026-10-27)
+
+What's left before the creator can hand a build to people and ask what they think. A plan, not decisions.
+
+**Must have**
+
+| # | What | Who |
+|---|---|---|
+| T1 | The creator plays it through; we fix what they find | The creator, then us |
+| T2 | When can Teo go home from the party (most lives still leave early) | The creator decides |
+| T3 | More ways the bar can go (proposals listed under "Needs the creator", 2) | The creator picks |
+| T4 | A build that runs on another PC: Windows export, content and art shipped with it, tested without Godot or .NET | Us |
+| T5 | A start for strangers: a short screen with the controls and one line on what the game is; developer keys off | Us |
+| T6 | A clear end: "the demo ends here", and a nudge to say what they thought | Us |
+| T7 | A log per life (seed, choices, how the day went) and a crash log, so any tester's life can be replayed | Us |
+
+**Should have**
+
+| # | What |
+|---|---|
+| T8 | No frozen scenes where every tester sees them: Viktor's clap, Teo walking to Viktor's office; then the office and party interrupts, the night stairwell |
+| T9 | End of the day that says where Teo's life stands (Step 5): the moment that makes people want to play again |
+| T10 | Small things: the 4,200 euro sobering-up invoice; place cards (day, time, place) between places, which can also cover loading |
+
+**Not needed for a first test:** the art direction (testers are told the art is temporary), gossip (Step 4), audio,
+logo (the icon is quick and nice to have).
+
+**Order:** T1, then T2 and T3, then T8, then T9, then T4 to T7 together (quick, and done once).
+
 ### Known weak spots (evidence)
 
 | Problem | Evidence | Fixed by |
