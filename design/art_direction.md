@@ -53,3 +53,4 @@ Byline: "A game by Joakim Frödin", no studio name (the creator, 2026-10-27).
 
 - Logo: the creator leans towards the embossing label tape (red tape for OFFICE MAN), 2026-10-27. Not yet decided.
 - Icon: the stamp mark on a slip of paper was the favourite before the logo leaned towards the label tape.
+- Icon to match the label tape: OM on a piece of red tape (`tape`, first row of the icon sheet). Taller tape at 32 px and below.

@@ -7,6 +7,7 @@ namespace OfficeMan.ArtGen.Icons;
 /// Proposals for the game's Windows icon (start menu, taskbar, desktop), 2026-10-27. Each is drawn in a 256-unit
 /// square and rendered at any size; at 32 px and below a simpler version is drawn (thicker lines, no texture), so
 /// the small icons stay clear instead of being blurred copies of the big one.
+///   tape          OM punched into a piece of red label tape, to go with the label-tape logo
 ///   stamp         a blue rubber-stamp mark with the initials OM
 ///   stamp_paper   the same mark on a slip of paper, so it reads on a dark taskbar too
 ///   rubber_stamp  the stamp itself, wooden handle and all, over a blot of ink
@@ -14,7 +15,7 @@ namespace OfficeMan.ArtGen.Icons;
 /// </summary>
 public static class AppIcons
 {
-    public static readonly string[] Names = { "stamp", "stamp_paper", "rubber_stamp", "head" };
+    public static readonly string[] Names = { "tape", "stamp", "stamp_paper", "rubber_stamp", "head" };
     public static readonly int[] Sizes = { 256, 48, 32, 16 };
 
     private const string StampBlue = "2f56b0", Paper = "f2e6cc";
@@ -25,6 +26,7 @@ public static class AppIcons
         bool small = size <= 32;
         switch (name)
         {
+            case "tape": Tape(l, small); break;
             case "stamp": Stamp(l, small); break;
             case "stamp_paper":
                 l.Fill(Turn(4)(RoundSquare(14, 14, 242, 242, small ? 22 : 18)), Paper);
@@ -38,6 +40,22 @@ public static class AppIcons
     }
 
     // ── The designs ───────────────────────────────────
+
+    private static void Tape(SoftLayer l, bool small)
+    {
+        // A short strip, stuck on a little crooked; taller when small, so the letters still fit.
+        var turn = Turn(small ? -4 : -6);
+        double y0 = small ? 30 : 66, y1 = small ? 226 : 190, cap = small ? 124 : 74, weight = small ? 30 : 15;
+        l.Fill(turn(Poly(8, y0, 248, y0, 248, y1, 8, y1)), "b8262d");
+        if (!small)
+        {
+            l.Fill(turn(Poly(8, y0 + 9, 248, y0 + 9, 248, y0 + 15, 8, y0 + 15)), "c84a50");
+            l.Fill(turn(Poly(8, y1 - 14, 248, y1 - 14, 248, y1, 8, y1)), "961c22");
+        }
+        double w = Lettering.Width("OM", cap, weight, small ? 4 : 8);
+        foreach (var letter in Lettering.Layout("OM", 128 - w / 2, (y0 + y1) / 2 - cap / 2, cap, weight, small ? 4 : 8))
+            foreach (var line in letter.Lines) l.Stroke(turn(line), weight, "f4f1ea");
+    }
 
     private static void Stamp(SoftLayer l, bool small, bool inset = false)
     {
