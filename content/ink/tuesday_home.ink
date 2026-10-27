@@ -89,6 +89,17 @@ Shower. Coffee. I put on the good shirt for the party, then take it off again. T
 -> DONE
 
 
+// Up and dressed, Teo can walk round the flat (content/rooms/flat.json: things to look at) before he goes.
+=== flat_leave
+# phase: home_up
+# kind: exit
+# where: door
+# choice: Go to work.
+# duration: 5
+Keys, wallet, phone. I check the hob is off. It's always off. I check it anyway.
+-> DONE
+
+
 // The landing is a room Teo walks through. Stojan calls out when he comes near (content/rooms/stairwell.json,
 // "hail"); going over to him is Teo's choice. Walking on past him is the other one (stairwell_down).
 === stairwell_stojan

@@ -10,7 +10,7 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 
 ## Current phase
 
-**Narrative prototype (from 2026-10-18).** The game experience comes first. Work towards Milestone 1 (`design/milestone_1.md`, once approved): a playable day that validates the narrative simulation. Portrait and art development are **paused**; use existing portraits as temporary art.
+**Narrative prototype (from 2026-10-18).** The game experience comes first. Work towards Milestone 1 (`design/milestone_1.md`, once approved): a playable day that validates the narrative simulation. Portraits are **paused**; use existing portraits as temporary art. Rooms are being reworked in the agreed pixel style (art direction A), place by place together with their text (creator, 2026-10-27).
 
 - Do not expand the story or invent new main characters without the creator.
 - **Never delete, overwrite or modify** `art/reference/` or its source files (`Drawn/MagdaDrawing.cs`, `Drawn/DrawnStyles.cs`, `Drawn/CartoonMagda.cs`).

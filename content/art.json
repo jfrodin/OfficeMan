@@ -61,10 +61,11 @@
   "defaultScene": "estate_night",
   // Phases that are played as walkable rooms (content/rooms/<id>.json). Others show their scene picture.
   "phaseRooms": {
-    "home_morning": "flat",
+    "home_morning": "flat_bed",
+    "home_up": "flat",
     "stairwell_morning": "stairwell",
     "night_home": "stairwell_night",
-    "wed_wake": "flat",
+    "wed_wake": "flat_bed",
     "office": "office",
     "wed_office": "office",
     "party": "terrace",
@@ -101,6 +102,9 @@
     "terrace_standing": "art/game/sprites/terrace_standing.png",
     "office_desk_magda": "art/game/sprites/office_desk_magda.png",
     "office_desk_teo": "art/game/sprites/office_desk_teo.png",
+    "flat_table": "art/game/sprites/flat_table.png",
+    "flat_armchair": "art/game/sprites/flat_armchair.png",
+    "flat_rack": "art/game/sprites/flat_rack.png",
     "office_desk_kornel": "art/game/sprites/office_desk_kornel.png",
     "office_desk_zdenka": "art/game/sprites/office_desk_zdenka.png",
     "office_trolley": "art/game/sprites/office_trolley.png"

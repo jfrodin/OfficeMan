@@ -11,7 +11,8 @@ namespace OfficeMan.ArtGen.Rooms;
 /// bottle, a crooked cupboard door, the fridge with last month's calendar), the window (dawn over the
 /// blocks opposite, the dying ficus), the bed with Teo still in it, the nightstand (06:47), the wardrobe
 /// (shirts, the diploma never hung). Above the bed, a pale patch where a picture used to be.
-/// Positions must match content/rooms/flat.json.
+/// Out on the floor (prop sprites, placed by content/rooms/flat.json): the table he eats at alone, its second chair
+/// piled with work he brought home, the armchair bought for reading, the drying rack. In front: the laundry pile.
 /// </summary>
 public static class FlatRoom
 {
@@ -36,6 +37,9 @@ public static class FlatRoom
     private static readonly Ramp Jacket = Ramp.Of("14182a", "1c2238", "262e48", "323c5a");
     private static readonly Ramp Shirt = Ramp.Of("56626e", "6e7c8a", "8a98a6", "a8b4c0");
     private static readonly Ramp Envelope = Ramp.Of("8a8474", "a8a290", "c6c0ac", "dcd6c2");
+    private static readonly Ramp Oilcloth = Ramp.Of("4a1a1a", "6a2626", "8a3430", "a8443c");
+    private static readonly Ramp Mustard = Ramp.Of("2e2410", "45361a", "5e4a24", "786030", "8e763e");
+    private static readonly Ramp Towel = Ramp.Of("2a3a4a", "3a5064", "4c6880", "60809a");
 
     public static RoomLayers Draw()
     {
@@ -44,12 +48,14 @@ public static class FlatRoom
         var f = new Canvas(W, H);
 
         Shell(a);
+        PropShadows(a, "flat");
         Door(a, e);
         Kitchenette(a);
         Window(a, e);
         Bed(a);
         Nightstand(a, e);
         Wardrobe(a);
+        Front(f);
         return new RoomLayers(a.Render(), e, Glow(e), f);
     }
 
@@ -87,6 +93,13 @@ public static class FlatRoom
             double worn = Math.Max(0, 1 - Math.Abs(x - 200) / 140.0) * 0.06;      // the path from door to window
             double contact = Math.Max(0, 1 - (y - Base) / 8.0) * 0.2;
             return 0.5 + tone + seam + worn - contact;
+        }, 0);
+        // A cheap rag rug under the table, stripes faded where the chair goes in and out.
+        a.FillRect(96, 226, 186, 254, Rug, (x, y) =>
+        {
+            bool edge = y < 228 || y > 251;
+            double stripe = (y - 226) / 4 % 3 == 0 ? 0.1 : (y - 226) / 4 % 3 == 1 ? -0.04 : 0.03;
+            return (edge ? 0.3 : 0.42) + stripe - (Math.Abs(x - 140) < 14 ? 0.05 : 0);
         }, 0);
         // A worn rug in front of the bed.
         a.FillRect(300, 186, 402, 204, Rug, (x, y) =>
@@ -274,17 +287,99 @@ public static class FlatRoom
 
     private static void Front(Canvas f)
     {
-        // The arm of an armchair he never sits in, at the left edge, and a laundry pile at the right.
-        for (int y = 214; y < H; y++)
-            for (int x = 0; x < 30; x++)
-            {
-                if (y < 214 + (x - 28) * (x - 28) / 40) continue;
-                f[x, y] = Rgb.Hex(y < 220 ? "4a3a2e" : x > 24 ? "2a1e16" : "36281e");
-            }
+        // The laundry pile at the right edge, waiting for the rack to be free.
         var cloth = new[] { "1e2236", "3a4256", "5a2a2a", "2a3a30" };
         for (int i = 0; i < 6; i++)
-            for (int y = 248 - i * 3; y < H; y++)
-                for (int x = 440 + i * 4; x < 480 - (5 - i) * 2; x++)
+            for (int y = 252 - i * 3; y < H; y++)
+                for (int x = 446 + i * 4; x < 480 - (5 - i) * 2; x++)
                     if ((x + y + i) % 9 != 0) f[x, y] = Rgb.Hex(cloth[i % 4]);
+    }
+
+    // ── Furniture on the floor (prop sprites) ──────────────────
+
+    /// <summary>
+    /// The table he eats at, alone: oilcloth, one plate, one mug, the jar of instant coffee. His chair pushed in
+    /// behind it; the second chair pulled out at the end, with a stack of files from work on the seat.
+    /// Anchored at the front foot.
+    /// </summary>
+    public static Canvas Table()
+    {
+        const int w = 58, h = 46, f = h;
+        var a = new SceneCanvas(w, h);
+        // His chair, behind: only the back shows.
+        a.FillRect(10, f - 42, 22, f - 25, Wood, (x, y) => (x == 10 ? 0.6 : 0.42) + (y == f - 42 ? 0.15 : 0), 0);
+        a.FillRect(12, f - 38, 20, f - 36, Wood, (x, y) => 0.25, 0);
+        // Legs, then the oilcloth: red and white checks, hanging over the edge.
+        foreach (int lx in new[] { 3, 38 }) a.FillRect(lx, f - 18, lx + 3, f, Wood, (x, y) => 0.32 - (x == lx + 2 ? 0.08 : 0), 0);
+        for (int y = f - 26; y < f - 18; y++)
+            for (int x = 0; x < 44; x++)
+            {
+                bool check = (x / 4 + (y - f + 26) / 3) % 2 == 0;
+                double light = y < f - 23 ? (y == f - 26 ? 0.75 : 0.62) : 0.45 - (y - f + 23) * 0.03;
+                a.Paint(x, y, check ? Oilcloth : Envelope, light, 0);
+            }
+        int top = f - 26;
+        // A plate with crumbs, the mug, the coffee jar.
+        a.FillRect(6, top - 2, 20, top, Fridge, (x, y) => y == top - 2 ? 0.8 : 0.6, 0);
+        a.Paint(11, top - 2, Wood, 0.6, 0);
+        a.Paint(15, top - 2, Wood, 0.6, 0);
+        a.FillRect(24, top - 6, 29, top, Cream, (x, y) => 0.7 - (x == 28 ? 0.15 : 0), 0);
+        a.FillRect(29, top - 5, 31, top - 2, Cream, (x, y) => 0.55, 0);
+        a.FillRect(33, top - 8, 39, top, Glass, (x, y) => 0.45 + (x == 34 ? 0.25 : 0), 0);
+        a.FillRect(33, top - 9, 39, top - 8, Mustard, (x, y) => 0.7, 0);
+        // The second chair at the end, side on: back, seat, legs, and the files.
+        a.FillRect(46, f - 36, 49, f, Wood, (x, y) => 0.4 + (x == 46 ? 0.15 : 0), 0);
+        a.FillRect(46, f - 16, 58, f - 13, Wood, (x, y) => y == f - 16 ? 0.6 : 0.4, 0);
+        a.FillRect(55, f - 13, 58, f, Wood, (x, y) => 0.3, 0);
+        for (int i = 0; i < 4; i++)
+        {
+            int y0 = f - 19 - i * 3;
+            a.FillRect(48 + i % 2, y0, 58 - i % 2, y0 + 3, Envelope, (x, y) => 0.55 + i * 0.06 + (y == y0 ? 0.12 : 0), 0);
+        }
+        return a.Render();
+    }
+
+    /// <summary>The armchair he bought to read in: worn mustard, a blanket over one arm, yesterday's paper on the seat.</summary>
+    public static Canvas Armchair()
+    {
+        const int w = 36, h = 38, f = h;
+        var a = new SceneCanvas(w, h);
+        a.FillRect(5, f - 36, 31, f - 14, Mustard, (x, y) => 0.5 + (y == f - 36 ? 0.18 : 0) - (y - f + 36) / 120.0 + Noise(x, y, 3) * 0.04, 0);
+        a.FillRect(8, f - 34, 28, f - 16, Mustard, (x, y) => 0.42, 0);                        // the hollow a back made
+        a.FillRect(6, f - 16, 30, f - 9, Mustard, (x, y) => y == f - 16 ? 0.72 : 0.56, 0);     // seat cushion
+        foreach (int ax in new[] { 0, 29 })
+            a.FillRect(ax, f - 24, ax + 7, f - 4, Mustard, (x, y) => (y == f - 24 ? 0.7 : 0.48) - (ax == 29 ? 0.08 : 0), 0);
+        a.FillRect(2, f - 9, 34, f - 3, Mustard, (x, y) => 0.36, 0);
+        foreach (int lx in new[] { 3, 30 }) a.FillRect(lx, f - 3, lx + 3, f, Wood, (x, y) => 0.3, 0);
+        // The blanket over the right arm, the newspaper folded on the seat.
+        a.FillRect(28, f - 26, 36, f - 6, Towel, (x, y) => 0.5 + ((x + y) % 4 == 0 ? 0.1 : 0) - (x > 34 ? 0.1 : 0), 0);
+        a.FillRect(10, f - 19, 22, f - 15, Envelope, (x, y) => 0.6 + (y == f - 19 ? 0.15 : 0), 0);
+        for (int x = 11; x < 21; x += 2) a.Paint(x, f - 17, Metal, 0.35, 0);
+        return a.Render();
+    }
+
+    /// <summary>The drying rack: two shirts, a towel that has been drying since Thursday, socks, one of them alone.</summary>
+    public static Canvas DryingRack()
+    {
+        const int w = 48, h = 40, f = h;
+        var a = new SceneCanvas(w, h);
+        // The X legs and the rails.
+        for (int i = 0; i < 26; i++)
+        {
+            a.Paint(4 + i / 2, f - 1 - i, Metal, 0.6, 0);
+            a.Paint(17 - i / 2, f - 1 - i, Metal, 0.5, 0);
+            a.Paint(30 + i / 2, f - 1 - i, Metal, 0.6, 0);
+            a.Paint(43 - i / 2, f - 1 - i, Metal, 0.5, 0);
+        }
+        a.FillRect(0, f - 27, 48, f - 26, Metal, (x, y) => 0.75, 0);
+        a.FillRect(0, f - 20, 48, f - 19, Metal, (x, y) => 0.6, 0);
+        // Over the top rail: a shirt, the towel, the other shirt.
+        a.FillRect(2, f - 27, 14, f - 12, Shirt, (x, y) => 0.6 - (y - f + 27) / 60.0 + (x == 2 ? 0.1 : 0), 0);
+        a.FillRect(16, f - 27, 30, f - 8, Towel, (x, y) => 0.55 + ((y - f) % 5 == 0 ? -0.1 : 0), 0);
+        a.FillRect(32, f - 27, 44, f - 14, Shirt, (x, y) => 0.45 - (y - f + 27) / 60.0, 0);
+        // Socks on the lower rail.
+        foreach (var (sx, len) in new[] { (6, 7), (10, 6), (37, 8) })
+            a.FillRect(sx, f - 19, sx + 3, f - 19 + len, Jacket, (x, y) => 0.55, 0);
+        return a.Render();
     }
 }

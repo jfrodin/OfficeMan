@@ -121,6 +121,16 @@ The ficus is dying. We understand each other.
 
 Shower. Coffee. I put on the good shirt for the party, then take it off again. The good shirt has a story on it.
 
+## TUESDAY 07:10. TEO'S FLAT
+
+### Go to work.
+
+*A way out · takes 5 min · `flat_leave`*
+
+*(Note: Up and dressed, Teo can walk round the flat before he goes.)*
+
+Keys, wallet, phone. I check the hob is off. It's always off. I check it anyway.
+
 ## TUESDAY 07:35. THE STAIRWELL
 
 ### Stojan.

@@ -135,6 +135,7 @@ public partial class Main : Control
     private void EnterPhase(string phaseId, string title, string when)
     {
         _phase = phaseId;
+        string? previousRoom = _roomId;
         _roomId = _art.RoomFor(_phase);
         bool room = _roomId is not null && _rooms.ContainsKey(_roomId);
         _roomView.Visible = room;
@@ -151,7 +152,10 @@ public partial class Main : Control
         _conversing = false;
         _moods.Clear();
         Arrive(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
-        PlaceCard(title, when);
+        // Getting out of bed isn't arriving somewhere: no card when the place stays the same.
+        bool samePlace = previousRoom is not null && _roomId is not null && _rooms.TryGetValue(previousRoom, out var before)
+            && _rooms.TryGetValue(_roomId, out var after) && before.Image == after.Image;
+        if (!samePlace) PlaceCard(title, when);
         if (UseColumn) ColumnHeading(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
         SetMode(_mode); // refresh the dim layer for the new kind of place
     }

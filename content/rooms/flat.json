@@ -1,25 +1,45 @@
-// Teo's flat at dawn. Pictures: art/game/rooms/flat*.png, drawn by tools/OfficeMan.ArtGen/Rooms/FlatRoom.cs.
-// Teo isn't walking here: he's in bed (sprite teo_bed), awake, looking at the ceiling.
+// Teo's flat in the morning, with Teo up and about. Pictures: art/game/rooms/flat*.png, drawn by tools/OfficeMan.ArtGen/Rooms/FlatRoom.cs.
+// The table, the armchair and the drying rack stand out on the floor (props with a "block" footprint Teo walks round).
+// flat_bed.json is the same room with Teo still in bed.
 {
   "id": "flat",
   "image": "art/game/rooms/flat.png",
   "emissive": "art/game/rooms/flat_emissive.png",
   "glow": "art/game/rooms/flat_glow.png",
   "front": "art/game/rooms/flat_front.png",
-  "showTeo": false,
-  "walk": { "minX": 60, "maxX": 420, "minY": 190, "maxY": 250 },
-  "spawn": [300, 200],
+  "walk": { "minX": 34, "maxX": 440, "minY": 190, "maxY": 262 },
+  "spawn": [340, 206],
 
   "ambient": [0.32, 0.34, 0.48],
   "look": { "bloom": 0.8, "fog": 0.03, "fogColor": "8a7a8a", "exposure": 1.35, "saturation": 0.95, "vignette": 0.52, "grain": 0.035 },
   "lights": [
-    { "x": 254, "y": 120, "radius": 230, "intensity": 1.1, "color": "ffa07a", "dir": [0.62, 1], "inner": 18, "outer": 36 },
+    { "x": 254, "y": 120, "radius": 260, "intensity": 1.1, "color": "ffa07a", "dir": [0.5, 1], "inner": 22, "outer": 48 },
     { "x": 254, "y": 100, "radius": 140, "intensity": 0.3, "color": "c890a8" },
     { "x": 250, "y": 90, "radius": 320, "intensity": 0.22, "color": "a8a8d8" },
     { "x": 417, "y": 146, "radius": 30, "intensity": 0.7, "color": "ff3a22" },
     { "x": 30, "y": 176, "radius": 34, "intensity": 0.35, "color": "ffcf88" }
   ],
   "things": [
-    { "id": "teo_bed", "name": "Teo", "sprite": "teo_bed", "x": 365, "y": 161 }
+    { "id": "table_prop", "name": "", "sprite": "flat_table", "x": 140, "y": 250, "prop": true, "block": [28, 10] },
+    { "id": "armchair_prop", "name": "", "sprite": "flat_armchair", "x": 262, "y": 214, "prop": true, "block": [17, 8] },
+    { "id": "rack_prop", "name": "", "sprite": "flat_rack", "x": 418, "y": 234, "prop": true, "block": [23, 4] },
+
+    { "id": "door", "name": "The door", "x": 30, "y": 192, "wall": true },
+    { "id": "fridge", "name": "The fridge", "x": 186, "y": 192, "wall": true,
+      "look": "Last month's calendar on the fridge. Nothing written on it, so it's still right." },
+    { "id": "window", "name": "The window", "x": 254, "y": 192, "wall": true,
+      "look": "The blocks opposite, all the same. In one of them a man is standing at his window, looking at mine." },
+    { "id": "armchair", "name": "The armchair", "x": 262, "y": 222,
+      "look": "I bought the armchair to read in. I read in bed." },
+    { "id": "ficus", "name": "The ficus", "x": 308, "y": 192,
+      "look": "The ficus. I water it on Sundays. It dies on all the other days." },
+    { "id": "patch", "name": "The pale patch", "x": 364, "y": 192, "wall": true,
+      "look": "A pale square on the wallpaper where a picture used to hang. I can't remember what it was." },
+    { "id": "table", "name": "The table", "x": 140, "y": 256,
+      "look": "One plate, one mug, one chair. The other chair has work on it. I brought it home in March." },
+    { "id": "wardrobe", "name": "The wardrobe", "x": 455, "y": 192, "wall": true,
+      "look": "The good shirt, the other shirt. On top, my diploma, in its frame. One day I'll buy a nail." },
+    { "id": "rack", "name": "The drying rack", "x": 418, "y": 240,
+      "look": "Socks, two shirts, and a towel that has been drying since Thursday." }
   ]
 }

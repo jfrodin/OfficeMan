@@ -1,0 +1,10 @@
+// Teo's flat with Teo still in bed: the morning before he gets up, and Wednesday when he wakes at home.
+// Everything else comes from flat.json.
+{
+  "base": "flat",
+  "id": "flat_bed",
+  "showTeo": false,
+  "things": [
+    { "id": "teo_bed", "name": "Teo", "sprite": "teo_bed", "x": 365, "y": 161 }
+  ]
+}

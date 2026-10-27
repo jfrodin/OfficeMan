@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Nodes;
 
 namespace OfficeMan.Core.Content;
 
@@ -149,14 +150,41 @@ public sealed class RoomLayout
         AllowTrailingCommas = true,
     };
 
-    public static RoomLayout Load(string path) =>
-        JsonSerializer.Deserialize<RoomLayout>(File.ReadAllText(path), Options) ?? throw new FormatException($"Empty room: {path}");
+    public static RoomLayout Load(string path) => Load(path, Path.GetDirectoryName(path)!);
+
+    private static RoomLayout Load(string path, string dir) =>
+        Read(path, dir).Deserialize<RoomLayout>(Options) ?? throw new FormatException($"Empty room: {path}");
+
+    private static readonly JsonDocumentOptions DocOptions = new() { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
+
+    /// <summary>
+    /// A room's json. One with <c>"base": "&lt;room id&gt;"</c> is that room with changes: its own fields replace the
+    /// base's, its things are added to the base's, and <c>"hide"</c> lists base things it leaves out. The same place
+    /// in two states (Teo asleep in bed, Teo up and about) is then one set of furniture.
+    /// </summary>
+    private static JsonObject Read(string path, string dir)
+    {
+        var own = JsonNode.Parse(File.ReadAllText(path), documentOptions: DocOptions)?.AsObject()
+            ?? throw new FormatException($"Empty room: {path}");
+        if (own["base"]?.GetValue<string>() is not { } baseId) return own;
+
+        var merged = Read(Path.Combine(dir, baseId + ".json"), dir);
+        var hide = own["hide"]?.AsArray().Select(n => n!.GetValue<string>()).ToHashSet() ?? new HashSet<string>();
+        var things = new JsonArray();
+        foreach (var t in merged["things"]?.AsArray() ?? new JsonArray())
+            if (!hide.Contains(t!["id"]!.GetValue<string>())) things.Add(t.DeepClone());
+        foreach (var t in own["things"]?.AsArray() ?? new JsonArray()) things.Add(t!.DeepClone());
+        foreach (var (key, value) in own)
+            if (key is not ("base" or "hide" or "things")) merged[key] = value?.DeepClone();
+        merged["things"] = things;
+        return merged;
+    }
 
     /// <summary>Loads every room in content/rooms, by id.</summary>
     public static Dictionary<string, RoomLayout> LoadAll(string contentDir)
     {
         string dir = Path.Combine(contentDir, "rooms");
         if (!Directory.Exists(dir)) return new();
-        return Directory.GetFiles(dir, "*.json").Select(Load).ToDictionary(r => r.Id);
+        return Directory.GetFiles(dir, "*.json").Select(p => Load(p, dir)).ToDictionary(r => r.Id);
     }
 }

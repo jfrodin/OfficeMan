@@ -109,6 +109,9 @@ if (sets.Contains("game"))
     foreach (var who in new[] { "magda", "teo", "kornel", "zdenka" })
         Png.Save(OfficeRoom.DeskSprite($"office_desk_{who}"), Path.Combine(sprites, $"office_desk_{who}.png"));
     Png.Save(OfficeRoom.Trolley(), Path.Combine(sprites, "office_trolley.png"));
+    Png.Save(FlatRoom.Table(), Path.Combine(sprites, "flat_table.png"));
+    Png.Save(FlatRoom.Armchair(), Path.Combine(sprites, "flat_armchair.png"));
+    Png.Save(FlatRoom.DryingRack(), Path.Combine(sprites, "flat_rack.png"));
     foreach (var person in PixelPeople.Sitters)
         Png.Save(PixelPeople.SittingSheet(person), Path.Combine(sprites, $"{person.Name}_sit.png"));
     foreach (var (name, image) in Placeholders.Scenes())
