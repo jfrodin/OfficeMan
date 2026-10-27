@@ -67,7 +67,16 @@ He doesn't say <i>you saw nothing</i>. That's part of the job.
 
 = home
 ~ pass_time(60)
-The taxi home costs more than the gift for Viktor. The driver tells me about his brother in Canada the whole way, and I listen like it's the news.
+{ q("money") >= 30:
+    ~ qadd("money", -30)
+    The taxi home costs thirty euro. The driver tells me about his brother in Canada the whole way, and I listen like it's the news.
+- else:
+    // Broke: no taxi. He walks, and Wednesday starts later and worse.
+    ~ flag("walked_home")
+    ~ pass_time(60)
+    A taxi is thirty euro. I haven't got thirty euro. I walk.
+    It takes an hour and a half. Somewhere along the river the sky goes grey, then pink, behind the sewage plant. A man sweeping the street says good morning, and I say it back, and mean it.
+}
 -> DONE
 
 

@@ -24,6 +24,9 @@
 { hungover():
     Everything is too bright and slightly my fault.
 }
+{ is("walked_home"):
+    My feet hurt. I walked home from Club Schengen because I couldn't pay for a taxi. I remember the sunrise and not much else.
+}
 { is("wearing_sash"):
     I'm still wearing the sash. <i>BRIDESMAID</i>. I leave it on for a while. Nobody can see me.
 }
@@ -145,6 +148,10 @@ NURSE: Have a good day, Mr Halász. Maybe less river.
 { is("photo_of_viktor"):
     In my photos: a blue, blurry picture of two shapes in a corner of Club Schengen. I look at it for a long time. I don't delete it.
 }
+{ is("owes_laci"):
+    A message from a number I don't know: <i>hi its laci from the bar. 8 euro friday ok? no stress</i>
+    Somebody I owe money to. I've joined the economy.
+}
 { is("magda_paid") == false && remembers("magda", "didnt_pay"):
     A message from Magda, from 06:02: <i>dont worry about gift money!! i covered u xx</i>
     She covered me.
@@ -226,6 +233,10 @@ The balloons are deflating. Somebody, probably Magda, has tied the saddest one t
 # where: kornel
 # choice: Kornel.
 # duration: 15
+{ is("owes_kornel"):
+    KORNEL: About the ten euro. There's no hurry at all. I only mention it so you know I haven't forgotten.
+    He hasn't forgotten. It's on a list somewhere, with a date.
+}
 {
 - is("kornel_friend"):
     Kornel has put a coffee on my desk. In a mug that says <i>WORLD'S OKAYEST COLLEAGUE</i>. He bought it this morning. He must have gone to the shop on purpose.

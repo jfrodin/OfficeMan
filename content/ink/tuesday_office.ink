@@ -90,6 +90,7 @@ We're buying Viktor a present to thank him for a party our taxes are paying for.
     ~ remember("magda", "paid")
     MAGDA: You're a sweetheart! I'm getting him a pen. A proper one. Heavy. #mood:happy
     He'll love it. He'll sign things with it that she isn't allowed to read.
+    That leaves me twenty euro until Friday. I don't say so.
 * [Put in two hundred.]
     ~ qadd("money", -200)
     ~ remember("magda", "paid_less")

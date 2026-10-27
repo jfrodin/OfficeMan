@@ -186,15 +186,44 @@ It's never one.
 = no_tickets
 LACI: Ticket?
 I haven't got one. Two tickets, and I've used them both. It's like a ration book from the war.
-+ [Pay for a beer yourself. #drink]
++ {q("money") >= 8} [Pay for a beer yourself. #drink]
     ~ qadd("money", -8)
     Eight euro for a beer. I pay. Laci doesn't watch me count it out, which is kind of him.
     ~ have_drink(1)
++ {q("money") < 8} [Pay for a beer yourself. #drink]
+    -> broke
 + [Just water. #cautious]
     ~ qadd("alcohol", -1)
     Water is free. Laci gives it to me in a wine glass, so nobody can tell.
 + [Leave it.]
     I leave it. I stay at the bar anyway, so I've got somewhere to stand.
+- -> DONE
+
+// The money's gone (the gift took most of it). Being broke changes the evening; it doesn't end it.
+= broke
+~ flag("broke")
+~ headline("Teo ran out of money at his own office party.")
+I put what's in my wallet on the bar. Coins, mostly. It isn't eight euro. It isn't near.
+Laci looks at the coins and then somewhere else, to be polite.
+* {regard("kornel") >= 0} [Ask Kornel to lend you ten.]
+    ~ flag("owes_kornel")
+    ~ remember("kornel", "lent_money")
+    ~ qadd("money", 2)
+    Kornel is two metres away, guarding his Fanta. He gets his wallet out before I've finished asking.
+    KORNEL: Of course. Is ten enough? Take ten.
+    He types something into his phone afterwards. He doesn't hide it.
+    ~ have_drink(1)
+* [Ask Laci to put it on a tab.]
+    LACI: There's no tab. It's a private party.
+    He looks at the door to the kitchen. Then he pours it anyway and slides a napkin across with a pen.
+    LACI: Name and number. You pay me Friday.
+    I write it down. My handwriting looks like someone else's.
+    ~ flag("owes_laci")
+    ~ have_drink(1)
+* [Ask for water, as if that's what you came for. #cautious]
+    ~ qadd("alcohol", -1)
+    LACI: Water.
+    He gives it to me in a wine glass, so nobody can tell. He's done this before, for someone.
 - -> DONE
 
 
