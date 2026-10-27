@@ -15,6 +15,7 @@ public partial class Main
     private int _autoChoices;
     private string? _shotPath;
     private string? _lookRoom;
+    private string? _lookHover;   // "--hover <thing id>": a room view with that thing lit up and named
     private string? _shotMenu;
     private bool _reviewOnly;   // showing Review.bat's screenshots, not playing
     private int _lookAt = -1;
@@ -53,6 +54,7 @@ public partial class Main
             else if (args[i] == "--at" && i + 1 < args.Length) { var hm = args[++i].Split(':'); _lookAt = int.Parse(hm[0]) * 60 + int.Parse(hm[1]); }
             else if (args[i] == "--doing" && i + 1 < args.Length) _lookDoing = args[++i];
             else if (args[i] == "--layout" && i + 1 < args.Length) _layoutArg = args[++i];
+            else if (args[i] == "--hover" && i + 1 < args.Length) _lookHover = args[++i];
         }
         return false;
     }
@@ -73,6 +75,14 @@ public partial class Main
             sheet.BlitRect(img, new Rect2I(0, 0, tw, th), new Vector2I(8 + (i % cols) * (tw + 8), 8 + (i / cols) * (th + 8)));
         }
         sheet.SavePng(output);
+    }
+
+    private void PlaceHoverName(string id)
+    {
+        var t = _roomView.Present.First(x => x.Id == id);
+        _hoverName.ResetSize();
+        var top = _roomView.TopOnScreen(t);
+        _hoverName.Position = new Vector2(top.X - _hoverName.Size.X / 2, top.Y - _hoverName.Size.Y - 6);
     }
 
     /// <summary>Review aid: show one room, empty of dialogue, at a given time of day, and screenshot it.</summary>
@@ -102,6 +112,13 @@ public partial class Main
         _dim.Visible = false;
         _arrival.Visible = false;
         SetPortrait(null);
+        if (_rooms[id].Things.FirstOrDefault(t => t.Id == _lookHover) is { } hover)
+        {
+            _roomView.Highlight(hover);
+            _hoverName.Text = hover.Name;
+            _hoverName.Visible = true;
+            CallDeferred(MethodName.PlaceHoverName, hover.Id);
+        }
         GetTree().CreateTimer(0.8).Timeout += () =>
         {
             GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));

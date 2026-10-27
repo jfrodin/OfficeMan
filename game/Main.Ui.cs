@@ -138,6 +138,8 @@ public partial class Main
         _hoverName.MouseFilter = MouseFilterEnum.Ignore;
         _hoverName.Visible = false;
         AddChild(_hoverName);
+        _markers = new MarkerLayer { MouseFilter = MouseFilterEnum.Ignore, Size = new Vector2(1920, 1080) };
+        AddChild(_markers);
 
         _prompt = new VBoxContainer { Position = new Vector2(40, 968), MouseFilter = MouseFilterEnum.Ignore };
         _promptName = MakeLabel(26, new Color(0.75f, 0.85f, 1f));

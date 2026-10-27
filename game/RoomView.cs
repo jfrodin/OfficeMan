@@ -206,6 +206,7 @@ public partial class RoomView : Control
         _material.SetShaderParameter("canvas_size", new Vector2(room.Width, room.Height));
         _material.SetShaderParameter("emissive", room.Emissive is null ? black : _texture(_art.Resolve(room.Emissive)));
         _material.SetShaderParameter("glow", room.Glow is null ? black : _texture(_art.Resolve(room.Glow)));
+        _material.SetShaderParameter("mask", room.Mask is null ? black : _texture(_art.Resolve(room.Mask)));
         _material.SetShaderParameter("ambient", new Vector3(room.Ambient[0], room.Ambient[1], room.Ambient[2]));
         var look = room.Look;
         _material.SetShaderParameter("bloom", look.Bloom);
@@ -224,6 +225,8 @@ public partial class RoomView : Control
     {
         foreach (var (_, actor) in _present) actor?.QueueFree();
         _present.Clear();
+        _lit = null;
+        _material.SetShaderParameter("hover_id", 0);
         _blocks.Clear();
         _smoke.Sources.Clear();
         foreach (var thing in _room.Things)
@@ -322,6 +325,25 @@ public partial class RoomView : Control
 
     /// <summary>Teo has walked up to something the player clicked on; Main then does what E would do.</summary>
     public Action<RoomLayout.RoomThing>? ArrivedAt { get; set; }
+
+    private RoomLayout.RoomThing? _lit;
+
+    /// <summary>
+    /// Lights up what the mouse is over, the same way for everything: a thing that's part of the picture lights
+    /// up in its own shape (the room's mask), a person or a piece of furniture through its sprite.
+    /// </summary>
+    public void Highlight(RoomLayout.RoomThing? thing)
+    {
+        if (thing == _lit) return;
+        _lit = thing;
+        _material.SetShaderParameter("hover_id", thing?.Mask ?? 0);
+        foreach (var (t, actor) in _present)
+            actor?.Lit(thing is not null && (t == thing || t.Id == thing.Art));
+    }
+
+    /// <summary>The top of a thing, on screen: where its name goes.</summary>
+    public Vector2 TopOnScreen(RoomLayout.RoomThing thing) =>
+        ArtToScreen(new Vector2(thing.X, thing.Y - (thing.Hit is { Length: 2 } h ? h[1] : thing.Wall ? 44 : 54)));
 
     /// <summary>A point on screen in the room's pixels (the inverse of <see cref="ArtToScreen"/>).</summary>
     public Vector2 ScreenToArt(Vector2 screen) =>
@@ -587,6 +609,16 @@ public partial class RoomView : Control
         public bool Walking { get; set; }
 
         public bool FaceLeft { get => FlipH; set => FlipH = value; }
+
+        private static Shader? _highlight;
+
+        /// <summary>Lit up under the mouse (shaders/highlight.gdshader).</summary>
+        public void Lit(bool on)
+        {
+            if (Material is null && !on) return;
+            Material ??= new ShaderMaterial { Shader = _highlight ??= GD.Load<Shader>("res://shaders/highlight.gdshader") };
+            ((ShaderMaterial)Material).SetShaderParameter("lit", on);
+        }
 
         public Actor(Texture2D sheet, Texture2D? shadow, int frames = 6)
         {

@@ -5,7 +5,8 @@ using OfficeMan.ArtGen.Scenes;
 namespace OfficeMan.ArtGen.Rooms;
 
 /// <summary>Layers every room produces for the room shader. See design/visual_standard.md.</summary>
-public sealed record RoomLayers(Canvas Albedo, Canvas Emissive, Canvas Glow, Canvas Front);
+/// <remarks>Mask: which pixels belong to which interactable thing (content/rooms/*.json "mask"), for lighting it up.</remarks>
+public sealed record RoomLayers(Canvas Albedo, Canvas Emissive, Canvas Glow, Canvas Front, Canvas? Mask = null);
 
 /// <summary>Shared tools for drawing rooms to the visual standard.</summary>
 public static class RoomKit

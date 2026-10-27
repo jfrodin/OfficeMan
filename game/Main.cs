@@ -69,6 +69,7 @@ public partial class Main : Control
     private Label _arrivalText = null!;
     private VBoxContainer _prompt = null!;
     private Label _hoverName = null!;
+    private MarkerLayer _markers = null!;
     private Label _promptName = null!;
     private Label _promptAction = null!;
     private Label _lifeLabel = null!;
@@ -251,36 +252,58 @@ public partial class Main : Control
         _view.Choices.Where(c => c.Tags.Contains("where:" + thing.AnchorId))
             .Select(c => (Clean(c.Text) + (c.Tags.Contains("exit") ? "   →" : ""), c.Index)).ToList();
 
-    // The pointer shows what a click will do; it never chooses (art/game/ui/cursor_*.png, ArtGen Cursors).
-    private static readonly Dictionary<string, Vector2> CursorHotspots = new()
-    {
-        ["arrow"] = new(0, 0), ["hand"] = new(10, 0), ["eye"] = new(16, 16), ["talk"] = new(16, 12), ["exit"] = new(26, 16),
-    };
-    private string _cursor = "";
+    private bool _pointerSet;
 
-    /// <summary>The pointer for what's under the mouse, and its name beside it.</summary>
+    /// <summary>
+    /// One plain pointer everywhere. What's under it lights up and says its name above itself; Tab marks
+    /// everything Teo can do something with (agreed with the creator 2026-10-27, after Disco Elysium).
+    /// </summary>
     private void UpdateCursor()
     {
-        var mouse = GetViewport().GetMousePosition();
-        var thing = _mode == Mode.Walking && _roomView.Visible ? _roomView.ThingAt(mouse) : null;
-        var options = thing is null ? new() : Options(thing);
-        string kind = thing is null ? "arrow"
-            : options.Any(o => o.text.EndsWith("→")) ? "exit"
-            : options.Count > 0 && thing.Sprite is not null && !thing.Prop ? "talk"
-            : options.Count > 0 ? "hand"
-            : thing.Look is not null ? "eye"
-            : "arrow";
-        if (kind != _cursor)
+        if (!_pointerSet)
         {
-            _cursor = kind;
-            string path = _art.Resolve($"art/game/ui/cursor_{kind}.png");
-            if (File.Exists(path)) Input.SetCustomMouseCursor(TextureFor(path), Input.CursorShape.Arrow, CursorHotspots[kind]);
+            _pointerSet = true;
+            string path = _art.Resolve("art/game/ui/cursor_arrow.png");
+            if (File.Exists(path)) Input.SetCustomMouseCursor(TextureFor(path), Input.CursorShape.Arrow, Vector2.Zero);
         }
-        _hoverName.Visible = kind != "arrow" && thing is not null && thing.Name.Length > 0;
+        if (_lookingAtRoom) return;   // a room view for review sets its own highlight
+        bool walking = _mode == Mode.Walking && _roomView.Visible;
+        var thing = walking ? _roomView.ThingAt(GetViewport().GetMousePosition()) : null;
+        if (thing is not null && !CanUse(thing)) thing = null;
+        _roomView.Highlight(thing);
+        _hoverName.Visible = thing is not null && thing.Name.Length > 0;
         if (_hoverName.Visible)
         {
             _hoverName.Text = thing!.Name;
-            _hoverName.Position = mouse + new Vector2(34, 6);
+            _hoverName.ResetSize();
+            var top = _roomView.TopOnScreen(thing);
+            _hoverName.Position = new Vector2(top.X - _hoverName.Size.X / 2, top.Y - _hoverName.Size.Y - 6);
+        }
+
+        _markers.Points.Clear();
+        if (walking && Input.IsKeyPressed(Key.Tab))
+            foreach (var t in _roomView.Present.Where(t => !t.Prop && t.Name.Length > 0 && CanUse(t)))
+                _markers.Points.Add(_roomView.TopOnScreen(t));
+        _markers.QueueRedraw();
+    }
+
+    private bool CanUse(RoomLayout.RoomThing thing) => Options(thing).Count > 0 || thing.Look is not null;
+
+    /// <summary>Tab: a small paper diamond over everything Teo can do something with.</summary>
+    private sealed partial class MarkerLayer : Control
+    {
+        public List<Vector2> Points { get; } = new();
+
+        public override void _Draw()
+        {
+            foreach (var p in Points)
+            {
+                var c = p + new Vector2(0, -10);
+                var outer = new[] { c + new Vector2(0, -9), c + new Vector2(9, 0), c + new Vector2(0, 9), c + new Vector2(-9, 0) };
+                var inner = new[] { c + new Vector2(0, -6), c + new Vector2(6, 0), c + new Vector2(0, 6), c + new Vector2(-6, 0) };
+                DrawColoredPolygon(outer, new Color(0.1f, 0.09f, 0.08f, 0.85f));
+                DrawColoredPolygon(inner, new Color(0.95f, 0.9f, 0.8f));
+            }
         }
     }
 

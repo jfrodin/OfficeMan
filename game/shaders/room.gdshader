@@ -23,6 +23,10 @@ uniform float exposure = 1.15;
 uniform float saturation = 1.0;
 uniform float vignette = 0.42;
 uniform float grain = 0.035;
+uniform sampler2D mask : filter_nearest;   // which thing each pixel of the picture belongs to (red = its number)
+uniform int hover_id = 0;                  // the thing under the mouse: it lights up, with a bright rim
+
+int thing_at(vec2 px) { return int(round(texture(mask, px / canvas_size).r * 255.0)); }
 
 float hash(vec2 p) { return fract(sin(dot(p, vec2(12.9898, 78.233))) * 43758.5453); }
 float vnoise(vec2 p) {
@@ -65,6 +69,11 @@ void fragment() {
     vec3 seen = texture(TEXTURE, suv).rgb;
     float clear = 1.0 - step(0.01, distance(seen, texture(base, suv).rgb));
     vec3 col = seen * light_at(px) + texture(emissive, suv).rgb * 1.35 * clear * emissive_gain;
+    if (hover_id > 0 && clear > 0.5 && thing_at(px) == hover_id) {
+        bool rim = thing_at(px + vec2(1.0, 0.0)) != hover_id || thing_at(px - vec2(1.0, 0.0)) != hover_id
+                || thing_at(px + vec2(0.0, 1.0)) != hover_id || thing_at(px - vec2(0.0, 1.0)) != hover_id;
+        col = col * 1.3 + (rim ? vec3(0.22, 0.2, 0.16) : vec3(0.04));
+    }
     vec3 halo = texture(glow, UV).rgb * emissive_gain;
     col += halo * bloom;
 

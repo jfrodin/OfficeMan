@@ -18,6 +18,9 @@ public static class FlatRoom
 {
     private const int Ceil = 20, Base = 178;
 
+    // The things' numbers in the mask; content/rooms/flat.json gives each thing the same "mask".
+    private const byte DoorTag = 1, FridgeTag = 2, WindowTag = 3, FicusTag = 4, PatchTag = 5, WardrobeTag = 6;
+
     private static readonly Ramp Paper = Ramp.Of("262a25", "323730", "40463d", "50574b", "626a5c", "767e6e", "8c937f");
     private static readonly Ramp PaperPrint = Ramp.Of("2c2e26", "3a3d32", "4a4e40", "5c604f", "70745f");
     private static readonly Ramp CeilingR = Ramp.Of("2a2c32", "34373e", "40434b", "4c4f58");
@@ -57,7 +60,7 @@ public static class FlatRoom
         Nightstand(a, e);
         Wardrobe(a);
         Front(f);
-        return new RoomLayers(a.Render(), e, Glow(e), f);
+        return new RoomLayers(a.Render(), e, Glow(e), f, a.Mask());
     }
 
     private static void Shell(SceneCanvas a)
@@ -112,6 +115,7 @@ public static class FlatRoom
 
     private static void Door(SceneCanvas a, Canvas e)
     {
+        a.Tag = DoorTag;
         a.FillRect(12, 110, 48, Base, Wood, (x, y) => 0.35, 0);                      // frame
         a.FillRect(15, 113, 45, Base, Cream, (x, y) => 0.5 + (x == 15 ? -0.1 : 0), 0); // the door
         a.FillRect(18, 116, 42, 142, Cream, (x, y) => 0.45, 0);                      // panels
@@ -120,6 +124,7 @@ public static class FlatRoom
         a.Paint(30, 124, Metal, 0.1, 0);                                             // spyhole
         a.FillRect(38, 128, 44, 129, Metal, (x, y) => 0.7, 0);                       // chain
         Emit(e, 16, Base - 1, 44, Base, Rgb.Hex("6a5030"));                          // the stair light under the door
+        a.Tag = 0;
 
         // Coat hooks, his one jacket, a scarf.
         a.FillRect(52, 104, 76, 106, Wood, (x, y) => 0.5, 0);
@@ -176,17 +181,20 @@ public static class FlatRoom
         a.Paint(58, Ceil + 3, Metal, 0.3, 0); a.Paint(59, Ceil + 4, Metal, 0.3, 0); a.Paint(59, Ceil + 5, Metal, 0.3, 0);
         a.FillRect(58, Ceil + 6, 61, Ceil + 9, Envelope, (x, y) => 0.4, 0);
         // The fridge, with last month's calendar.
+        a.Tag = FridgeTag;
         a.FillRect(174, 120, 198, Base, Fridge, (x, y) => 0.55 - (x > 194 ? 0.12 : 0), 0);
         a.FillRect(174, 140, 198, 141, Fridge, (x, y) => 0.3, 0);
         a.FillRect(195, 126, 197, 136, Metal, (x, y) => 0.6, 0);
         a.FillRect(178, 124, 190, 136, Envelope, (x, y) => 0.75, 0);
         a.FillRect(178, 124, 190, 127, Rug, (x, y) => 0.6, 0);
         for (int y = 129; y < 135; y += 2) a.FillRect(179, y, 189, y + 1, Envelope, (x, yy) => 0.5, 0);
+        a.Tag = 0;
     }
 
     private static void Window(SceneCanvas a, Canvas e)
     {
         const int x0 = 216, x1 = 292, y0 = 62, y1 = 138;
+        a.Tag = WindowTag;
         for (int y = y0; y < y1; y++)
             for (int x = x0; x < x1; x++)
             {
@@ -224,6 +232,7 @@ public static class FlatRoom
                 e.Clear(x, y);
             }
         // The ficus: thin stems, drooping leaves, some on the floor already.
+        a.Tag = FicusTag;
         a.FillRect(300, 160, 316, Base, Pot, (x, y) => 0.5 - (x - 300) / 40.0, 0);
         a.FillRect(298, 158, 318, 161, Pot, (x, y) => 0.65, 0);
         var rng = new Random(32);
@@ -243,14 +252,17 @@ public static class FlatRoom
         }
         foreach (var (lx, ly) in new[] { (292, Base + 3), (322, Base + 6), (330, Base + 2) })
             a.FillRect(lx, ly, lx + 3, ly + 1, Leaf, (x, y) => 0.75, 0);
+        a.Tag = 0;
     }
 
     private static void Bed(SceneCanvas a)
     {
         // The bed itself is a prop out on the floor (BedProp). On the wall above it: the pale patch where a
         // picture used to hang, and the nail.
+        a.Tag = PatchTag;
         a.FillRect(346, 70, 382, 102, Paper, (x, y) => 0.68, 0);
         a.Paint(364, 66, Metal, 0.8, 0);
+        a.Tag = 0;
     }
 
     private static void Nightstand(SceneCanvas a, Canvas e)
@@ -267,6 +279,7 @@ public static class FlatRoom
 
     private static void Wardrobe(SceneCanvas a)
     {
+        a.Tag = WardrobeTag;
         a.FillRect(436, 92, 474, Base, Veneer, (x, y) => 0.4 + (x == 455 ? -0.2 : 0) - (x > 470 ? 0.1 : 0), 0);
         a.FillRect(434, 90, 476, 93, Veneer, (x, y) => 0.6, 0);
         // One door open a hand's width: shirts. The good one, the other one.
@@ -276,6 +289,7 @@ public static class FlatRoom
         // On top: his university diploma, in its frame, never hung.
         a.FillRect(440, 82, 466, 90, Wood, (x, y) => 0.5, 0);
         a.FillRect(442, 84, 464, 89, Envelope, (x, y) => 0.6, 0);
+        a.Tag = 0;
         a.FillRect(476, Ceil, W, Base, Paper, (x, y) => 0.3, 0);                      // the corner
     }
 

@@ -17,6 +17,13 @@ public sealed class SceneCanvas
     private readonly double[] _light;
     private readonly Rgb?[] _fixed;
     private readonly double[] _dither;
+    private readonly byte[] _tag;
+
+    /// <summary>
+    /// The thing being drawn, as its number in the room's mask (0: nothing in particular). Every pixel painted
+    /// while it's set belongs to that thing, so the game can light it up in its own shape.
+    /// </summary>
+    public byte Tag { get; set; }
 
     public SceneCanvas(int width, int height)
     {
@@ -27,6 +34,7 @@ public sealed class SceneCanvas
         _light = new double[width * height];
         _fixed = new Rgb?[width * height];
         _dither = new double[width * height];
+        _tag = new byte[width * height];
     }
 
     private bool In(int x, int y) => x >= 0 && y >= 0 && x < Width && y < Height;
@@ -40,6 +48,7 @@ public sealed class SceneCanvas
         _base[i] = baseLight;
         _fixed[i] = null;
         _dither[i] = dither;
+        _tag[i] = Tag;
     }
 
     /// <summary>Paints an unlit, exact colour (lit windows, clock digits, highlights).</summary>
@@ -47,6 +56,7 @@ public sealed class SceneCanvas
     {
         if (!In(x, y)) return;
         _fixed[y * Width + x] = color;
+        _tag[y * Width + x] = Tag;
     }
 
     public void AddLight(int x, int y, double amount)
@@ -100,6 +110,16 @@ public sealed class SceneCanvas
             if ((a.y > py) != (b.y > py) && px < (b.x - a.x) * (py - a.y) / (b.y - a.y) + a.x) inside = !inside;
         }
         return inside;
+    }
+
+    /// <summary>The mask: each pixel's thing number in red, black where it's nothing in particular.</summary>
+    public Canvas Mask()
+    {
+        var c = new Canvas(Width, Height);
+        for (int y = 0; y < Height; y++)
+            for (int x = 0; x < Width; x++)
+                c[x, y] = new Rgb(_tag[y * Width + x], 0, 0);
+        return c;
     }
 
     public Canvas Render()

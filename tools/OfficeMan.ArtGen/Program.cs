@@ -96,6 +96,7 @@ if (sets.Contains("game"))
         Png.Save(layers.Emissive, Path.Combine(rooms, $"{name}_emissive.png"));
         Png.Save(layers.Glow, Path.Combine(rooms, $"{name}_glow.png"));
         Png.Save(layers.Front, Path.Combine(rooms, $"{name}_front.png"));
+        if (layers.Mask is not null) Png.Save(layers.Mask, Path.Combine(rooms, $"{name}_mask.png"));
     }
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));

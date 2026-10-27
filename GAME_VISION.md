@@ -308,6 +308,7 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
 | 2026-10-27 | The gift collection is 10 euro each (replaces 50): closer to what a real office collects. | §3 |
 | 2026-10-27 | Teo isn't interested in Magda; if they sleep together it's drink on his side and drink and desperation (Viktor ignoring her) on hers. | §5 |
+| 2026-10-27 | Pointing at things, after Disco Elysium: one plain pointer everywhere. What's under it lights up (the same way for everything, in the thing's own shape) and its name shows above it; Tab marks what can be used. The choices come after the click, as text. No verb icons. | §8 |
 | 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |
 | 2026-10-27 | The look: the game's current pixel art (option A in `design/art_direction.md`), with depth from layers and furniture out on the floor. No 3D. | §9 |
 | 2026-10-27 | Playtest builds may go online for one thing: F1 notes to the playtest's own Discord server, with a screenshot and the life's log. Release builds stay fully offline. | §11 |

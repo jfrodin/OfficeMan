@@ -3,11 +3,9 @@ using OfficeMan.ArtGen.Raster;
 namespace OfficeMan.ArtGen.Sprites;
 
 /// <summary>
-/// The mouse pointers, drawn as pixel art in the game's colours: paper filled, dark outline, stamp blue for detail.
-/// The pointer never chooses an action; it shows what a click will do (the creator, 2026-10-27):
-///   arrow  walk there      eye   look at it      hand  use it
-///   talk   talk to them    exit  leave this way
-/// Each is a 16×16 grid drawn at ×2. Hotspots are in content/art.json's "cursors" (game pixels, ×2 already).
+/// The mouse pointer, drawn as pixel art in the game's colours: paper filled, dark outline. One plain arrow
+/// everywhere (agreed 2026-10-27): what's under it lights up and says its name; the pointer itself never changes.
+/// A 16×16 grid drawn at ×2, hotspot at the tip.
 /// </summary>
 public static class Cursors
 {
@@ -34,82 +32,6 @@ public static class Cursors
             "##  #oo#        ",
             "     #oo#       ",
             "     ###        ",
-        },
-        ["hand"] = new[]
-        {
-            "     ##         ",
-            "    #oo#        ",
-            "    #oo#        ",
-            "    #oo#        ",
-            "    #oo###      ",
-            "    #oo#oo##    ",
-            " ## #oo#oo#o#   ",
-            "#oo##oo#oo#o##  ",
-            "#ooo#oooooo#o#  ",
-            " #oooooooooooo# ",
-            "  #ooooooooooo# ",
-            "  #oooooooooo#  ",
-            "   #ooooooooo#  ",
-            "    #ooooooo#   ",
-            "    #ooooooo#   ",
-            "    #########   ",
-        },
-        ["eye"] = new[]
-        {
-            "                ",
-            "                ",
-            "                ",
-            "     ######     ",
-            "   ##oooooo##   ",
-            "  #ooobbbbooo#  ",
-            " #ooobb##bbooo# ",
-            "#ooooob##booooo#",
-            " #ooobb##bbooo# ",
-            "  #ooobbbbooo#  ",
-            "   ##oooooo##   ",
-            "     ######     ",
-            "                ",
-            "                ",
-            "                ",
-            "                ",
-        },
-        ["talk"] = new[]
-        {
-            "                ",
-            "  ###########   ",
-            " #ooooooooooo#  ",
-            "#ooooooooooooo# ",
-            "#ooooooooooooo# ",
-            "#oobboobboobbo# ",
-            "#oobboobboobbo# ",
-            "#ooooooooooooo# ",
-            "#ooooooooooooo# ",
-            " #ooooooooooo#  ",
-            "  ###oo#######  ",
-            "    #oo#        ",
-            "    #o#         ",
-            "    ##          ",
-            "                ",
-            "                ",
-        },
-        ["exit"] = new[]
-        {
-            "                ",
-            "       #        ",
-            "       ##       ",
-            "       #o#      ",
-            "       #oo#     ",
-            "########ooo#    ",
-            "#ooooooooooo#   ",
-            "#oooooooooooo#  ",
-            "#ooooooooooo#   ",
-            "########ooo#    ",
-            "       #oo#     ",
-            "       #o#      ",
-            "       ##       ",
-            "       #        ",
-            "                ",
-            "                ",
         },
     };
 

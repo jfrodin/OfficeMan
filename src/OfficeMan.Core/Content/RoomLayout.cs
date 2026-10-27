@@ -23,6 +23,9 @@ public sealed class RoomLayout
     /// <summary>Things in front of the people (transparent elsewhere).</summary>
     public string? Front { get; set; }
 
+    /// <summary>Which pixels of the picture belong to which thing (a thing's number in red), to light it up.</summary>
+    public string? Mask { get; set; }
+
     /// <summary>False where Teo is part of the picture (asleep in bed) rather than a walking sprite.</summary>
     public bool ShowTeo { get; set; } = true;
 
@@ -130,6 +133,12 @@ public sealed class RoomLayout
         /// (a door, a window, a wardrobe). Without it, about a person's width and height.
         /// </summary>
         public int[]? Hit { get; set; }
+
+        /// <summary>Its number in the room's <see cref="RoomLayout.Mask"/>, if it's part of the picture.</summary>
+        public int Mask { get; set; }
+
+        /// <summary>The prop that is this thing's picture (a table's sprite), if it's one; it lights up instead.</summary>
+        public string? Art { get; set; }
 
         /// <summary>A lit cigarette: offset (x, y) from the feet, facing right. Smoke rises from it.</summary>
         public float[]? Smoke { get; set; }

@@ -49,6 +49,11 @@ other two were never rebuilt for it, and I didn't look at them in the game befor
 - People who work at a desk stand behind it. Things that belong on a wall (shelves, the cabinet, the noticeboard) stay there.
 - Screens on a prop can't use the emissive layer (they move with the sprite). They're drawn bright, a small light in the room json lights round them, and the room's glow layer gives the bloom.
 
+**Things you can use** (agreed 2026-10-27)
+- One plain pixel arrow as the pointer, never anything else. What's under it lights up and its name shows above it; Tab puts a small paper diamond over everything Teo can do something with.
+- Everything lights up the same way: brighter, with a light rim along its own shape. Things painted into the picture get a number in the room's **mask** (`<room>_mask.png`, drawn by the generator with `SceneCanvas.Tag`; the thing's `"mask"` in the room json); people and furniture are sprites and use `shaders/highlight.gdshader`. A thing that stands for a prop names it with `"art"`.
+- Big things get a `"hit"` area (half width, height) so the whole of them answers the mouse.
+
 **Environmental storytelling**
 - Every object earns its place by saying something about who lives or works there. No random decoration.
 
