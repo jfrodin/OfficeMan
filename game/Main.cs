@@ -17,7 +17,7 @@ namespace OfficeMan.Game;
 /// <remarks>
 /// Split by job: story flow, walking, input and saves here; the screen in Main.Ui; text in Main.Lines;
 /// the pause menu in Main.Menu; review and automation tools in Main.DevTools.
-/// Controls: arrows/WASD/stick to walk, E/Enter/Space (pad A) to interact or continue, number keys,
+/// Controls: arrows/WASD/stick or a click to walk (a click on someone walks up to them), E/Enter/Space (pad A) to interact or continue, number keys,
 /// mouse or d-pad + A to choose, Esc (pad B) to back out of a menu, Esc (pad Start) for the pause menu,
 /// F5 quick save, F9 quick load.
 /// </remarks>
@@ -213,9 +213,9 @@ public partial class Main : Control
         SetMode(Mode.Walking);
     }
 
-    private void Interact()
+    private void Interact(RoomLayout.RoomThing? clicked = null)
     {
-        var thing = _roomView.Reachable();
+        var thing = clicked ?? _roomView.Reachable();
         if (thing is null) return;
         var options = Options(thing);
         _roomView.FaceTeo(thing.AnchorId);
@@ -242,6 +242,15 @@ public partial class Main : Control
     private List<(string text, int index)> Options(RoomLayout.RoomThing thing) =>
         _view.Choices.Where(c => c.Tags.Contains("where:" + thing.AnchorId))
             .Select(c => (Clean(c.Text) + (c.Tags.Contains("exit") ? "   →" : ""), c.Index)).ToList();
+
+    /// <summary>A pointing hand over people and things Teo can do something with.</summary>
+    private void UpdateCursor()
+    {
+        var thing = _mode == Mode.Walking && _roomView.Visible ? _roomView.ThingAt(GetViewport().GetMousePosition()) : null;
+        bool active = thing is not null && (Options(thing).Count > 0 || thing.Look is not null);
+        var shape = active ? Input.CursorShape.PointingHand : Input.CursorShape.Arrow;
+        if (Input.GetCurrentCursorShape() != shape) Input.SetDefaultCursorShape(shape);
+    }
 
     private void UpdatePrompt()
     {
@@ -293,6 +302,9 @@ public partial class Main : Control
             case Mode.Walking when e.IsActionPressed("interact"):
                 Interact();
                 break;
+            case Mode.Walking when e is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left } click && _roomView.Visible:
+                _roomView.ClickAt(click.Position, _roomView.ThingAt(click.Position));
+                break;
             case Mode.Choosing when e.IsActionPressed("cancel") && _view.Kind == PresentationKind.Hub && _roomView.Visible:
                 StartWalking();
                 break;
@@ -331,6 +343,7 @@ public partial class Main : Control
         }
         Layout(delta);
         UpdatePrompt();
+        UpdateCursor();
         UpdateHail();
         if (_autoSteps >= 0) RunAutomation();
     }
@@ -354,11 +367,9 @@ public partial class Main : Control
         _speaker.Text = "To be continued";
         string today = string.Join("\n", _view.Today.Select(Bbcode));
         string happened = string.Join("\n", _view.Headlines.Select(h => "·  " + h).DefaultIfEmpty("Nothing much happened. That's also a life."));
-        _text.Text = today.Length == 0 ? happened : $"[i]{today}[/i]\n\n{happened}";
+        _text.Text = (today.Length == 0 ? happened : $"[i]{today}[/i]\n\n{happened}") + $"\n\n[color=#{Dim.ToHtml(false)}]{StartOverNote}[/color]";
         _text.VisibleRatio = 1;
-        AddChoice("Live another Tuesday", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
-        AddChoice("Quit", () => GetTree().Quit());
-        ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
+        EndingChoices();
     }
 
     private void ShowColumnEnding()
@@ -373,10 +384,20 @@ public partial class Main : Control
             AddLogEntry($"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line)}[/i][/color]").VisibleRatio = 1;
         foreach (string h in _view.Headlines.DefaultIfEmpty("Nothing much happened. That's also a life."))
             AddLogEntry("·  " + Bbcode(h)).VisibleRatio = 1;
+        AddLogEntry($"[color=#{Dim.ToHtml(false)}]{StartOverNote}[/color]").VisibleRatio = 1;
         _choices.Columns = 1;
-        AddChoice("Live another Tuesday", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
-        AddChoice("Quit", () => GetTree().Quit());
+        EndingChoices();
         ScrollToEnd();
+    }
+
+    private const string StartOverNote =
+        "That was one Tuesday. Starting again begins a new one from the alarm clock: a slightly different Teo, " +
+        "and people who won't do quite the same things.";
+
+    private void EndingChoices()
+    {
+        AddChoice("Start again from Tuesday morning", () => StartLife((int)(Time.GetTicksUsec() % int.MaxValue)));
+        AddChoice("Quit", () => GetTree().Quit());
         ((Control)_choices.GetChild(0)).CallDeferred(Control.MethodName.GrabFocus);
     }
     // ───────────────────────── art ─────────────────────────

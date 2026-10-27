@@ -315,6 +315,56 @@ public partial class RoomView : Control
     private Vector2? _approach;
     private string? _approachTo;
 
+    // ── Walking with the mouse ──
+    private Vector2? _clickGoal;
+    private RoomLayout.RoomThing? _clickThing;
+    private double _stuck;
+
+    /// <summary>Teo has walked up to something the player clicked on; Main then does what E would do.</summary>
+    public Action<RoomLayout.RoomThing>? ArrivedAt { get; set; }
+
+    /// <summary>A point on screen in the room's pixels (the inverse of <see cref="ArtToScreen"/>).</summary>
+    public Vector2 ScreenToArt(Vector2 screen) =>
+        (screen - new Vector2(-Mathf.Round(_pan) + _shift.X, -Mathf.Round(_lift) + _shift.Y)) / (ScreenScale * _zoom);
+
+    /// <summary>The person or thing under the mouse, if Teo can do anything with it.</summary>
+    public RoomLayout.RoomThing? ThingAt(Vector2 screen)
+    {
+        if (_room is null) return null;
+        var p = ScreenToArt(screen);
+        RoomLayout.RoomThing? best = null;
+        float bestDist = float.MaxValue;
+        foreach (var (thing, _) in _present)
+        {
+            if (thing.Prop) continue;
+            // People and things are hit from their feet up to about head height.
+            float dx = Math.Abs(p.X - thing.X), top = thing.Y - (thing.Wall ? 44 : 54), bottom = thing.Y + 8;
+            if (dx > 14 || p.Y < top || p.Y > bottom) continue;
+            if (dx < bestDist) { best = thing; bestDist = dx; }
+        }
+        return best;
+    }
+
+    /// <summary>A click: walk to that spot, or up to the thing clicked on.</summary>
+    public void ClickAt(Vector2 screen, RoomLayout.RoomThing? thing)
+    {
+        if (_room is null || !_teo.Visible) return;
+        _clickThing = thing;
+        _stuck = 0;
+        if (thing is null)
+        {
+            var p = ScreenToArt(screen);
+            _clickGoal = new Vector2(Math.Clamp(p.X, _room.Walk.MinX, _room.Walk.MaxX), Math.Clamp(p.Y, _room.Walk.MinY, _room.Walk.MaxY));
+            return;
+        }
+        float y = thing.Wall ? _room.Walk.MinY + 4 : Math.Clamp(thing.Y + 10, _room.Walk.MinY, _room.Walk.MaxY);
+        float side = _teo.Position.X <= thing.X ? -18 : 18;
+        var goal = new Vector2(Math.Clamp(thing.X + (thing.Wall ? 0 : side), _room.Walk.MinX, _room.Walk.MaxX), y);
+        foreach (var r in _blocks)
+            if (Inside(r, goal)) goal.Y = Math.Min(r.End.Y + 1, _room.Walk.MaxY);
+        _clickGoal = goal;
+    }
+
     /// <summary>
     /// Teo walks over to whoever is talking to him, if he's standing far off (a scene that starts with him at the
     /// door and Stojan at the far end). A conversation then has the two of them together, so the camera can frame them.
@@ -374,6 +424,24 @@ public partial class RoomView : Control
             return;
         }
         if (Controllable) _approachTo = null;
+        if (!Controllable || dir.LengthSquared() > 0.04f) _clickGoal = null;   // the keys take over from the mouse
+        else if (_clickGoal is Vector2 click)
+        {
+            var to = click - _teo.Position;
+            if (to.Length() < 2)
+            {
+                _clickGoal = null;
+                _teo.Walking = false;
+                if (_clickThing is { } t)
+                {
+                    _clickThing = null;
+                    if (!t.Wall) _teo.FaceLeft = t.X < _teo.Position.X;
+                    ArrivedAt?.Invoke(t);
+                }
+                return;
+            }
+            dir = to.Normalized() * Math.Min(1f, to.Length() / 6 + 0.35f);
+        }
         if (dir.LengthSquared() > 0.04f)
         {
             var next = _teo.Position + dir.LimitLength(1.4f) * WalkSpeed * (float)delta;
@@ -386,6 +454,12 @@ public partial class RoomView : Control
                      : !Blocked(new Vector2(from.X, next.Y)) ? new Vector2(from.X, next.Y)
                      : from;
             if (Math.Abs(dir.X) > 0.1f) _teo.FaceLeft = dir.X < 0;
+            // Walking to a click and furniture won't let him through: give up rather than walk on the spot.
+            if (_clickGoal is not null)
+            {
+                _stuck = (next - from).Length() < 0.05f ? _stuck + delta : 0;
+                if (_stuck > 0.3) { _clickGoal = null; _clickThing = null; }
+            }
             _teo.Position = next;
             _teo.Walking = true;
         }

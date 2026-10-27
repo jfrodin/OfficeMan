@@ -26,6 +26,7 @@ public partial class Main
         _roomView = new RoomView();
         AddChild(_roomView);
         _roomView.Init(_art, TextureFor);
+        _roomView.ArrivedAt = thing => { if (_mode == Mode.Walking) Interact(thing); };
 
         _dim = new ColorRect { Color = new Color(0, 0, 0, 0.18f), MouseFilter = MouseFilterEnum.Ignore };
         _dim.SetAnchorsPreset(LayoutPreset.FullRect);
@@ -83,7 +84,14 @@ public partial class Main
         _portraitCard = new PanelContainer { Size = new Vector2(PortraitW + 6, PortraitH + 6), MouseFilter = MouseFilterEnum.Ignore, Visible = false };
         _portraitCard.AddThemeStyleboxOverride("panel", Box(new Color(0.08f, 0.07f, 0.08f, 1f), 4, 3, new Color(1f, 0.85f, 0.65f, 0.55f)));
         _portrait = new TextureRect { ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.KeepAspectCovered, CustomMinimumSize = new Vector2(PortraitW, PortraitH), MouseFilter = MouseFilterEnum.Ignore };
-        _portraitCard.AddChild(_portrait);
+        var portraitBox = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
+        portraitBox.AddThemeConstantOverride("separation", 6);
+        portraitBox.AddChild(_portrait);
+        _portraitName = MakeLabel(BodySize - 6, Accent);
+        _portraitName.HorizontalAlignment = HorizontalAlignment.Center;
+        _portraitName.Visible = false;
+        portraitBox.AddChild(_portraitName);
+        _portraitCard.AddChild(portraitBox);
         AddChild(_portraitCard);
 
         // Observations: a compact note, centred low in the frame, no portrait, no name.
@@ -225,6 +233,7 @@ public partial class Main
         float barH = Math.Max(BarMinHeight, _panel.Size.Y);
         _panel.Size = new Vector2(1920, barH);
         _panel.Position = new Vector2(0, 1080 - barH);
+        PortraitAsTab(false);
         _portraitCard.Position = new Vector2(48, 1080 - 26 - _portraitCard.Size.Y);
 
         _note.Size = Vector2.Zero;

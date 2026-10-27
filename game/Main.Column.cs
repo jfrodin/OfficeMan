@@ -19,7 +19,13 @@ namespace OfficeMan.Game;
 /// </summary>
 public partial class Main
 {
-    private const float ColumnW = 640, FadeW = 150, PortraitOverlap = 26;
+    private const float ColumnW = 640, FadeW = 150;
+    // The portrait as a tab out of the column: a paper frame on three sides, open towards the column, the name below.
+    private const float TabFrame = 12, TabNameH = 34;
+    private static float TabW => PortraitW + TabFrame;
+    private static float TabH => PortraitH + 2 * TabFrame + TabNameH + 6;
+    private Label _portraitName = null!;
+    private bool _portraitAsTab;
     private const int LogKeep = 80;   // lines kept in the log
     private static readonly Color Faded = new(1, 1, 1, 0.55f), Dim = new(0.62f, 0.66f, 0.74f);
     private static readonly Color Paper = new(0.082f, 0.072f, 0.064f, 0.96f);
@@ -236,6 +242,27 @@ public partial class Main
         }
     }
 
+    /// <summary>The portrait card's look: a tab out of the column, or the framed card in the bar layout.</summary>
+    private void PortraitAsTab(bool tab)
+    {
+        if (_portraitAsTab == tab) return;
+        _portraitAsTab = tab;
+        _portraitName.Visible = tab;
+        if (tab)
+        {
+            var paper = new StyleBoxFlat { BgColor = new Color(Paper, 1) };
+            paper.ContentMarginLeft = paper.ContentMarginTop = paper.ContentMarginBottom = TabFrame;
+            paper.ContentMarginRight = 0;
+            paper.CornerRadiusTopLeft = paper.CornerRadiusBottomLeft = 8;
+            _portraitCard.AddThemeStyleboxOverride("panel", paper);
+        }
+        else
+        {
+            _portraitCard.AddThemeStyleboxOverride("panel", Box(new Color(0.08f, 0.07f, 0.08f, 1f), 4, 3, new Color(1f, 0.85f, 0.65f, 0.55f)));
+            _portraitCard.Size = new Vector2(PortraitW + 6, PortraitH + 6);
+        }
+    }
+
     private void ToggleTextLayout()
     {
         _settings.TextLayout = UseColumn ? 1 : 0;
@@ -280,16 +307,18 @@ public partial class Main
             float target = newest is null ? 120 : newest.GlobalPosition.Y - 40;
             target = Math.Clamp(target, 40, 400);   // never low in the frame, where the people stand
             _portraitY = _portraitY < 0 ? target : _portraitY + (target - _portraitY) * (float)(1 - Math.Exp(-delta * 6));
-            // Always the same size and place: the card's own size drifts with its contents, which moved some
-            // portraits further into the column than others.
-            _portraitCard.Size = new Vector2(PortraitW + 6, PortraitH + 6);
-            _portraitCard.Position = new Vector2(left - (PortraitW + 6) + PortraitOverlap, _portraitY);
+            PortraitAsTab(true);
+            _portraitName.Text = _listener is null ? "" : Title(_listener);
+            _portraitName.AddThemeColorOverride("font_color", _listener is null ? Accent : NameColour(_listener));
+            // Always the same size and place, flush against the column, so it reads as part of it.
+            _portraitCard.Size = new Vector2(TabW, TabH);
+            _portraitCard.Position = new Vector2(left - TabW, _portraitY);
         }
         else _portraitY = -1;
         if (!_typing && _mode == Mode.Talking) _more.Position = new Vector2(1920 - 70, 1080 - 64);
 
         // What the column (and the portrait on its edge) leave free of the picture.
-        float free = 1920 - ColumnW - (_portraitCard.Visible ? PortraitW + 6 - PortraitOverlap : 0);
+        float free = 1920 - ColumnW - (_portraitCard.Visible ? TabW : 0);
         if (_column.Visible && _roomView.Visible)
         {
             // Keep Teo and whoever he's with inside the part of the screen the column leaves free.

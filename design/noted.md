@@ -27,8 +27,6 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-27 | "50 each" for the gift: the creator thought we had lowered it further. (50 euro is about 550 kronor; the creator's own office gives about 100 kronor a year, roughly 9 euro.) | `content/ink/tuesday_home.ink:36`, `tuesday_office.ink` |
 | 2026-10-27 | A bank that texts you your balance is unrealistic. | `content/ink/tuesday_home.ink:38` |
 | 2026-10-27 | The stairwell looks bad. | `StairwellRoom` |
-| 2026-10-27 | Can't walk with the mouse; only the keys. | `game/RoomView.cs`, `game/Controls.cs` |
-| 2026-10-27 | Portraits look cut out and pasted in. Maybe a frame that runs into the text column, so you can see they belong to it. | `game/Main.Column.cs` |
 | 2026-10-27 | Magda's portrait already hints at the red dress, though at the office she's clearly in a pink top. | `art/game/portraits/magda_*`, `content/art.json` |
 | 2026-10-27 | Are the tickets right? Had a drink with Magda, then could buy a beer and then a spirit before they ran out. Do tickets only go when Teo buys at the bar himself? (Yes: only the bar takes tickets; Magda is the bank, so a drink with her is free.) | `content/ink/tuesday_party.ink` (use_ticket) |
 | 2026-10-27 | Felicity is with the alignment team but stands talking to Viktor: how does that fit? She also looks a lot like Ramona. Unclear who is who and why people stand where they stand. | `content/rooms/terrace.json`, `PixelPeople` |
@@ -37,4 +35,4 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-27 | The sobering-up invoice is far too high (it's 4,200). It probably shouldn't cost anything, or a bill comes home later. The creator doesn't know how it works. | `content/ink/wednesday.ink:125` |
 | 2026-10-27 | Viktor got the letter the same morning Teo was checked out of the station: impossibly fast post. Needs handling in a completely different way. | `content/ink/wednesday.ink` |
 | 2026-10-27 | "I'd like the floor to open": what does it mean? A lot of the language needs rewriting, better and more narrative. Feels so-so now. | `content/ink/wednesday.ink:449`, all text |
-| 2026-10-27 | "Live another Tuesday" should make clear you're starting again. Maybe end with a recap of your choices, like "5% of players chose this" (as in The Walking Dead); or maybe that's uninteresting. | `game/Main.cs` (ShowEnding) |
+| 2026-10-27 | Maybe end with a recap of your choices, like "5% of players chose this" (as in The Walking Dead); or maybe that's uninteresting. (The clearer "start again" is done.) | `game/Main.cs` (ShowEnding) |
