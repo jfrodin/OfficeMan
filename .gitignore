@@ -15,3 +15,6 @@ export_presets.cfg
 # Local saves and generated art previews
 saves/
 art/out/
+
+# Discord webhooks for playtest notes and crash reports: built into playtest builds, never committed
+game/Hooks.local.cs
