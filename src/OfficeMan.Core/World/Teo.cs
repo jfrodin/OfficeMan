@@ -98,18 +98,21 @@ public static class Teo
 
     private static int MoodPush(WorldState s) => s.Get("mood") switch { >= 1 => 1, <= -2 => -1, _ => 0 };
 
+    /// <summary>What Teo decided in the morning about the day (quality <c>vow_&lt;trait&gt;</c>): it holds until Tuesday is over.</summary>
+    private static int Vow(WorldState s, string trait) => s.Day == 0 ? s.Get("vow_" + trait) : 0;
+
     // ── The traits as they are right now ──
 
     public static int Nerve(WorldState s) =>
-        s.Get("trait_nerve") + MoodPush(s) + new[] { 0, 1, 1, 2, 2 }[Drunk(s)] - s.Get("shame") - (Hungover(s) ? 1 : 0);
+        s.Get("trait_nerve") + Vow(s, "nerve") + MoodPush(s) + new[] { 0, 1, 1, 2, 2 }[Drunk(s)] - s.Get("shame") - (Hungover(s) ? 1 : 0);
 
     public static int Warmth(WorldState s) =>
-        s.Get("trait_warmth") + MoodPush(s) + new[] { 0, 1, 1, 0, -1 }[Drunk(s)]
+        s.Get("trait_warmth") + Vow(s, "warmth") + MoodPush(s) + new[] { 0, 1, 1, 0, -1 }[Drunk(s)]
         - (Tired(s) >= 2 ? 1 : 0) - (Hungover(s) ? 1 : 0);
 
-    public static int Appetite(WorldState s) => s.Get("trait_appetite") + new[] { 0, 1, 1, 2, 2 }[Drunk(s)];
+    public static int Appetite(WorldState s) => s.Get("trait_appetite") + Vow(s, "appetite") + new[] { 0, 1, 1, 2, 2 }[Drunk(s)];
 
-    public static int Honesty(WorldState s) => s.Get("trait_honesty") + new[] { 0, 0, 1, 1, 2 }[Drunk(s)];
+    public static int Honesty(WorldState s) => s.Get("trait_honesty") + Vow(s, "honesty") + new[] { 0, 0, 1, 1, 2 }[Drunk(s)];
 
     // ── What the checks use ──
 

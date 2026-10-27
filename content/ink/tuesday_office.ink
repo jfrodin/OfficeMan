@@ -83,18 +83,18 @@ MAGDA: Teo! You're the last one. Well. You and Zdenka, and Zdenka said no in a w
 TEO: What's the gift for?
 MAGDA: For Viktor! To say thank you. For the party.
 We're buying Viktor a present to thank him for a party our taxes are paying for.
-* [Put in fifty. #kind]
-    ~ qadd("money", -50)
+* [Put in ten. #kind]
+    ~ qadd("money", -10)
     ~ flag("magda_paid")
     ~ like("magda", 1)
     ~ remember("magda", "paid")
     MAGDA: You're a sweetheart! I'm getting him a pen. A proper one. Heavy. #mood:happy
     He'll love it. He'll sign things with it that she isn't allowed to read.
-    That leaves me twenty euro until Friday. I don't say so.
-* [Put in twenty.]
-    ~ qadd("money", -20)
+    That leaves me sixty euro until Friday. I don't say so.
+* [Put in five.]
+    ~ qadd("money", -5)
     ~ remember("magda", "paid_less")
-    She looks at the note and doesn't say anything. She writes <i>Teo, 20</i> on the clipboard, very small and very neat.
+    She looks at the note and doesn't say anything. She writes <i>Teo, 5</i> on the clipboard, very small and very neat.
 * [Say you'll bring it later. #cautious]
     ~ remember("magda", "didnt_pay")
     MAGDA: Course. Later.

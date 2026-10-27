@@ -118,7 +118,8 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **The Boss's Wife.** About 50, same as the Boss. Used to be attractive; age has worked against her. They have money, and she has become a typical Eastern European new-money woman who overcompensates. She knows about his affairs very well, and swallows her pride with money and handbags.
 - **The Boss.** About 50. Good-looking and knows it, "big dick aura". Married. Constantly sleeps around. Thinks nobody knows; everybody knows. Really great at his job, a genuinely good boss. Macho. Thinks his wife is too old.
 - **The Secretary (Magda).** 21. Two children, aged 5 and 2, by different men; both live with their fathers. This is the root of her darker personality and angst. Overweight. Desperate for attention: low self-esteem, and she seeks gratification through sex. Sleeps with anyone who says yes, and cries when they dump her. Probably an alcoholic. Kind. Wants the Boss badly; he has never slept with her (in his eyes she's "too fat"). Her darker personality will be developed much more later in the game.
-  - **[AGREED 2026-10-27]** Teo isn't interested in Magda. If they end up in bed, it's because he's drunk, and she's drunk and desperate because Viktor ignores her.
+  - **[AGREED 2026-10-27]** Teo isn't interested in Magda. If they end up in bed, it's because he's drunk, and she's drunk and desperate because Viktor ignores her. If they do, it drips with anxiety, for Teo. Not for Magda: she's used to sleeping with anyone who says yes.
+  - **[AGREED 2026-10-27]** Magda and Viktor are alike in this. The difference is that she takes what's offered, and he takes what he wants.
   - **[REQUIRED]** We never make fun of her. We laugh with her, and we feel for her tragic life.
 
 ## 6. Dialogue and narrative systems

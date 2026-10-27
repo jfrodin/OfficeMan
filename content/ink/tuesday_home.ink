@@ -17,8 +17,20 @@
 - else:
     The alarm goes off. I've been awake for twenty minutes, waiting for it.
 }
-Tuesday. The summer party. Viktor put it on a Tuesday so nobody would drink.
-Viktor has met us, hasn't he?
+Tuesday. The office summer party is tonight. Viktor put it on a Tuesday so that nobody would get too drunk.
+Viktor has met us.
+// How Teo goes into the day. It leans him one way until Tuesday is over (vow_<trait>, see Teo.cs);
+// the evening can remind him of it.
+* [A sober Tuesday. I'll fucking show him. #drink]
+    ~ qset("vow", 1)
+    ~ qset("vow_appetite", 1)
+* [Two drinks. Home by nine. #cautious]
+    ~ qset("vow", 2)
+    ~ qset("vow_appetite", -1)
+* [This year I'm not standing by the crisps all night. #bold]
+    ~ qset("vow", 3)
+    ~ qset("vow_nerve", 1)
+-
 STOJAN: Because it's MY balcony! #heard:through the wall #from:right
 A door slams. Then the daughter's music through the wall: bass, and a girl singing in English about being disappointed.
 - (opts)
@@ -28,14 +40,14 @@ A door slams. Then the daughter's music through the wall: bass, and a girl singi
     -> phone
 * {phone and not phone_again} [Check phone again.]
     -> phone_again
-* {not lie} [Lie here a bit longer.]
+* {not lie} [Stay in bed a bit longer.]
     -> lie
 
 = phone
 Two messages.
-Magda, to the office group: <i>PARTY TONITE!!! dont forget gift money 50 each!!! see u all xx</i>
+Magda, to the office group: <i>PARTY TONITE!!! dont forget gift money 10 each!!! see u all xx</i>
 Gift for who? Nobody's leaving. Nobody's getting married. Magda will have a reason by lunch.
-And one from the bank, which I didn't ask for: <i>Balance: 70.00 EUR</i>. Payday is Friday.
+I open the bank app with one eye shut. <i>70.00 EUR</i>. Payday is Friday.
 Kornel, just to me: <i>Good morning Teo. Would you like to share a taxi to the venue? I have calculated that it is cheaper.</i>
 He's calculated it. There's a spreadsheet somewhere with my name on it.
 * [Reply: "Sure."]

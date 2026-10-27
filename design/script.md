@@ -37,9 +37,17 @@ How to read it:
 
   The alarm goes off. I've been awake for twenty minutes, waiting for it.
 
-Tuesday. The summer party. Viktor put it on a Tuesday so nobody would drink.
+Tuesday. The office summer party is tonight. Viktor put it on a Tuesday so that nobody would get too drunk.
 
-Viktor has met us, hasn't he?
+Viktor has met us.
+
+*(Note: How Teo goes into the day. It leans him one way until Tuesday is over; the evening can remind him of it.)*
+
+- ▸ **A sober Tuesday. I'll fucking show him.** *[drink]*
+
+- ▸ **Two drinks. Home by nine.** *[cautious]*
+
+- ▸ **This year I'm not standing by the crisps all night.** *[bold]*
 
 **STOJAN:** *(through the wall)* Because it's MY balcony!
 
@@ -51,17 +59,17 @@ A door slams. Then the daughter's music through the wall: bass, and a girl singi
 
 - ▸ **Check phone again.** *(only if `phone` and not `phone_again`)* *→ phone again*
 
-- ▸ **Lie here a bit longer.** *(only if not `lie`)* *→ lie*
+- ▸ **Stay in bed a bit longer.** *(only if not `lie`)* *→ lie*
 
 #### phone
 
 Two messages.
 
-Magda, to the office group: *PARTY TONITE!!! dont forget gift money 50 each!!! see u all xx*
+Magda, to the office group: *PARTY TONITE!!! dont forget gift money 10 each!!! see u all xx*
 
 Gift for who? Nobody's leaving. Nobody's getting married. Magda will have a reason by lunch.
 
-And one from the bank, which I didn't ask for: *Balance: 70.00 EUR*. Payday is Friday.
+I open the bank app with one eye shut. *70.00 EUR*. Payday is Friday.
 
 Kornel, just to me: *Good morning Teo. Would you like to share a taxi to the venue? I have calculated that it is cheaper.*
 
@@ -373,21 +381,21 @@ Magda's desk is ready for the party: balloons, a clipboard, and a tin that says 
 
 We're buying Viktor a present to thank him for a party our taxes are paying for.
 
-- ▸ **Put in fifty.** *[kind]*
+- ▸ **Put in ten.** *[kind]*
 
-  *[Money -50 euro]*
+  *[Money -10 euro]*
 
   **MAGDA:** *(happy)* You're a sweetheart! I'm getting him a pen. A proper one. Heavy.
 
   He'll love it. He'll sign things with it that she isn't allowed to read.
 
-  That leaves me twenty euro until Friday. I don't say so.
+  That leaves me sixty euro until Friday. I don't say so.
 
-- ▸ **Put in twenty.**
+- ▸ **Put in five.**
 
-  *[Money -20 euro]*
+  *[Money -5 euro]*
 
-  She looks at the note and doesn't say anything. She writes *Teo, 20* on the clipboard, very small and very neat.
+  She looks at the note and doesn't say anything. She writes *Teo, 5* on the clipboard, very small and very neat.
 
 - ▸ **Say you'll bring it later.** *[cautious]*
 
