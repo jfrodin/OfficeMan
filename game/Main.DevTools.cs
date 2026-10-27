@@ -95,7 +95,7 @@ public partial class Main
         _choices.Visible = false;
         _note.Visible = false;
         _heard.Visible = false;
-        _column.Visible = false;
+        _column.Visible = _columnFade.Visible = false;
         _lookingAtRoom = true;
         _typing = false;
         _more.Visible = false;

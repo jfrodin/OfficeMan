@@ -218,6 +218,7 @@ public partial class Main
     private void AddChoice(string text, Action onPressed)
     {
         var b = MakeButton(text);
+        if (UseColumn) StampStyle(b);
         b.Pressed += onPressed;
         _choices.AddChild(b);
     }

@@ -8,15 +8,38 @@ namespace OfficeMan.Game;
 
 /// <summary>
 /// The text column: the alternative to the bottom bar. All text runs down a column on the right, as a log you can
-/// scroll back through: what people say, Teo's thoughts, what he overhears, the choices at the bottom. The portrait
-/// of whoever is talking sits at the top. While the column is open the room slides left, so the people in the
+/// scroll back through: what people say, Teo's thoughts, what he overhears, the choices at the bottom. It slides in
+/// when there's text and out when Teo walks. The portrait of whoever is talking hangs on its left edge, over the
+/// picture, level with the newest line. While the column is open the room slides left, so the people in the
 /// conversation stay in view. Chosen in Settings (Text: Column / Bottom bar) or with F2.
+///
+/// Colours: a warm, dark, paper-like column that fades into the picture. Names in one warm family with small
+/// differences per person, so people are recognisable without a rainbow. Teo's thoughts in one fixed colour
+/// (his state shows in the words, not the colour). Choices in stamp blue, like an office stamp.
 /// </summary>
 public partial class Main
 {
-    private const float ColumnW = 640;
+    private const float ColumnW = 640, FadeW = 150, PortraitOverlap = 26;
     private const int LogKeep = 80;   // lines kept in the log
     private static readonly Color Faded = new(1, 1, 1, 0.55f), Dim = new(0.62f, 0.66f, 0.74f);
+    private static readonly Color Paper = new(0.082f, 0.072f, 0.064f, 0.96f);
+    private static readonly Color Stamp = new(0.56f, 0.69f, 0.92f), StampHot = new(0.78f, 0.87f, 1f), StampUsed = new(0.48f, 0.54f, 0.66f);
+    private static readonly Color TeoName = new(0.66f, 0.62f, 0.56f);
+
+    // Small differences inside one warm family. Anyone not listed gets the accent.
+    private static readonly Dictionary<string, Color> NameColours = new()
+    {
+        ["MAGDA"] = new(0.96f, 0.66f, 0.56f),    // coral, the dress
+        ["VIKTOR"] = new(0.93f, 0.76f, 0.46f),   // tanned gold
+        ["ZDENKA"] = new(0.76f, 0.79f, 0.66f),   // filing-cabinet grey-green
+        ["KORNEL"] = new(0.88f, 0.8f, 0.52f),    // pale mustard
+        ["RAMONA"] = new(0.92f, 0.89f, 0.84f),   // pearl
+        ["STOJAN"] = new(0.8f, 0.7f, 0.52f),     // olive brown
+    };
+
+    private float _columnOut, _portraitY = -1;
+    private bool _columnWanted;
+    private TextureRect _columnFade = null!;
 
     private PanelContainer _column = null!;
     private ScrollContainer _columnScroll = null!;
@@ -29,9 +52,20 @@ public partial class Main
 
     private void BuildColumn()
     {
+        // The soft edge: the picture darkens into the column instead of meeting a hard line.
+        var fade = new Gradient();
+        fade.SetColor(0, new Color(Paper, 0));
+        fade.SetColor(1, Paper);
+        _columnFade = new TextureRect
+        {
+            Texture = new GradientTexture2D { Gradient = fade, Width = 64, Height = 4 },
+            ExpandMode = TextureRect.ExpandModeEnum.IgnoreSize, StretchMode = TextureRect.StretchModeEnum.Scale,
+            Size = new Vector2(FadeW, 1080), Visible = false, MouseFilter = MouseFilterEnum.Ignore,
+        };
+        AddChild(_columnFade);
+
         _column = new PanelContainer { Visible = false, MouseFilter = MouseFilterEnum.Ignore };
-        var bg = new StyleBoxFlat { BgColor = new Color(0.04f, 0.035f, 0.05f, 0.95f), BorderColor = new Color(1f, 0.85f, 0.65f, 0.16f) };
-        bg.BorderWidthLeft = 2;
+        var bg = new StyleBoxFlat { BgColor = Paper };
         bg.ContentMarginLeft = 34;
         bg.ContentMarginRight = 30;
         bg.ContentMarginTop = 26;
@@ -40,14 +74,17 @@ public partial class Main
 
         var box = new VBoxContainer { MouseFilter = MouseFilterEnum.Ignore };
         box.AddThemeConstantOverride("separation", 14);
-        // Room for the portrait card, which is placed over this space in Layout.
-        _columnTop = new Control { CustomMinimumSize = new Vector2(0, PortraitH + 6), MouseFilter = MouseFilterEnum.Ignore };
+        // The portrait hangs outside the column now; this spacer stays for the bar layout's sake and is empty.
+        _columnTop = new Control { CustomMinimumSize = Vector2.Zero, MouseFilter = MouseFilterEnum.Ignore };
         box.AddChild(_columnTop);
 
         _columnScroll = new ScrollContainer { SizeFlagsVertical = Control.SizeFlags.ExpandFill, HorizontalScrollMode = ScrollContainer.ScrollMode.Disabled };
         _columnLog = new VBoxContainer { SizeFlagsHorizontal = Control.SizeFlags.ExpandFill, MouseFilter = MouseFilterEnum.Ignore };
         _columnLog.AddThemeConstantOverride("separation", 16);
         _columnScroll.AddChild(_columnLog);
+        // Follow the log as it grows (new lines, the choices under them), once the layout has settled.
+        var bar = _columnScroll.GetVScrollBar();
+        bar.Changed += () => _columnScroll.ScrollVertical = (int)bar.MaxValue;
         box.AddChild(_columnScroll);
 
         _column.AddChild(box);
@@ -70,15 +107,35 @@ public partial class Main
         }
         if (!UseColumn)
         {
-            _column.Visible = false;
+            _columnWanted = false;
+            _columnOut = 0;
+            _column.Visible = _columnFade.Visible = false;
             _panTarget = 0;
         }
     }
 
+    /// <summary>The column slides in when there's text and out when Teo walks again (see LayoutColumn).</summary>
     private void ShowColumn(bool show)
     {
-        _column.Visible = show;
-        if (!show) SetPortrait(null);
+        _columnWanted = show;
+        if (show) _column.Visible = _columnFade.Visible = true;
+        else SetPortrait(null);
+    }
+
+    private static Color NameColour(string speaker) =>
+        speaker == "TEO" ? TeoName : NameColours.TryGetValue(speaker, out var c) ? c : Accent;
+
+    /// <summary>Choice buttons in the column: stamp blue.</summary>
+    private static void StampStyle(Button b)
+    {
+        b.AddThemeColorOverride("font_color", Stamp);
+        b.AddThemeColorOverride("font_hover_color", StampHot);
+        b.AddThemeColorOverride("font_focus_color", StampHot);
+        var hot = Box(new Color(0.56f, 0.69f, 0.92f, 0.1f), 4, 0, default, 14, 6);
+        b.AddThemeStyleboxOverride("normal", Box(new Color(1, 1, 1, 0), 4, 0, default, 14, 6));
+        b.AddThemeStyleboxOverride("hover", hot);
+        b.AddThemeStyleboxOverride("focus", hot);
+        b.AddThemeStyleboxOverride("pressed", hot);
     }
 
     /// <summary>One line of the story, added to the log and typed out.</summary>
@@ -114,8 +171,7 @@ public partial class Main
                 DimPortrait(false);
             }
             else DimPortrait(true);
-            string name = speaker == "TEO" ? "#d8d0c4" : "#" + Accent.ToHtml(false);
-            text = $"[color={name}]{speaker}[/color]   {Bbcode(line.Body)}";
+            text = $"[color=#{NameColour(speaker).ToHtml(false)}]{speaker}[/color]   {Bbcode(line.Body)}";
         }
         _conversing = true;
         StartTyping(AddLogEntry(text));
@@ -132,7 +188,7 @@ public partial class Main
     private void ColumnEcho(string choice)
     {
         string text = choice.EndsWith("   →") ? choice[..^4] : choice;
-        var label = AddLogEntry($"[color=#9a917f]>  {Bbcode(text)}[/color]");
+        var label = AddLogEntry($"[color=#{StampUsed.ToHtml(false)}]>  {Bbcode(text)}[/color]");
         label.VisibleRatio = 1;
     }
 
@@ -202,19 +258,38 @@ public partial class Main
     /// </summary>
     private void LayoutColumn(double delta)
     {
-        _column.Position = new Vector2(1920 - ColumnW, 0);
+        // Slide in and out.
+        _columnOut += (float)(((_columnWanted ? 1 : 0) - _columnOut) * (1 - Math.Exp(-delta * 10)));
+        if (!_columnWanted && _columnOut < 0.01f) { _columnOut = 0; _column.Visible = _columnFade.Visible = false; }
+        float left = 1920 - ColumnW * _columnOut;
+        _column.Position = new Vector2(left, 0);
         _column.Size = new Vector2(ColumnW, 1080);
-        _columnTop.CustomMinimumSize = new Vector2(0, _portraitCard.Visible ? PortraitH + 6 : 0);
-        if (_portraitCard.Visible) _portraitCard.Position = new Vector2(1920 - ColumnW + 34, 26);
+        _columnFade.Position = new Vector2(left - FadeW, 0);
+        _columnFade.Size = new Vector2(FadeW, 1080);
+        _columnFade.Modulate = new Color(1, 1, 1, _columnOut);
+        _columnTop.CustomMinimumSize = Vector2.Zero;
+
+        // The portrait hangs on the column's left edge, over the picture, level with the newest line.
+        if (_portraitCard.Visible)
+        {
+            var newest = _columnLog.GetChildren().OfType<RichTextLabel>().LastOrDefault();
+            float target = newest is null ? 120 : newest.GlobalPosition.Y - 40;
+            target = Math.Clamp(target, 40, 400);   // never low in the frame, where the people stand
+            _portraitY = _portraitY < 0 ? target : _portraitY + (target - _portraitY) * (float)(1 - Math.Exp(-delta * 6));
+            _portraitCard.Position = new Vector2(left - _portraitCard.Size.X + PortraitOverlap, _portraitY);
+        }
+        else _portraitY = -1;
         if (!_typing && _mode == Mode.Talking) _more.Position = new Vector2(1920 - 70, 1080 - 64);
 
+        // What the column (and the portrait on its edge) leave free of the picture.
+        float free = 1920 - ColumnW - (_portraitCard.Visible ? _portraitCard.Size.X - PortraitOverlap : 0);
         if (_column.Visible && _roomView.Visible)
         {
             // Keep Teo and whoever he's with inside the part of the screen the column leaves free.
             float teo = _roomView.TeoVisible ? _roomView.TeoScreenX : 960;
             float other = _focus is null ? teo : _roomView.ScreenX(_focus.ToLowerInvariant()) ?? teo;
             float right = Math.Max(teo, other) + 170;
-            _panTarget = Math.Clamp(right - (1920 - ColumnW), 0, ColumnW);
+            _panTarget = Math.Clamp(right - free, 0, ColumnW);
         }
         else _panTarget = 0;
 
@@ -230,7 +305,7 @@ public partial class Main
             // Closer when they stand close; further out when they're apart, so both stay in the picture.
             float apart = Math.Abs(teo.X - them.X);
             zoom = apart < 400 ? TalkZoom : apart < 600 ? 1.5f : 1;
-            shift = new Vector2((1920 - ColumnW) / 2f, 560) - mid * zoom;
+            shift = new Vector2(free / 2f, 560) - mid * zoom;
             shift.X = Math.Clamp(shift.X, 1920 - 1920 * zoom - ColumnW, 0);
             shift.Y = Math.Clamp(shift.Y, 1080 - 1080 * zoom, 0);
             _panTarget = 0;

@@ -69,6 +69,8 @@ One typography everywhere (same font, sizes 26-30, warm name colour, cool italic
 
 Characters without portrait art speak in the bar with their name only, never behind an empty silhouette.
 
+**The text column** (2026-10-27). Slides in when there's text, out when Teo walks. A warm, dark, paper-like colour that fades into the picture over 150 px instead of a hard edge. The speaker's portrait hangs on the column's left edge, over the picture, level with the newest line (never low in the frame, where people stand). Names in one warm family with small differences per person (Magda coral, Viktor gold, Zdenka grey-green, Kornel mustard, Ramona pearl, Stojan olive; Teo muted); the differences stay small on purpose. Teo's thoughts: italic, one fixed cool colour; his state shows in the words, not the colour (agreed with the creator, so it doesn't become a gauge). Choices in stamp blue, like an office stamp.
+
 **Close-up** (2026-10-27, first try, column layout). When Teo talks to someone in the room, the camera moves in on the two of them (×2, or ×1.5 if they stand apart, so the pixels stay square) and back out when he walks again. F3 or Settings turns it off.
 
 **Camera (bottom bar).** It doesn't move when dialogue opens. It rises only when the bar would cover Teo or the person talking to him, only by as much as needed (at most 120 px), eases there smoothly, ignores small changes, and settles back when Teo walks again.
