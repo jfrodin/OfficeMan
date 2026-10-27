@@ -423,8 +423,8 @@ He nods and rides off, standing on the pedals. Out of the bar he looks about six
 ->->
 
 = bench
-On the promenade there's a new bench. Steel, a solar panel on a stalk, a USB socket. A little plaque: <i>Co-financed by the European Union</i>.
-Four hundred thousand euro. I approved it today. It's been standing here for a while, by the look of it, waiting for someone to.
+On the promenade there's a bench. Steel, a solar panel on a stalk, a USB socket. A little plaque: <i>Innovation Bench. Installed March 2024. Co-financed by the European Union</i>.
+Four hundred thousand euro. I approved it this morning. It's been sitting here for over a year, waiting for my signature.
 * [Sit on it.]
     I sit on it. It's a bench. My phone is on four percent, so I try the socket.
     Nothing. A small red light comes on and stays on.
