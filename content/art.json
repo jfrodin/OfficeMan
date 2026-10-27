@@ -103,6 +103,8 @@
     "office_desk_magda": "art/game/sprites/office_desk_magda.png",
     "office_desk_teo": "art/game/sprites/office_desk_teo.png",
     "flat_table": "art/game/sprites/flat_table.png",
+    "flat_bed": "art/game/sprites/flat_bed.png",
+    "flat_bed_teo": "art/game/sprites/flat_bed_teo.png",
     "flat_armchair": "art/game/sprites/flat_armchair.png",
     "flat_rack": "art/game/sprites/flat_rack.png",
     "office_desk_kornel": "art/game/sprites/office_desk_kornel.png",

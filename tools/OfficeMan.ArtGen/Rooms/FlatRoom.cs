@@ -9,10 +9,10 @@ namespace OfficeMan.ArtGen.Rooms;
 /// It should say: single, tired, underpaid, not a slob but not trying. Nothing here is random.
 /// Left to right: the door (jacket, shoes, unopened post), the kitchenette (dishes, noodle cups, one empty
 /// bottle, a crooked cupboard door, the fridge with last month's calendar), the window (dawn over the
-/// blocks opposite, the dying ficus), the bed with Teo still in it, the nightstand (06:47), the wardrobe
+/// blocks opposite, the dying ficus), the bed out into the room, the nightstand (06:47), the wardrobe
 /// (shirts, the diploma never hung). Above the bed, a pale patch where a picture used to be.
 /// Out on the floor (prop sprites, placed by content/rooms/flat.json): the table he eats at alone, its second chair
-/// piled with work he brought home, the armchair bought for reading, the drying rack. In front: the laundry pile.
+/// piled with work he brought home, the armchair bought for reading, the drying rack.
 /// </summary>
 public static class FlatRoom
 {
@@ -40,6 +40,7 @@ public static class FlatRoom
     private static readonly Ramp Oilcloth = Ramp.Of("4a1a1a", "6a2626", "8a3430", "a8443c");
     private static readonly Ramp Mustard = Ramp.Of("2e2410", "45361a", "5e4a24", "786030", "8e763e");
     private static readonly Ramp Towel = Ramp.Of("2a3a4a", "3a5064", "4c6880", "60809a");
+    private static readonly Ramp Blanket = Ramp.Of("2e1c10", "462a16", "60391e", "7a4a28", "945c32");
 
     public static RoomLayers Draw()
     {
@@ -101,11 +102,11 @@ public static class FlatRoom
             double stripe = (y - 226) / 4 % 3 == 0 ? 0.1 : (y - 226) / 4 % 3 == 1 ? -0.04 : 0.03;
             return (edge ? 0.3 : 0.42) + stripe - (Math.Abs(x - 140) < 14 ? 0.05 : 0);
         }, 0);
-        // A worn rug in front of the bed.
-        a.FillRect(300, 186, 402, 204, Rug, (x, y) =>
+        // A worn mat beside the bed, where his feet go first.
+        a.FillRect(296, 196, 326, 226, Rug, (x, y) =>
         {
-            bool border = y < 188 || y > 201 || x < 303 || x > 398;
-            return (border ? 0.35 : 0.55) + ((x / 4 + y / 3) % 3 == 0 && !border ? 0.08 : 0) - (x > 380 ? 0.05 : 0);
+            bool border = y < 198 || y > 223 || x < 298 || x > 323;
+            return (border ? 0.35 : 0.55) + ((x / 4 + y / 3) % 3 == 0 && !border ? 0.08 : 0);
         }, 0);
     }
 
@@ -246,15 +247,8 @@ public static class FlatRoom
 
     private static void Bed(SceneCanvas a)
     {
-        // A single bed along the wall: frame, mattress, pillow. Teo and his blanket are a sprite (teo_bed).
-        a.FillRect(334, 156, 398, Base, Wood, (x, y) => 0.38 - (y > 172 ? 0.1 : 0), 0);
-        a.FillRect(336, 176, 340, Base, Wood, (x, y) => 0.2, 0);
-        a.FillRect(392, 176, 396, Base, Wood, (x, y) => 0.2, 0);
-        a.FillRect(396, 126, 402, Base, Wood, (x, y) => 0.45 + (y == 126 ? 0.15 : 0), 0);   // headboard
-        a.FillRect(330, 152, 330 + 2, 166, Wood, (x, y) => 0.3, 0);                          // footboard
-        a.FillRect(334, 150, 396, 157, Sheet, (x, y) => 0.55, 0);
-        a.FillRect(378, 141, 396, 151, Sheet, (x, y) => 0.75 - (y - 141) / 40.0, 0);          // pillow
-        // The pale patch where a picture used to hang, and the nail.
+        // The bed itself is a prop out on the floor (BedProp). On the wall above it: the pale patch where a
+        // picture used to hang, and the nail.
         a.FillRect(346, 70, 382, 102, Paper, (x, y) => 0.68, 0);
         a.Paint(364, 66, Metal, 0.8, 0);
     }
@@ -287,12 +281,7 @@ public static class FlatRoom
 
     private static void Front(Canvas f)
     {
-        // The laundry pile at the right edge, waiting for the rack to be free.
-        var cloth = new[] { "1e2236", "3a4256", "5a2a2a", "2a3a30" };
-        for (int i = 0; i < 6; i++)
-            for (int y = 252 - i * 3; y < H; y++)
-                for (int x = 446 + i * 4; x < 480 - (5 - i) * 2; x++)
-                    if ((x + y + i) % 9 != 0) f[x, y] = Rgb.Hex(cloth[i % 4]);
+        // Nothing in front for now: the drying rack and the bed give the depth.
     }
 
     // ── Furniture on the floor (prop sprites) ──────────────────
@@ -380,6 +369,58 @@ public static class FlatRoom
         // Socks on the lower rail.
         foreach (var (sx, len) in new[] { (6, 7), (10, 6), (37, 8) })
             a.FillRect(sx, f - 19, sx + 3, f - 19 + len, Jacket, (x, y) => 0.55, 0);
+        return a.Render();
+    }
+
+    /// <summary>
+    /// The bed, headboard against the wall and the rest of it out into the room, so we see the foot end and,
+    /// from a little above, the top: pillow at the back, the blanket coming towards us. With Teo in it (his head
+    /// on the pillow, the shape of him under the blanket) or as he left it, the blanket thrown back.
+    /// Anchored at the front foot.
+    /// </summary>
+    public static Canvas BedProp(bool withTeo)
+    {
+        const int w = 74, h = 100, f = h;
+        var a = new SceneCanvas(w, h);
+        const int x0 = 4, x1 = 70, top = f - 74, front = f - 18;   // the top surface runs from the wall (top) to the foot (front)
+
+        // Headboard, against the wall.
+        a.FillRect(x0, f - 98, x1, top + 4, Wood, (x, y) => 0.42 + (y == f - 98 ? 0.18 : 0) - (x > x1 - 4 ? 0.1 : 0) + Noise(x, y, 8) * 0.03, 0);
+        a.FillRect(x0 + 4, f - 94, x1 - 4, top, Wood, (x, y) => 0.34, 0);
+        // The left side of the frame, a sliver: the bed stands right of the middle of the room.
+        a.FillRect(x0 - 3, top + 4, x0, front + 10, Wood, (x, y) => 0.24, 0);
+        // The sheet over the mattress, lighter towards us.
+        a.FillRect(x0, top, x1, front, Sheet, (x, y) => 0.5 + (y - top) / 260.0, 0);
+        // The pillow at the back.
+        a.FillRect(x0 + 10, top + 2, x1 - 10, top + 12, Sheet, (x, y) => 0.78 - (y - top) / 60.0 + (y == top + 2 ? 0.08 : 0), 0);
+
+        if (withTeo)
+        {
+            // His head on the pillow: hair, then the face looking at the ceiling.
+            foreach (var (x, y) in Circle(37, top + 8, 5)) a.Paint(x, y, Jacket, 0.3, 0);
+            a.FillRect(34, top + 9, 41, top + 14, Cream, (x, y) => 0.62, 0);
+            a.Paint(35, top + 11, Metal, 0.15, 0);
+            a.Paint(39, top + 11, Metal, 0.15, 0);
+            // The blanket over him: up to his chin, and the long hump of him.
+            a.FillRect(x0 + 2, top + 14, x1 - 2, front, Blanket, (x, y) =>
+            {
+                double body = Math.Max(0, 1 - Math.Abs(x - 37) / 14.0);       // the ridge along his body
+                return 0.42 + body * 0.2 + (y - top) / 300.0 + ((x + y) % 7 == 0 ? 0.04 : 0);
+            }, 0);
+            a.FillRect(x0 + 2, top + 14, x1 - 2, top + 16, Sheet, (x, y) => 0.8, 0);   // the sheet turned down over it
+        }
+        else
+        {
+            // Thrown back: the blanket in a heap over the foot half, the dent where he was.
+            a.FillRect(x0 + 16, top + 16, x1 - 16, top + 30, Sheet, (x, y) => 0.42, 0);
+            a.FillRect(x0 + 2, top + 30, x1 - 2, front, Blanket, (x, y) =>
+                0.48 + (y < top + 34 ? 0.16 : 0) + (y - top) / 300.0 - (Math.Abs(x - 30) < 3 && y > top + 36 ? 0.08 : 0), 0);
+        }
+
+        // The foot end: the frame, its top edge catching the light, and two legs.
+        a.FillRect(x0, front, x1, f - 4, Wood, (x, y) => (y == front ? 0.6 : 0.4) - (x > x1 - 4 ? 0.1 : 0) + Noise(x, y, 4) * 0.03, 0);
+        a.FillRect(x0 + 6, front + 4, x1 - 6, f - 7, Wood, (x, y) => 0.32, 0);
+        foreach (int lx in new[] { x0, x1 - 4 }) a.FillRect(lx, f - 4, lx + 4, f, Wood, (x, y) => 0.25, 0);
         return a.Render();
     }
 }

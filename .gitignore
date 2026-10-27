@@ -18,3 +18,6 @@ art/out/
 
 # Discord webhooks for playtest notes and crash reports: built into playtest builds, never committed
 game/Hooks.local.cs
+
+# The creator's F1 notes while playing (screenshot + note + save), read and cleared by hand
+inbox/

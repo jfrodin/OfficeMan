@@ -4,7 +4,8 @@
   "base": "flat",
   "id": "flat_bed",
   "showTeo": false,
+  "hide": ["bed_prop"],
   "things": [
-    { "id": "teo_bed", "name": "Teo", "sprite": "teo_bed", "x": 365, "y": 161 }
+    { "id": "bed_teo", "name": "", "sprite": "flat_bed_teo", "x": 364, "y": 238, "prop": true, "block": [36, 60] }
   ]
 }

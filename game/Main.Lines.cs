@@ -94,7 +94,7 @@ public partial class Main
         _speaker.Visible = speaker is not null;
         _speaker.Text = speaker is null ? "" : Title(speaker);
         _text.AddThemeColorOverride("default_color", speaker is null ? Thought : Spoken);
-        _text.Text = speaker is null ? "[i]" + Bbcode(line.Body) + "[/i]" : Bbcode(line.Body);
+        _text.Text = speaker is null ? "[i]" + Bbcode(line.Body, inItalics: true) + "[/i]" : Bbcode(line.Body);
         StartTyping(_text);
     }
 
@@ -108,7 +108,7 @@ public partial class Main
     private void ShowNote(string body)
     {
         ShowBar(false);
-        _noteText.Text = _lastNote = "[i]" + Bbcode(body) + "[/i]";
+        _noteText.Text = _lastNote = "[i]" + Bbcode(body, inItalics: true) + "[/i]";
         // As wide as the words need, up to a comfortable reading width; longer thoughts wrap.
         float width = ThemeDB.FallbackFont.GetStringSize(Clean(body), HorizontalAlignment.Left, -1, BodySize - 2).X;
         _noteText.CustomMinimumSize = new Vector2(Math.Min(1000, width + 12), 0);
@@ -124,7 +124,7 @@ public partial class Main
         _note.Visible = false;
         _heardFrom = direction;
         _heardWho.Text = $"{Title(speaker).ToUpperInvariant()}  ·  {from}";
-        _heardText.Text = "[i]" + Bbcode(body) + "[/i]";
+        _heardText.Text = "[i]" + Bbcode(body, inItalics: true) + "[/i]";
         _heard.Visible = true;
         StartTyping(_heardText);
     }

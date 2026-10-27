@@ -1,5 +1,5 @@
 // Teo's flat in the morning, with Teo up and about. Pictures: art/game/rooms/flat*.png, drawn by tools/OfficeMan.ArtGen/Rooms/FlatRoom.cs.
-// The table, the armchair and the drying rack stand out on the floor (props with a "block" footprint Teo walks round).
+// The bed, the table, the armchair and the drying rack stand out on the floor (props with a "block" footprint Teo walks round).
 // flat_bed.json is the same room with Teo still in bed.
 {
   "id": "flat",
@@ -8,7 +8,7 @@
   "glow": "art/game/rooms/flat_glow.png",
   "front": "art/game/rooms/flat_front.png",
   "walk": { "minX": 34, "maxX": 440, "minY": 190, "maxY": 262 },
-  "spawn": [340, 206],
+  "spawn": [312, 214],
 
   "ambient": [0.32, 0.34, 0.48],
   "look": { "bloom": 0.8, "fog": 0.03, "fogColor": "8a7a8a", "exposure": 1.35, "saturation": 0.95, "vignette": 0.52, "grain": 0.035 },
@@ -20,26 +20,29 @@
     { "x": 30, "y": 176, "radius": 34, "intensity": 0.35, "color": "ffcf88" }
   ],
   "things": [
-    { "id": "table_prop", "name": "", "sprite": "flat_table", "x": 140, "y": 250, "prop": true, "block": [28, 10] },
-    { "id": "armchair_prop", "name": "", "sprite": "flat_armchair", "x": 262, "y": 214, "prop": true, "block": [17, 8] },
-    { "id": "rack_prop", "name": "", "sprite": "flat_rack", "x": 418, "y": 234, "prop": true, "block": [23, 4] },
+    { "id": "bed_prop", "name": "", "sprite": "flat_bed", "x": 364, "y": 238, "prop": true, "block": [36, 60] },
+    { "id": "table_prop", "name": "", "sprite": "flat_table", "x": 140, "y": 250, "prop": true, "block": [28, 16] },
+    { "id": "armchair_prop", "name": "", "sprite": "flat_armchair", "x": 262, "y": 214, "prop": true, "block": [18, 16] },
+    { "id": "rack_prop", "name": "", "sprite": "flat_rack", "x": 452, "y": 254, "prop": true, "block": [24, 10] },
 
-    { "id": "door", "name": "The door", "x": 30, "y": 192, "wall": true },
-    { "id": "fridge", "name": "The fridge", "x": 186, "y": 192, "wall": true,
+    { "id": "door", "name": "The door", "x": 30, "y": 192, "wall": true, "hit": [20, 84] },
+    { "id": "fridge", "name": "The fridge", "x": 186, "y": 192, "wall": true, "hit": [13, 74],
       "look": "Last month's calendar on the fridge. Nothing written on it, so it's still right." },
-    { "id": "window", "name": "The window", "x": 254, "y": 192, "wall": true,
+    { "id": "window", "name": "The window", "x": 254, "y": 192, "wall": true, "hit": [42, 134],
       "look": "The blocks opposite, all the same. In one of them a man is standing at his window, looking at mine." },
-    { "id": "armchair", "name": "The armchair", "x": 262, "y": 222,
+    { "id": "armchair", "name": "The armchair", "x": 262, "y": 222, "hit": [18, 48],
       "look": "I bought the armchair to read in. I read in bed." },
-    { "id": "ficus", "name": "The ficus", "x": 308, "y": 192,
+    { "id": "ficus", "name": "The ficus", "x": 308, "y": 192, "hit": [12, 82],
       "look": "The ficus. I water it on Sundays. It dies on all the other days." },
-    { "id": "patch", "name": "The pale patch", "x": 364, "y": 192, "wall": true,
+    { "id": "bed", "name": "The bed", "x": 364, "y": 244, "hit": [36, 70],
+      "look": "The bed. Still warm. It's the only thing in here that wants me back." },
+    { "id": "patch", "name": "The pale patch", "x": 364, "y": 104, "wall": true, "hit": [20, 38],
       "look": "A pale square on the wallpaper where a picture used to hang. I can't remember what it was." },
-    { "id": "table", "name": "The table", "x": 140, "y": 256,
+    { "id": "table", "name": "The table", "x": 140, "y": 256, "hit": [30, 54],
       "look": "One plate, one mug, one chair. The other chair has work on it. I brought it home in March." },
-    { "id": "wardrobe", "name": "The wardrobe", "x": 455, "y": 192, "wall": true,
+    { "id": "wardrobe", "name": "The wardrobe", "x": 455, "y": 192, "wall": true, "hit": [20, 104],
       "look": "The good shirt, the other shirt. On top, my diploma, in its frame. One day I'll buy a nail." },
-    { "id": "rack", "name": "The drying rack", "x": 418, "y": 240,
+    { "id": "rack", "name": "The drying rack", "x": 452, "y": 260, "hit": [24, 44],
       "look": "Socks, two shirts, and a towel that has been drying since Thursday." }
   ]
 }

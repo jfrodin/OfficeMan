@@ -268,7 +268,7 @@ He makes up the sofa with sheets and hospital corners. He puts a glass of water 
 -> late
 
 = early
-The stairwell at half past nine. Somebody's frying onions. The daughter's music, faint, through the door: still the disappointed girl.
+The stairwell at half past nine. Somebody's frying onions. The music, faint, through the door: still the disappointed girl.
 { is("stojan_promise"):
     Stojan opens his door before I reach mine. He's been listening for me.
     STOJAN: Mr Permit! Early night! Good man. So? You looked?

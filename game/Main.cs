@@ -29,6 +29,8 @@ public partial class Main : Control
     private const int BodySize = 30;
     private const float PortraitW = 250, PortraitH = 270, BarMinHeight = 210;
     private static readonly Color Accent = new(1f, 0.78f, 0.55f), Spoken = new(0.98f, 0.95f, 0.9f), Thought = new(0.78f, 0.82f, 0.9f);
+    /// <summary>What Teo reads: a phone screen, a sign, a form. Warm paper, upright.</summary>
+    private static readonly Color Written = new(0.96f, 0.84f, 0.56f);
     /// <summary>The part of a 600×760 portrait shown in the bar: head and shoulders.</summary>
     private static readonly Rect2 PortraitCrop = new(40, 100, 520, 562);
     /// <summary>How far the camera may rise to keep people clear of the bar (screen pixels).</summary>
@@ -66,6 +68,7 @@ public partial class Main : Control
     private PanelContainer _arrival = null!;
     private Label _arrivalText = null!;
     private VBoxContainer _prompt = null!;
+    private Label _hoverName = null!;
     private Label _promptName = null!;
     private Label _promptAction = null!;
     private Label _lifeLabel = null!;
@@ -102,6 +105,7 @@ public partial class Main : Control
         Controls.Register();
         BuildUi();
         BuildMenu();
+        BuildNotes(contentDir);
         LoadSettings();
         StartLife(_seed);
         if (_lookRoom is not null) LookAtRoom(_lookRoom);
@@ -247,13 +251,37 @@ public partial class Main : Control
         _view.Choices.Where(c => c.Tags.Contains("where:" + thing.AnchorId))
             .Select(c => (Clean(c.Text) + (c.Tags.Contains("exit") ? "   →" : ""), c.Index)).ToList();
 
-    /// <summary>A pointing hand over people and things Teo can do something with.</summary>
+    // The pointer shows what a click will do; it never chooses (art/game/ui/cursor_*.png, ArtGen Cursors).
+    private static readonly Dictionary<string, Vector2> CursorHotspots = new()
+    {
+        ["arrow"] = new(0, 0), ["hand"] = new(10, 0), ["eye"] = new(16, 16), ["talk"] = new(16, 12), ["exit"] = new(26, 16),
+    };
+    private string _cursor = "";
+
+    /// <summary>The pointer for what's under the mouse, and its name beside it.</summary>
     private void UpdateCursor()
     {
-        var thing = _mode == Mode.Walking && _roomView.Visible ? _roomView.ThingAt(GetViewport().GetMousePosition()) : null;
-        bool active = thing is not null && (Options(thing).Count > 0 || thing.Look is not null);
-        var shape = active ? Input.CursorShape.PointingHand : Input.CursorShape.Arrow;
-        if (Input.GetCurrentCursorShape() != shape) Input.SetDefaultCursorShape(shape);
+        var mouse = GetViewport().GetMousePosition();
+        var thing = _mode == Mode.Walking && _roomView.Visible ? _roomView.ThingAt(mouse) : null;
+        var options = thing is null ? new() : Options(thing);
+        string kind = thing is null ? "arrow"
+            : options.Any(o => o.text.EndsWith("→")) ? "exit"
+            : options.Count > 0 && thing.Sprite is not null && !thing.Prop ? "talk"
+            : options.Count > 0 ? "hand"
+            : thing.Look is not null ? "eye"
+            : "arrow";
+        if (kind != _cursor)
+        {
+            _cursor = kind;
+            string path = _art.Resolve($"art/game/ui/cursor_{kind}.png");
+            if (File.Exists(path)) Input.SetCustomMouseCursor(TextureFor(path), Input.CursorShape.Arrow, CursorHotspots[kind]);
+        }
+        _hoverName.Visible = kind != "arrow" && thing is not null && thing.Name.Length > 0;
+        if (_hoverName.Visible)
+        {
+            _hoverName.Text = thing!.Name;
+            _hoverName.Position = mouse + new Vector2(34, 6);
+        }
     }
 
     private void UpdatePrompt()
@@ -291,7 +319,8 @@ public partial class Main : Control
 
     public override void _UnhandledInput(InputEvent e)
     {
-        if (_reviewOnly) return;
+        if (_reviewOnly || Noting) return;
+        if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F1 }) { OpenNote(); GetViewport().SetInputAsHandled(); return; }
         if (e.IsActionPressed("quicksave")) { Save("quicksave"); Toast("Saved"); return; }
         if (e.IsActionPressed("quickload")) { if (Load("quicksave")) Toast("Loaded"); return; }
         if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F2 } && _mode != Mode.Menu) { ToggleTextLayout(); return; }
@@ -322,7 +351,7 @@ public partial class Main : Control
     /// <summary>A left click anywhere moves the text on, over the text column too (buttons exist only when choosing).</summary>
     public override void _Input(InputEvent e)
     {
-        if (_reviewOnly || _mode != Mode.Talking) return;
+        if (_reviewOnly || _mode != Mode.Talking || (_notePanel?.Visible ?? false)) return;
         if (e is InputEventMouseButton { Pressed: true, ButtonIndex: MouseButton.Left })
         {
             Continue();
@@ -369,7 +398,7 @@ public partial class Main : Control
         SetPortrait(null);
         _speaker.Visible = true;
         _speaker.Text = "To be continued";
-        string today = string.Join("\n", _view.Today.Select(Bbcode));
+        string today = string.Join("\n", _view.Today.Select(t => Bbcode(t)));
         string happened = string.Join("\n", _view.Headlines.Select(h => "·  " + h).DefaultIfEmpty("Nothing much happened. That's also a life."));
         _text.Text = (today.Length == 0 ? happened : $"[i]{today}[/i]\n\n{happened}") + $"\n\n[color=#{Dim.ToHtml(false)}]{StartOverNote}[/color]";
         _text.VisibleRatio = 1;
@@ -385,7 +414,7 @@ public partial class Main : Control
         SetPortrait(null);
         ColumnHeading("To be continued");
         foreach (string line in _view.Today)
-            AddLogEntry($"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line)}[/i][/color]").VisibleRatio = 1;
+            AddLogEntry($"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line, inItalics: true)}[/i][/color]").VisibleRatio = 1;
         foreach (string h in _view.Headlines.DefaultIfEmpty("Nothing much happened. That's also a life."))
             AddLogEntry("·  " + Bbcode(h)).VisibleRatio = 1;
         AddLogEntry($"[color=#{Dim.ToHtml(false)}]{StartOverNote}[/color]").VisibleRatio = 1;
@@ -447,7 +476,17 @@ public partial class Main : Control
     private static string Title(string name) =>
         string.Join(' ', name.Split(' ').Select(w => w.Length == 0 ? w : w[0] + w[1..].ToLowerInvariant()));
 
-    private static string Bbcode(string text) => text.Replace("[", "[lb]").Replace("<i>", "[i]").Replace("</i>", "[/i]");
+    /// <summary>
+    /// Ink text as BBCode. What Teo reads (<c>&lt;i&gt;</c> in ink: messages, signs, forms) is set upright in a paper
+    /// colour, so it never looks like his thoughts, which are italic. Inside an italic line, pass
+    /// <paramref name="inItalics"/> so the written words step out of the italics.
+    /// </summary>
+    private static string Bbcode(string text, bool inItalics = false)
+    {
+        string open = inItalics ? $"[/i][color=#{Written.ToHtml(false)}]" : $"[color=#{Written.ToHtml(false)}]";
+        string close = inItalics ? "[/color][i]" : "[/color]";
+        return text.Replace("[", "[lb]").Replace("<i>", open).Replace("</i>", close);
+    }
 
     private static string Clean(string text) => text.Replace("<i>", "").Replace("</i>", "");
 }

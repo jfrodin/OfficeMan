@@ -30,7 +30,7 @@
   ],
 
   "things": [
-    { "id": "door", "name": "The door", "x": 16, "y": 190 },
+    { "id": "door", "name": "The door", "x": 16, "y": 190, "hit": [18, 80] },
     { "id": "cabinet", "name": "The filing cabinet", "x": 45, "y": 190,
       "look": "The filing cabinet. The bottom drawer has been stuck since 2016. Nobody knows what's in it. Zdenka knows." },
     { "id": "cooler", "name": "The water cooler", "x": 68, "y": 190,

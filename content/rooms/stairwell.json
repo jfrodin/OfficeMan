@@ -17,6 +17,6 @@
   "things": [
     { "id": "stojan", "name": "Stojan", "sprite": "stojan", "x": 372, "y": 206, "faceLeft": true, "smoke": [9, -43],
       "hail": "Teo! Psst. Teo!" },
-    { "id": "stairs", "name": "The stairs down", "x": 432, "y": 196, "wall": true }
+    { "id": "stairs", "name": "The stairs down", "x": 432, "y": 196, "wall": true, "hit": [26, 90] }
   ]
 }

@@ -31,7 +31,7 @@ Tuesday. The office summer party is tonight. Viktor put it on a Tuesday so that 
     ~ qset("vow_nerve", 1)
 -
 STOJAN: Because it's MY balcony! #heard:through the wall #from:right
-A door slams. Then the daughter's music through the wall: bass, and a girl singing in English about being disappointed.
+A door slams. Then music through the wall: bass, and a girl singing in English about being disappointed. I don't know what it is. I already don't like it.
 - (opts)
 * [Get up.]
     -> get_up

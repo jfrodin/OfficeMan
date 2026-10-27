@@ -110,6 +110,13 @@ if (sets.Contains("game"))
         Png.Save(OfficeRoom.DeskSprite($"office_desk_{who}"), Path.Combine(sprites, $"office_desk_{who}.png"));
     Png.Save(OfficeRoom.Trolley(), Path.Combine(sprites, "office_trolley.png"));
     Png.Save(FlatRoom.Table(), Path.Combine(sprites, "flat_table.png"));
+    // Mouse pointers.
+    string ui = Path.Combine(gameDir, "ui");
+    Directory.CreateDirectory(ui);
+    foreach (string name in OfficeMan.ArtGen.Sprites.Cursors.Names)
+        Png.Save(OfficeMan.ArtGen.Sprites.Cursors.Draw(name), Path.Combine(ui, $"cursor_{name}.png"));
+    Png.Save(FlatRoom.BedProp(withTeo: false), Path.Combine(sprites, "flat_bed.png"));
+    Png.Save(FlatRoom.BedProp(withTeo: true), Path.Combine(sprites, "flat_bed_teo.png"));
     Png.Save(FlatRoom.Armchair(), Path.Combine(sprites, "flat_armchair.png"));
     Png.Save(FlatRoom.DryingRack(), Path.Combine(sprites, "flat_rack.png"));
     foreach (var person in PixelPeople.Sitters)

@@ -131,6 +131,14 @@ public partial class Main
         AddChild(_arrival);
 
         // Interaction prompt, bottom-left, as in Deadhouse: who, then what.
+        // The name of whatever the mouse is over, beside the pointer.
+        _hoverName = MakeLabel(24, new Color(0.95f, 0.9f, 0.8f));
+        _hoverName.AddThemeConstantOverride("outline_size", 8);
+        _hoverName.AddThemeColorOverride("font_outline_color", new Color(0.08f, 0.07f, 0.06f, 0.9f));
+        _hoverName.MouseFilter = MouseFilterEnum.Ignore;
+        _hoverName.Visible = false;
+        AddChild(_hoverName);
+
         _prompt = new VBoxContainer { Position = new Vector2(40, 968), MouseFilter = MouseFilterEnum.Ignore };
         _promptName = MakeLabel(26, new Color(0.75f, 0.85f, 1f));
         _promptAction = MakeLabel(24, new Color(1, 1, 1, 0.85f));

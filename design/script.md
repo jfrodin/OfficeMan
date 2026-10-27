@@ -49,7 +49,7 @@ Tuesday. The office summer party is tonight. Viktor put it on a Tuesday so that 
 
 **STOJAN:** *(through the wall)* Because it's MY balcony!
 
-A door slams. Then the daughter's music through the wall: bass, and a girl singing in English about being disappointed.
+A door slams. Then music through the wall: bass, and a girl singing in English about being disappointed. I don't know what it is. I already don't like it.
 
 - ▸ **Get up.** *→ get up*
 
@@ -2485,7 +2485,7 @@ He makes up the sofa with sheets and hospital corners. He puts a glass of water 
 
 #### early
 
-The stairwell at half past nine. Somebody's frying onions. The daughter's music, faint, through the door: still the disappointed girl.
+The stairwell at half past nine. Somebody's frying onions. The music, faint, through the door: still the disappointed girl.
 
 - *If `stojan_promise`:*
 

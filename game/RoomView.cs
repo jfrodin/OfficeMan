@@ -338,8 +338,10 @@ public partial class RoomView : Control
         {
             if (thing.Prop) continue;
             // People and things are hit from their feet up to about head height.
-            float dx = Math.Abs(p.X - thing.X), top = thing.Y - (thing.Wall ? 44 : 54), bottom = thing.Y + 8;
-            if (dx > 14 || p.Y < top || p.Y > bottom) continue;
+            float half = thing.Hit is { Length: 2 } hit ? hit[0] : 14;
+            float dx = Math.Abs(p.X - thing.X), bottom = thing.Y + 8;
+            float top = thing.Y - (thing.Hit is { Length: 2 } h ? h[1] : thing.Wall ? 44 : 54);
+            if (dx > half || p.Y < top || p.Y > bottom) continue;
             if (dx < bestDist) { best = thing; bestDist = dx; }
         }
         return best;

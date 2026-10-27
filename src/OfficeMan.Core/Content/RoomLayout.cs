@@ -125,6 +125,12 @@ public sealed class RoomLayout
         /// </summary>
         public int[]? Block { get; set; }
 
+        /// <summary>
+        /// Where the mouse finds it: half its width and its height above (X, Y), for things bigger than a person
+        /// (a door, a window, a wardrobe). Without it, about a person's width and height.
+        /// </summary>
+        public int[]? Hit { get; set; }
+
         /// <summary>A lit cigarette: offset (x, y) from the feet, facing right. Smoke rises from it.</summary>
         public float[]? Smoke { get; set; }
 

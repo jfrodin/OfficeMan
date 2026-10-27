@@ -157,13 +157,13 @@ public partial class Main
         if (speaker is not null && heardFrom is not null)
         {
             DimPortrait(true);
-            text = $"[color=#{Dim.ToHtml(false)}]{Title(speaker)}, {heardFrom}:[/color]  [i]{Bbcode(line.Body)}[/i]";
+            text = $"[color=#{Dim.ToHtml(false)}]{Title(speaker)}, {heardFrom}:[/color]  [i]{Bbcode(line.Body, inItalics: true)}[/i]";
         }
         else if (speaker is null)
         {
             // Teo's thoughts: italic, a cooler colour. The person he's with stays, dimmed.
             DimPortrait(true);
-            text = $"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line.Body)}[/i][/color]";
+            text = $"[color=#{Thought.ToHtml(false)}][i]{Bbcode(line.Body, inItalics: true)}[/i][/color]";
         }
         else
         {
