@@ -8,7 +8,6 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-19 | Magda's portrait: her clothes end too low (said before the off-shoulder dress; check whether it still applies). | `art/proposals/magda_young.png` |
 | 2026-10-19 | When Teo talks, the portrait doesn't change: it's still the other person (e.g. Stojan). Teo has no portrait; his lines show his name next to the listener's portrait at full brightness. | `game/Main.cs`, NextLine |
 | 2026-10-19 | Portraits need a lot of work overall in the UI: the frame and how they sit on screen. UI work comes later. | Conversation bar (`game/Main.cs`) |
-| 2026-10-19 | Changing location: a black screen that says where we are (and probably when), instead of cutting straight to the new place. Later. | `game/Main.cs`, EnterPhase / Arrive |
 | 2026-10-19 | "Viktor comes out of his office and claps once" (office arrival): he should actually do it on screen, walk out of his office, not stay where he is. Same principle wherever the text describes someone moving. | `content/ink/tuesday_office.ink:23`, `content/rooms/office.json` |
 | 2026-10-19 | "VIKTOR: Teo. In here a second." (11:30): Teo should go to Viktor's office, preferably as a short sequence of him walking there, and the conversation happen inside. Build together with "people move when the text says so" (Viktor's clap above). | `content/ink/tuesday_office.ink:329` (viktor_office) |
 | 2026-10-19 | The floors are completely open: tables, desks etc. should stand out in the room, not everything pushed against the walls. (2026-10-27, on the creator's request: first try built in the office and on the terrace. The flat and the stairwell are unchanged. Waiting for the creator's verdict.) | All rooms |
@@ -27,12 +26,10 @@ Things the creator has pointed out. **Fix only when the creator asks.** Remove a
 | 2026-10-27 | Playthrough 2026-10-27: Teo's flat looks bad. | `art/game/rooms`, ArtGen `FlatRoom` |
 | 2026-10-27 | "50 each" for the gift: the creator thought we had lowered it further. (50 euro is about 550 kronor; the creator's own office gives about 100 kronor a year, roughly 9 euro.) | `content/ink/tuesday_home.ink:36`, `tuesday_office.ink` |
 | 2026-10-27 | A bank that texts you your balance is unrealistic. | `content/ink/tuesday_home.ink:38` |
-| 2026-10-27 | The stairwell looks bad. And nothing tells you that you've ended up in the stairwell; it just cuts there. | `StairwellRoom`, `game/Main.cs` (see the 2026-10-19 note on place cards) |
+| 2026-10-27 | The stairwell looks bad. | `StairwellRoom` |
 | 2026-10-27 | Can't walk with the mouse; only the keys. | `game/RoomView.cs`, `game/Controls.cs` |
 | 2026-10-27 | Portraits look cut out and pasted in. Maybe a frame that runs into the text column, so you can see they belong to it. | `game/Main.Column.cs` |
 | 2026-10-27 | Magda's portrait already hints at the red dress, though at the office she's clearly in a pink top. | `art/game/portraits/magda_*`, `content/art.json` |
-| 2026-10-27 | Some portraits don't land on the column's edge but inside it. Check whether it's a bug or whether portraits aren't all handled the same. | `game/Main.Column.cs` (LayoutColumn) |
-| 2026-10-27 | Teo walks over to Viktor and Ramona though they aren't talking to him (Ramona's arrival). Same when Viktor calls out the open bar: Teo walks to him, which is wrong. The close-up itself works well. | `game/RoomView.cs` (Approach), `game/Main.Column.cs` |
 | 2026-10-27 | Are the tickets right? Had a drink with Magda, then could buy a beer and then a spirit before they ran out. Do tickets only go when Teo buys at the bar himself? (Yes: only the bar takes tickets; Magda is the bank, so a drink with her is free.) | `content/ink/tuesday_party.ink` (use_ticket) |
 | 2026-10-27 | Felicity is with the alignment team but stands talking to Viktor: how does that fit? She also looks a lot like Ramona. Unclear who is who and why people stand where they stand. | `content/rooms/terrace.json`, `PixelPeople` |
 | 2026-10-27 | The river looks bad. | `art/game/scenes/river.png` |

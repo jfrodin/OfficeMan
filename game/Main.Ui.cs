@@ -31,6 +31,22 @@ public partial class Main
         _dim.SetAnchorsPreset(LayoutPreset.FullRect);
         AddChild(_dim);
 
+        // The place card: on a move to a new place the picture goes to black for a moment with the place's name,
+        // then the new place fades in. Under the text, so nothing being read is hidden.
+        _placeCard = new ColorRect { Color = new Color(0.03f, 0.03f, 0.035f), MouseFilter = MouseFilterEnum.Ignore, Visible = false };
+        _placeCard.SetAnchorsPreset(LayoutPreset.FullRect);
+        var placeBox = new VBoxContainer { Alignment = BoxContainer.AlignmentMode.Center, MouseFilter = MouseFilterEnum.Ignore };
+        placeBox.SetAnchorsPreset(LayoutPreset.FullRect);
+        placeBox.AddThemeConstantOverride("separation", 14);
+        _placeTitle = MakeLabel(56, new Color(0.95f, 0.9f, 0.8f));
+        _placeTitle.HorizontalAlignment = HorizontalAlignment.Center;
+        _placeWhen = MakeLabel(26, new Color(0.62f, 0.58f, 0.52f));
+        _placeWhen.HorizontalAlignment = HorizontalAlignment.Center;
+        placeBox.AddChild(_placeTitle);
+        placeBox.AddChild(_placeWhen);
+        _placeCard.AddChild(placeBox);
+        AddChild(_placeCard);
+
         // Three ways text appears, one typography:
         //  conversation  the bar along the bottom: portrait, name, words, choices;
         //  observation   a compact note low in the frame, for Teo's thoughts when nobody is talking to him;
@@ -306,6 +322,25 @@ public partial class Main
         _portraitCard.Visible = true;
         _portraitCard.Modulate = new Color(1, 1, 1, 0);
         CreateTween().TweenProperty(_portraitCard, "modulate:a", 1.0, 0.18);
+    }
+
+    private ColorRect _placeCard = null!;
+    private Label _placeTitle = null!, _placeWhen = null!;
+    private Tween? _placeTween;
+
+    /// <summary>Black, the place's name and the time of day, then the new place fades in.</summary>
+    private void PlaceCard(string title, string when)
+    {
+        if (_shotPath is not null || _lookRoom is not null) return;   // screenshots and room views show the place itself
+        _placeTween?.Kill();
+        _placeTitle.Text = string.IsNullOrEmpty(title) ? when : title;
+        _placeWhen.Text = string.IsNullOrEmpty(title) ? "" : when;
+        _placeCard.Visible = true;
+        _placeCard.Modulate = Colors.White;
+        _placeTween = CreateTween();
+        _placeTween.TweenInterval(1.3);
+        _placeTween.TweenProperty(_placeCard, "modulate:a", 0.0, 0.9);
+        _placeTween.TweenCallback(Callable.From(() => _placeCard.Visible = false));
     }
 
     private void Arrive(string text)

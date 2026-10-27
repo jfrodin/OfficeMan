@@ -11,6 +11,15 @@ namespace OfficeMan.Game;
 /// <summary>Playing the story's lines: conversations, thoughts, overheard speech, typing, choices.</summary>
 public partial class Main
 {
+    /// <summary>
+    /// Teo walks over to the last person who spoke, but only once he answers them. People talking among themselves,
+    /// or calling out to the whole room, don't pull him across it.
+    /// </summary>
+    private void ApproachWhenAnswering()
+    {
+        if (_roomView.Visible && _focus is not null) _roomView.Approach(_focus.ToLowerInvariant());
+    }
+
     private void NextLine()
     {
         if (++_lineIndex >= _lines.Count)
@@ -76,11 +85,11 @@ public partial class Main
             if (mood is not null) _moods[speaker] = mood;
             _listener = _art.HasPortraits(speaker) ? speaker : null;
             _focus = speaker;
-            if (_roomView.Visible) _roomView.Approach(speaker.ToLowerInvariant());
             SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
             DimPortrait(false);
         }
         else DimPortrait(speaker is null);   // Teo's thoughts mid-conversation: the other person's portrait dims
+        if (speaker == "TEO") ApproachWhenAnswering();
 
         _speaker.Visible = speaker is not null;
         _speaker.Text = speaker is null ? "" : Title(speaker);

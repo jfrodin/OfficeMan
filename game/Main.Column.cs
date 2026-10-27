@@ -167,11 +167,14 @@ public partial class Main
                 if (mood is not null) _moods[speaker] = mood;
                 _listener = _art.HasPortraits(speaker) ? speaker : null;
                 _focus = speaker;
-                if (_roomView.Visible) _roomView.Approach(speaker.ToLowerInvariant());
                 SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
                 DimPortrait(false);
             }
-            else DimPortrait(true);
+            else
+            {
+                DimPortrait(true);
+                ApproachWhenAnswering();
+            }
             text = $"[color=#{NameColour(speaker).ToHtml(false)}]{speaker}[/color]   {Bbcode(line.Body)}";
         }
         _conversing = true;
@@ -277,13 +280,16 @@ public partial class Main
             float target = newest is null ? 120 : newest.GlobalPosition.Y - 40;
             target = Math.Clamp(target, 40, 400);   // never low in the frame, where the people stand
             _portraitY = _portraitY < 0 ? target : _portraitY + (target - _portraitY) * (float)(1 - Math.Exp(-delta * 6));
-            _portraitCard.Position = new Vector2(left - _portraitCard.Size.X + PortraitOverlap, _portraitY);
+            // Always the same size and place: the card's own size drifts with its contents, which moved some
+            // portraits further into the column than others.
+            _portraitCard.Size = new Vector2(PortraitW + 6, PortraitH + 6);
+            _portraitCard.Position = new Vector2(left - (PortraitW + 6) + PortraitOverlap, _portraitY);
         }
         else _portraitY = -1;
         if (!_typing && _mode == Mode.Talking) _more.Position = new Vector2(1920 - 70, 1080 - 64);
 
         // What the column (and the portrait on its edge) leave free of the picture.
-        float free = 1920 - ColumnW - (_portraitCard.Visible ? _portraitCard.Size.X - PortraitOverlap : 0);
+        float free = 1920 - ColumnW - (_portraitCard.Visible ? PortraitW + 6 - PortraitOverlap : 0);
         if (_column.Visible && _roomView.Visible)
         {
             // Keep Teo and whoever he's with inside the part of the screen the column leaves free.

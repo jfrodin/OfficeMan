@@ -151,6 +151,7 @@ public partial class Main : Control
         _conversing = false;
         _moods.Clear();
         Arrive(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
+        PlaceCard(title, when);
         if (UseColumn) ColumnHeading(string.IsNullOrEmpty(title) ? when : $"{title}  ·  {when}");
         SetMode(_mode); // refresh the dim layer for the new kind of place
     }
