@@ -188,6 +188,8 @@ public partial class RoomView : Control
         _material.SetShaderParameter("base", _background.Texture);
         _front.Texture = room.Front is null ? null : _texture(_art.Resolve(room.Front));
         _teo.Position = new Vector2(room.Spawn[0], room.Spawn[1]);
+        _approach = null;
+        _approachTo = null;
         _teo.FaceLeft = false;
         _teo.Visible = room.ShowTeo;
         _hands.Visible = room.Clock is { Length: 2 };
@@ -303,6 +305,27 @@ public partial class RoomView : Control
         _teo.FaceLeft = false;
     }
 
+    private Vector2? _approach;
+    private string? _approachTo;
+
+    /// <summary>
+    /// Teo walks over to whoever is talking to him, if he's standing far off (a scene that starts with him at the
+    /// door and Stojan at the far end). A conversation then has the two of them together, so the camera can frame them.
+    /// </summary>
+    public void Approach(string anchor)
+    {
+        if (!_teo.Visible || _approachTo == anchor) return;
+        var t = _present.Select(x => x.thing).FirstOrDefault(x => (x.Id == anchor || x.AnchorId == anchor) && !x.Prop && x.Sprite is not null);
+        if (t is null || Math.Abs(t.X - _teo.Position.X) < 44) return;
+        _approachTo = anchor;
+        bool fromLeft = _teo.Position.X < t.X;
+        var p = new Vector2(Math.Clamp(t.X + (fromLeft ? -26 : 26), _room.Walk.MinX, _room.Walk.MaxX),
+                            Math.Clamp(t.Y + 2, _room.Walk.MinY, _room.Walk.MaxY));
+        foreach (var r in _blocks)
+            if (Inside(r, p)) p.Y = Math.Min(r.End.Y + 1, _room.Walk.MaxY);
+        _approach = p;
+    }
+
     /// <summary>People turn to face Teo while he talks to them.</summary>
     public void FaceTeo(string anchor)
     {
@@ -322,6 +345,28 @@ public partial class RoomView : Control
             if (dir.LengthSquared() > 0.04f && Drunk > 0)
                 dir += new Vector2((float)Math.Sin(_clock * 2.3) * 0.25f * Drunk, (float)Math.Cos(_clock * 1.7) * 0.12f * Drunk);
         }
+        if (!Controllable && _approach is Vector2 goal)
+        {
+            // Walking over to someone: straight there, then face them.
+            var step = goal - _teo.Position;
+            float d = WalkSpeed * (float)delta;
+            if (step.Length() <= d)
+            {
+                _teo.Position = goal;
+                _approach = null;
+                _teo.Walking = false;
+                var them = _present.FirstOrDefault(x => x.thing.Id == _approachTo || x.thing.AnchorId == _approachTo).actor;
+                if (them is not null) { _teo.FaceLeft = them.Position.X < goal.X; them.FaceLeft = them.Position.X > goal.X; }
+            }
+            else
+            {
+                _teo.Position += step.Normalized() * d;
+                _teo.FaceLeft = step.X < 0;
+                _teo.Walking = true;
+            }
+            return;
+        }
+        if (Controllable) _approachTo = null;
         if (dir.LengthSquared() > 0.04f)
         {
             var next = _teo.Position + dir.LimitLength(1.4f) * WalkSpeed * (float)delta;

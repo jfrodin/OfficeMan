@@ -167,6 +167,7 @@ public partial class Main
                 if (mood is not null) _moods[speaker] = mood;
                 _listener = _art.HasPortraits(speaker) ? speaker : null;
                 _focus = speaker;
+                if (_roomView.Visible) _roomView.Approach(speaker.ToLowerInvariant());
                 SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
                 DimPortrait(false);
             }
@@ -306,7 +307,9 @@ public partial class Main
             float apart = Math.Abs(teo.X - them.X);
             zoom = apart < 400 ? TalkZoom : apart < 600 ? 1.5f : 1;
             shift = new Vector2(free / 2f, 560) - mid * zoom;
-            shift.X = Math.Clamp(shift.X, 1920 - 1920 * zoom - ColumnW, 0);
+            // The room may slide further left than the column, so people at its far end still clear the portrait;
+            // never so far that the picture runs out inside the free part of the screen.
+            shift.X = Math.Clamp(shift.X, free - 1920 * zoom, 0);
             shift.Y = Math.Clamp(shift.Y, 1080 - 1080 * zoom, 0);
             _panTarget = 0;
         }

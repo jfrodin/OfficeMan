@@ -76,6 +76,7 @@ public partial class Main
             if (mood is not null) _moods[speaker] = mood;
             _listener = _art.HasPortraits(speaker) ? speaker : null;
             _focus = speaker;
+            if (_roomView.Visible) _roomView.Approach(speaker.ToLowerInvariant());
             SetPortrait(_listener is null ? null : _art.Portrait(speaker, _moods.GetValueOrDefault(speaker)));
             DimPortrait(false);
         }
