@@ -44,3 +44,12 @@ Still open (2026-10-27): A, H, HP or HF. The creator liked how clean H looked an
 
 Recommendation: HF. If 3D is chosen, the game switches from the compatibility
 renderer to Forward+ (needs a graphics card from roughly the last eight years).
+
+## Logo and icon
+
+Proposals made by ArtGen (`logos`, `icons`; scratch pictures in `art/out/logos_sheet.png`, `art/out/icons_sheet.png`).
+Letters are the game's own, drawn in code (`tools/OfficeMan.ArtGen/Icons/Lettering.cs`), so no font licence is needed.
+Byline: "A game by Joakim Frödin", no studio name (the creator, 2026-10-27).
+
+- Logo: the creator leans towards the embossing label tape (red tape for OFFICE MAN), 2026-10-27. Not yet decided.
+- Icon: the stamp mark on a slip of paper was the favourite before the logo leaned towards the label tape.
