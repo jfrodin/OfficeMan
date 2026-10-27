@@ -11,6 +11,7 @@ using OfficeMan.ArtGen.Sprites;
 //   dotnet run --project tools/OfficeMan.ArtGen -- <sets>    any of: game, sprites, cast, flat, reference
 //     game       rooms, sprites, temporary portraits and scene pictures → art/game/ (committed; see content/art.json)
 //     sprites    preview sheets of the pixel people → art/out/
+//     people     proposal: the people redrawn at high resolution → art/out/people/
 //     cast       the temporary cast portraits on one sheet → art/out/
 //     flat       the portrait proposal in the drawn_flat style → art/out/flat/
 //     reference  re-renders the two protected references (art/reference/) for comparison → art/out/reference/
@@ -111,6 +112,23 @@ if (sets.Contains("game"))
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");
+}
+
+// Proposal: the people redrawn at high resolution as flat shapes, for the hybrid look (design/art_direction.md).
+if (sets.Contains("people"))
+{
+    string dir = Path.Combine(outDir, "people");
+    Directory.CreateDirectory(dir);
+    var people = PixelPeople.All.ToList();
+    var sheet = new Canvas(FlatPeople.FrameW * people.Count, FlatPeople.FrameH);
+    sheet.Fill(Rgb.Hex("8a8478"));
+    for (int i = 0; i < people.Count; i++)
+    {
+        var frame = FlatPeople.Frame(people[i]);
+        Png.Save(frame, Path.Combine(dir, $"{people[i].Name}.png"));
+        sheet.Draw(frame, i * FlatPeople.FrameW, 0);
+    }
+    Png.Save(sheet, Path.Combine(outDir, "people_sheet.png"));
 }
 
 // Pixel people: a preview sheet (all frames, ×8) for checking the sprites.

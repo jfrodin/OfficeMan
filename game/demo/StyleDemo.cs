@@ -10,7 +10,7 @@ namespace OfficeMan.Game.Demo;
 ///   godot --path game --rendering-method forward_plus res://demo/StyleDemo.tscn -- --style c1 --shot out.png
 /// Styles: c1 flat colour and strong light; c2 two inks, dithered; c3 the same 3D rendered small, as pixels;
 /// h as c1, but with the game's drawn people standing in the room instead of the simple figures; hp is h rendered
-/// small like c3, so the room and the people share one pixel size.
+/// small like c3, so the room and the people share one pixel size; hf is h with the people redrawn at high resolution.
 /// Everything is boxes, spheres and cylinders, placed by hand below; people are simple faceless figures.
 /// Units are metres: x to the right, y up, z towards the camera; the back wall stands at z = 0.
 /// </summary>
@@ -33,7 +33,7 @@ public partial class StyleDemo : Node
         var vp = new SubViewport
         {
             Size = size, OwnWorld3D = true, RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
-            Msaa3D = _style is "c1" or "h" ? Viewport.Msaa.Msaa4X : Viewport.Msaa.Disabled,
+            Msaa3D = _style is "c1" or "h" or "hf" ? Viewport.Msaa.Msaa4X : Viewport.Msaa.Disabled,
         };
         AddChild(vp);
         var world = new Node3D();
@@ -76,7 +76,7 @@ public partial class StyleDemo : Node
             TonemapMode = Godot.Environment.ToneMapper.Filmic, TonemapExposure = 1.15f,
             GlowEnabled = true, GlowIntensity = 0.5f, GlowBloom = 0.05f,
             FogEnabled = true, FogLightColor = new Color("c4ae8c"), FogDensity = 0.004f,
-            SsaoEnabled = _style is "c1" or "h", SsaoIntensity = 1.6f,
+            SsaoEnabled = _style is "c1" or "h" or "hf", SsaoIntensity = 1.6f,
         };
         w.AddChild(new WorldEnvironment { Environment = env });
 
@@ -105,11 +105,11 @@ public partial class StyleDemo : Node
         ZdenkasLamp(w, 9.25f, 1.9f);
         Trolley(w, 9.6f, 4.8f);
 
-        if (_style is "h" or "hp")
+        if (_style is "h" or "hp" or "hf")
         {
             // Hybrid: the game's own drawn people, standing in the 3D room and lit by it.
             Figure(w, "magda", new Vector3(2.8f, 0, 1.25f));
-            Figure(w, "zdenka_sit", new Vector3(8.45f, 0, 1.45f));
+            Figure(w, _style == "hf" ? "zdenka" : "zdenka_sit", new Vector3(8.45f, 0, 1.45f));
             Figure(w, "kornel", new Vector3(7.3f, 0, 3.55f));
             Figure(w, "teo", new Vector3(5.9f, 0, 6.6f));
             Figure(w, "viktor", new Vector3(11.9f, 0, 1.6f));
@@ -279,23 +279,27 @@ public partial class StyleDemo : Node
     /// A drawn person from the game (art/game/sprites, first idle frame of the sheet), as a flat figure that always
     /// faces the camera, stands on the floor, catches the room's light and casts a shadow.
     /// </summary>
-    private static void Figure(Node3D w, string sprite, Vector3 at)
+    private void Figure(Node3D w, string sprite, Vector3 at)
     {
-        string path = System.IO.Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "art", "game", "sprites", sprite + ".png");
+        // hf: the people redrawn at high resolution (ArtGen "people", art/out/people/): one frame, 175 units a metre, feet 10 up.
+        bool flat = _style == "hf";
+        string path = flat
+            ? System.IO.Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "art", "out", "people", sprite + ".png")
+            : System.IO.Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "art", "game", "sprites", sprite + ".png");
         var sheet = ImageTexture.CreateFromImage(Image.LoadFromFile(path));
-        const int frames = 6;
-        const float pixel = 1.78f / 52;
+        int frames = flat ? 1 : 6;
+        float pixel = flat ? 1.75f / 310 : 1.78f / 52, below = flat ? 10 * pixel : 0;
         var size = new Vector2(sheet.GetWidth() / frames, sheet.GetHeight()) * pixel;
         var m = new StandardMaterial3D
         {
             AlbedoTexture = sheet, Uv1Scale = new Vector3(1f / frames, 1, 1),
             Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor, AlphaScissorThreshold = 0.5f,
-            TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest, CullMode = BaseMaterial3D.CullModeEnum.Disabled,
+            TextureFilter = flat ? BaseMaterial3D.TextureFilterEnum.LinearWithMipmaps : BaseMaterial3D.TextureFilterEnum.Nearest, CullMode = BaseMaterial3D.CullModeEnum.Disabled,
             Roughness = 1, DiffuseMode = BaseMaterial3D.DiffuseModeEnum.Toon, SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
         };
         var s = new MeshInstance3D
         {
-            Mesh = new QuadMesh { Size = size, CenterOffset = new Vector3(0, size.Y / 2, 0) }, MaterialOverride = m, Position = at,
+            Mesh = new QuadMesh { Size = size, CenterOffset = new Vector3(0, size.Y / 2 - below, 0) }, MaterialOverride = m, Position = at,
         };
         w.AddChild(s);
         // A soft shadow under the feet, as in the game today, so the figure stands on the floor.
