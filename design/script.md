@@ -39,8 +39,6 @@ How to read it:
 
 Tuesday. The office summer party is tonight. Viktor put it on a Tuesday so that nobody would get too drunk.
 
-Viktor has met us.
-
 *(Note: How Teo goes into the day. It leans him one way until Tuesday is over; the evening can remind him of it.)*
 
 - ▸ **A sober Tuesday. I'll fucking show him.** *[drink]*
