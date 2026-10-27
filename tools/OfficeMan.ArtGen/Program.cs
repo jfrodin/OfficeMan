@@ -11,6 +11,7 @@ using OfficeMan.ArtGen.Sprites;
 //   dotnet run --project tools/OfficeMan.ArtGen -- <sets>    any of: game, sprites, cast, flat, reference
 //     game       rooms, sprites, temporary portraits and scene pictures → art/game/ (committed; see content/art.json)
 //     sprites    preview sheets of the pixel people → art/out/
+//     logos      proposal: the game's logo, three designs → art/out/logos/
 //     icons      proposal: the Windows icon, three designs → art/out/icons/
 //     people     proposal: the people redrawn at high resolution → art/out/people/
 //     cast       the temporary cast portraits on one sheet → art/out/
@@ -113,6 +114,25 @@ if (sets.Contains("game"))
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");
+}
+
+// Proposal: the game's logo, each on its own (transparent) and all on one sheet on the background each is meant for.
+if (sets.Contains("logos"))
+{
+    string dir = Path.Combine(outDir, "logos");
+    Directory.CreateDirectory(dir);
+    var names = OfficeMan.ArtGen.Icons.Logos.Names;
+    var sheet = new Canvas(OfficeMan.ArtGen.Icons.Logos.W, OfficeMan.ArtGen.Icons.Logos.H * names.Length);
+    for (int i = 0; i < names.Length; i++)
+    {
+        var logo = OfficeMan.ArtGen.Icons.Logos.Draw(names[i]);
+        Png.Save(logo, Path.Combine(dir, $"{names[i]}.png"));
+        var bg = Rgb.Hex(OfficeMan.ArtGen.Icons.Logos.Background(names[i]));
+        for (int y = 0; y < OfficeMan.ArtGen.Icons.Logos.H; y++)
+            for (int x = 0; x < OfficeMan.ArtGen.Icons.Logos.W; x++) sheet[x, i * OfficeMan.ArtGen.Icons.Logos.H + y] = bg;
+        sheet.Draw(logo, 0, i * OfficeMan.ArtGen.Icons.Logos.H);
+    }
+    Png.Save(sheet, Path.Combine(outDir, "logos_sheet.png"));
 }
 
 // Proposal: the Windows icon. One row per design: on a light and a dark background, at 256, 48, 32 and 16 px,

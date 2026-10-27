@@ -21,7 +21,7 @@ public static class AppIcons
 
     public static Canvas Draw(string name, int size)
     {
-        var l = new Layer(size);
+        var l = new SoftLayer(size, size, size / 256.0);
         bool small = size <= 32;
         switch (name)
         {
@@ -39,7 +39,7 @@ public static class AppIcons
 
     // ── The designs ───────────────────────────────────
 
-    private static void Stamp(Layer l, bool small, bool inset = false)
+    private static void Stamp(SoftLayer l, bool small, bool inset = false)
     {
         // Turned a little, as if stamped by hand; the ink thin in places.
         Func<double, double, double>? ink = small ? null : (x, y) =>
@@ -72,7 +72,7 @@ public static class AppIcons
         }
     }
 
-    private static void RubberStamp(Layer l, bool small)
+    private static void RubberStamp(SoftLayer l, bool small)
     {
         Func<double, double, double>? ink = small ? null : (x, y) => Math.Clamp(0.9 + 0.6 * Noise.Fbm(x * 0.05, y * 0.05, 3), 0, 1);
         // The blot it has just left.
@@ -89,7 +89,7 @@ public static class AppIcons
         l.Fill(Shapes.Ellipse(142, 52, small ? 16 : 18, small ? 10 : 11, 32), "d8605a");
     }
 
-    private static void Head(Layer l, bool small)
+    private static void Head(SoftLayer l, bool small)
     {
         l.Fill(RoundSquare(12, 12, 244, 244, small ? 40 : 48), StampBlue);
         // Shoulders with an open collar, the neck, the head, messy hair on top.
@@ -137,86 +137,5 @@ public static class AppIcons
         Corner(x0 + r, y1 - r, 90);
         Corner(x0 + r, y0 + r, 180);
         return pts;
-    }
-
-    /// <summary>
-    /// Paint plus coverage, so the icon gets real soft edges: colour is painted over black, coverage is painted white
-    /// over black with the same alpha, and the colour is divided back out at the end.
-    /// </summary>
-    private sealed class Layer
-    {
-        private readonly int _size;
-        private readonly Sketch _paint, _cover;
-        private static readonly Rgb White = new(255, 255, 255), Black = new(0, 0, 0);
-
-        public Layer(int size)
-        {
-            _size = size;
-            _paint = new Sketch(size, size, 4);
-            _cover = new Sketch(size, size, 4);
-            _paint.Clear((_, _) => Black);
-            _cover.Clear((_, _) => Black);
-            _paint.SetView(size / 256.0, new Pt(0, 0));
-            _cover.SetView(size / 256.0, new Pt(0, 0));
-        }
-
-        public void Fill(List<Pt> poly, string hex, Func<double, double, double>? alphaAt = null, List<Pt>? clip = null)
-        {
-            _paint.Fill(poly, Rgb.Hex(hex), 1, clip, alphaAt);
-            _cover.Fill(poly, White, 1, clip, alphaAt);
-        }
-
-        public void Stroke(List<Pt> pts, double width, string hex, Func<double, double, double>? alphaAt = null)
-        {
-            if (alphaAt is null)
-            {
-                _paint.Stroke(pts, width, Rgb.Hex(hex));
-                _cover.Stroke(pts, width, White);
-                return;
-            }
-            // Textured ink: the stroke as a filled band, so the texture can thin it.
-            var band = Band(pts, width / 2);
-            _paint.Fill(band, Rgb.Hex(hex), 1, null, alphaAt);
-            _cover.Fill(band, White, 1, null, alphaAt);
-        }
-
-        /// <summary>A closed loop of points either side of a closed polyline: a ring for Fill (even-odd keeps the hole).</summary>
-        private static List<Pt> Band(List<Pt> pts, double half)
-        {
-            bool closed = (pts[0] - pts[^1]).Length < 0.01;
-            var outer = new List<Pt>();
-            var inner = new List<Pt>();
-            for (int i = 0; i < pts.Count; i++)
-            {
-                var prev = pts[Math.Max(0, i - 1)];
-                var next = pts[Math.Min(pts.Count - 1, i + 1)];
-                if (closed && i == 0) prev = pts[^2];
-                if (closed && i == pts.Count - 1) next = pts[1];
-                var d = next - prev;
-                double len = Math.Max(1e-6, d.Length);
-                var n = new Pt(-d.Y / len * half, d.X / len * half);
-                outer.Add(pts[i] + n);
-                inner.Add(pts[i] - n);
-            }
-            inner.Reverse();
-            return outer.Concat(inner).ToList();
-        }
-
-        public Canvas ToCanvas()
-        {
-            var colour = _paint.ToCanvas();
-            var cover = _cover.ToCanvas();
-            var c = new Canvas(_size, _size);
-            for (int y = 0; y < _size; y++)
-                for (int x = 0; x < _size; x++)
-                {
-                    int a = cover[x, y].R;
-                    if (a < 3) continue;
-                    var p = colour[x, y];
-                    double k = 255.0 / a;
-                    c.SetSoft(x, y, new Rgb((byte)Math.Min(255, p.R * k), (byte)Math.Min(255, p.G * k), (byte)Math.Min(255, p.B * k)), (byte)a);
-                }
-            return c;
-        }
     }
 }
