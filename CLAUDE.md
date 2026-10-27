@@ -22,6 +22,7 @@ You are the development partner on **The Misadventures of Office Man**, a narrat
 - Play (window): `Play.bat`. Screenshot test: `Godot_v4.6-stable_mono_win64_console.exe --path game -- --seed N --shot <abs path.png> --steps N`. Look at one room at a time of day (no dialogue): `... --path game -- --room stairwell_night --at 23:00 --shot <abs path.png>`. Always review rooms visually after art changes (see design/visual_standard.md). `Review.bat` makes one sheet of every room and text mode: `art/out/review.png`.
 - Play (text): `dotnet run --project src/OfficeMan.Cli -- [--seed N] [--debug] [--fast]`
 - Simulate: `dotnet run --project tools/OfficeMan.Sim -- --runs 1000` (must report 0 crashes, 0 dead ends; check coverage)
+- Script: `dotnet run --project tools/OfficeMan.Script` writes the whole game's text to `design/script.md`, for reading and editing. The ink stays the source: the creator's edits in the script are carried back into the ink by hand, then the script is written again. It refuses to overwrite uncommitted edits (`--force` to override).
 - Test: `dotnet test`
 - Art: `dotnet run --project tools/OfficeMan.ArtGen [-- game|sprites|cast|flat|reference]` (default `game`). `game` writes `art/game/` (committed); the others write previews to `art/out/` (scratch, not committed). `reference` re-renders the two protected references for comparison.
 - Godot 4.6 .NET is at `E:\Godot_v4.6-stable_mono_win64`. The Godot project is `game/` (build with `dotnet build` in that folder; its `nuget.config` points at Godot's bundled SDK).
