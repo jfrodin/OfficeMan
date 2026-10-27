@@ -82,7 +82,7 @@ What's left before the creator can hand a build to people and ask what they thin
 | T3 | More ways the bar can go (proposals listed under "Needs the creator", 2) | The creator picks |
 | T4 | A build that runs on another PC: Windows export, content and art shipped with it, tested without Godot or .NET | Us |
 | T5 | A start for strangers: a short screen with the controls and one line on what the game is; developer keys off | Us |
-| T6 | A clear end: "the demo ends here", and a nudge to say what they thought | Us |
+| T6 | A clear end: "the demo ends here", and a few questions whose answers go to #notes. The creator wants to know whether testers care about the story (2026-10-27): ask about what they did, not "did you like it" (who do you remember, did you want to know what happened to someone, would you play another Tuesday). The life log also records how long each line stays on screen, so skimming shows without asking | Us |
 | T7 | A log per life (seed, choices, how the day went) and a crash log, so any tester's life can be replayed. F1 in the playtest build sends a note with a screenshot and that log to the playtest's own Discord server (agreed 2026-10-27; reuse One More Year's `Playtest.cs`, webhook kept out of git, notes wait when offline). The server is private (only the creator; testers don't join), with #notes and #crashes; no welcome texts or news channel | Us |
 
 **Should have**
