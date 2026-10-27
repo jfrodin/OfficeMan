@@ -44,7 +44,7 @@ Godot 4 (.NET/C#) · ink for scene dialogue · custom C# life engine (state, sto
 
 ## Hard constraints
 
-- Windows build. Fully offline. No runtime generative AI, LLM API, online inference or paid external services.
+- Windows build. Fully offline. No runtime generative AI, LLM API, online inference or paid external services. (Agreed exception: playtest builds send F1 notes to the playtest Discord; see GAME_VISION §11.)
 - All dialogue is authored in advance.
 - No combat, inventory puzzles, visible success percentages or other genre conventions unless they clearly earn their place.
 - Adult content per `GAME_VISION.md` §4. Sexual coercion and violence are never titillating or player-controlled.

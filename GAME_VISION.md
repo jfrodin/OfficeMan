@@ -183,6 +183,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 
 - **[REQUIRED]** Runs on Windows.
 - **[REQUIRED]** Works fully offline. No AI services, no paid external APIs required by players.
+- **[AGREED 2026-10-27]** One exception, in playtest builds only: F1 sends a tester's note to the playtest Discord (a webhook) with a picture of the screen and the life's log. The game works the same without a connection (notes wait and go later), and none of it is in a release build. The playtest has its own Discord server, "Office Man · Playtest". Modelled on the creator's One More Year (`E:\Dev\Spel\OneMoreYear`, `game/scripts/Playtest.cs`, `docs/discord.md`).
 - **[REQUIRED]** Technology stack chosen on merit. No engine is assumed correct.
 - **[REQUIRED]** Consider save/load, accessibility, localisation readiness and robust narrative state.
 - **[REQUIRED]** Prefer maintainable architecture over technical sophistication.
@@ -305,3 +306,4 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
 | 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |
 | 2026-10-27 | The look: the game's current pixel art (option A in `design/art_direction.md`), with depth from layers and furniture out on the floor. No 3D. | §9 |
+| 2026-10-27 | Playtest builds may go online for one thing: F1 notes to the playtest's own Discord server, with a screenshot and the life's log. Release builds stay fully offline. | §11 |
