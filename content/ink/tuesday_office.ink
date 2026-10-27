@@ -320,6 +320,7 @@ Application 2236. The <i>Innovation Bench</i>. EU-funded. A bench with a solar p
 Budget: four hundred thousand euro.
 There's a consultant's report, ninety pages long. Page sixty-one says the bench will "activate public space."
 * [Approve it. It's not your money.]
+    ~ flag("approved_bench")
     As far as this building is concerned, EU money falls from the sky. Some of it lands on benches.
     ~ qadd("work_done", 1)
 * [Flag the budget to Viktor. #cautious]

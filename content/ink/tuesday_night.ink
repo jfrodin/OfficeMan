@@ -75,7 +75,8 @@ He doesn't say <i>you saw nothing</i>. That's part of the job.
     ~ flag("walked_home")
     ~ pass_time(60)
     A taxi is thirty euro. I haven't got thirty euro. I walk.
-    It takes an hour and a half. Somewhere along the river the sky goes grey, then pink, behind the sewage plant. A man sweeping the street says good morning, and I say it back, and mean it.
+    It takes an hour and a half. Somewhere along the river the sky goes grey, then pink, behind the sewage plant.
+    -> on_the_way ->
 }
 -> DONE
 
@@ -379,4 +380,80 @@ Through the wall, music. Accordion, then a pop song, then the accordion again, f
 STOJAN: To Teo! To Permits! #heard:through the wall #from:right
 LENKA: Some people need their sleep! For their skin! #heard:through the wall #from:right
 He's celebrating. He's celebrating something I said I'd look at.
+->->
+
+// ── On the way home ──────────────────────────────────────────
+// A tunnel for any walk home: sometimes something happens on the way, by chance, at most one thing.
+// Which things can happen depends on the hour (evening or dawn), on money, and on the day so far.
+=== on_the_way
+{
+- not chance("walk_something", 55):
+    ->->
+- q("time") >= 28 * 60 && chance("walk_bakery", 50):
+    -> bakery
+- is("owes_laci") && q("time") >= 25 * 60 && chance("walk_laci", 70):
+    -> laci
+- is("approved_bench") && chance("walk_bench", 60):
+    -> bench
+- chance("walk_euro", 50):
+    -> euro
+- else:
+    -> fox
+}
+
+= bakery
+On Kollár Street the bakery is already lit. A man in a white vest is pulling trays out of an oven, and the smell reaches halfway down the street.
+* {q("money") >= 1} [Buy something.]
+    ~ qadd("money", -1)
+    One euro for a roll still too hot to hold. I eat it walking, from one hand to the other.
+* {q("money") < 1} [Ask if he's got anything going spare.]
+    He looks at me, at the shirt, at the hour. He hands me a roll from the end of a tray, a bit burnt underneath.
+    BAKER: The burnt ones I can't sell.
+    It's the best thing I've eaten all year.
+* [Keep walking.]
+    I keep walking. The smell follows me for a block.
+- ->->
+
+= laci
+A bike comes past, slows down, comes back. It's Laci, in a hoodie, the badge still on.
+LACI: Office man.
+LACI: Friday, yes?
+TEO: Friday.
+He nods and rides off, standing on the pedals. Out of the bar he looks about sixteen.
+->->
+
+= bench
+On the promenade there's a new bench. Steel, a solar panel on a stalk, a USB socket. A little plaque: <i>Co-financed by the European Union</i>.
+Four hundred thousand euro. I approved it today. It's been standing here for a while, by the look of it, waiting for someone to.
+* [Sit on it.]
+    I sit on it. It's a bench. My phone is on four percent, so I try the socket.
+    Nothing. A small red light comes on and stays on.
+* [Walk past.]
+    I walk past. I don't look at it, the way you don't look at someone you've been rude about.
+- ->->
+
+= euro
+A man by the tram stop asks if I can spare a euro.
+* {q("money") >= 1} [Give him one. #kind]
+    ~ qadd("money", -1)
+    I give him one. He says thank you in English, and then, to be safe, in German.
+* {q("money") < 1} [Show him your wallet.]
+    I open my wallet so he can see. Nothing.
+    He looks in it for a while. Then he puts a euro in it.
+    STRANGER: For the tram.
+    There's no tram at this hour. I keep the euro.
+    ~ qadd("money", 1)
+* [Say sorry, no.]
+    TEO: Sorry.
+    He says sorry too. We're both sorry.
+- ->->
+
+= fox
+{ q("time") >= 26 * 60:
+    By the river a fox comes out from under a parked car and trots along beside me for a bit, on the other side of the road.
+- else:
+    By the river a fox comes out from under a parked car, in the last of the light, and trots along beside me for a bit.
+}
+It stops when I stop. When I look at it properly it goes back under the car.
+Nobody will believe me, and I won't tell anybody anyway.
 ->->

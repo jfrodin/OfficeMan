@@ -807,6 +807,7 @@ The river's very close now. Very friendly.
 - else:
     I go home. Nobody notices I've gone.
 }
+-> on_the_way ->
 { played("magda_river") == 0 && doing("magda", "river"):
     On the way out, I see Magda's shoes on the steps down to the river. Just the shoes. I keep walking.
     ~ remember("magda", "teo_left_early")
@@ -924,4 +925,5 @@ Laci turns the music off. In the silence, you can hear the river. It's been ther
     -> DONE
 }
 I walk home. Somebody's tied a balloon to a bin. One of Magda's, from the office. It's lasted longer than the party.
+-> on_the_way ->
 -> DONE
