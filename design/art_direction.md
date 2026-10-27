@@ -4,7 +4,7 @@ The creator wants a world with depth: things in the way, not everything pushed a
 This "tech demo" sets the standard for every location, so the rest of the work can be about events and the story.
 Portraits are a separate track and not part of this choice.
 
-**Status: comparison pictures made; waiting for the creator to choose.**
+**Status: decided 2026-10-27: A, the pixel art as the game has it now.** The creator chose it after talking it over at home. The rest of this page is the record of how we got there; the 3D demo (`game/demo/StyleDemo.cs`) and the high-resolution people (ArtGen `people`) are no longer used by anything.
 
 ## What code is good and bad at
 
@@ -40,10 +40,7 @@ The creator likes the feel of H (2026-10-27); the original pixel art has its cha
 
 The creator asked for the people to be redrawn rather than the room made smaller: HF.
 
-Still open (2026-10-27): A, H, HP or HF. The creator liked how clean H looked and will think it over before choosing.
-
-Recommendation: HF. If 3D is chosen, the game switches from the compatibility
-renderer to Forward+ (needs a graphics card from roughly the last eight years).
+Decided (2026-10-27): A. The game stays on the compatibility renderer.
 
 ## Logo and icon
 

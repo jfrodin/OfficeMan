@@ -166,7 +166,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[REQUIRED]** Large, expressive character portraits in dialogue. Faces, emotions, personality, reactions.
 - **[REQUIRED]** Supports both absurd comedy and dark or intimate scenes.
 - **[PREFERENCE]** Detailed environments, meaningful facial expressions, character animation and body language, atmospheric lighting, distinctive locations, strong consistency, a polished intentional style.
-- **[OPEN]** Rendering resolution and production technique.
+- **[AGREED 2026-10-27]** The look is the pixel art the game has now (art direction option A): code-built pixel rooms and people in 2D, depth made with layers and furniture out on the floor that people walk behind and in front of. The 3D options that were tried (a 3D room with flat people, and variants) are not pursued. Portraits remain a separate, later track.
 - **[AGREED 2026-10-18]** Portrait development is **paused**. Final character art is decided much later. Strongest references so far, preserved in `art/reference/` with their source code: `drawn_flat.png` (flat illustration) and `construct_1_animation.png` (animation-inspired construction). The creator preferred the animation approach, made more mature.
 - **[AGREED 2026-10-18]** Until then, existing portraits are temporary art. The dialogue interface must support large portraits, multiple expressions per character, and replacing artwork without changes to the dialogue system.
 
@@ -304,3 +304,4 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | No frozen scenes: Teo never lands straight in a conversation. He talks to someone only after walking up to them, after they visibly walk up to him, or as the continuation of something he chose (leaving with Ramona carries on in her car). Moving between places by cutting from picture to picture is fine; no big continuous world. Order and scope to agree. | §8 |
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
 | 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |
+| 2026-10-27 | The look: the game's current pixel art (option A in `design/art_direction.md`), with depth from layers and furniture out on the floor. No 3D. | §9 |
