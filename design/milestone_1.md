@@ -36,6 +36,7 @@ The list to check before starting work. Update it whenever something is done or 
 | Waking at Magda's, Kornel's or the station shows that place | 2026-10-26 | |
 | Furniture out on the floor, first try: desks in the office, tables on the terrace, as sprites people stand behind and in front of; Teo walks round them | 2026-10-27 | `content/rooms`, `design/visual_standard.md` |
 | Money: Teo starts with 70 euro (a guess); out of money at the bar he borrows, runs a tab or takes water; no taxi after the club if he can't pay; Wednesday remembers who he owes | 2026-10-27 | `content/ink` |
+| Walking home: something may happen on the way, by chance (in 30 to 45% of walks): a man asking for a euro, a fox, the Innovation Bench if Teo approved it; at dawn the bakery, or Laci if Teo owes him | 2026-10-27 | `content/ink/tuesday_night.ink` (`on_the_way`) |
 | Close-up in conversations, first try: the camera moves in on Teo and whoever he's talking to (column layout; F3 or Settings to turn it off) | 2026-10-27 | `game/Main.Column.cs` |
 
 Health on 2026-10-26: 55 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
