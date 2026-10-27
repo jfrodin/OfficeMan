@@ -102,8 +102,19 @@ public partial class RoomView : Control
         return null;
     }
 
-    /// <summary>Teo's horizontal position on screen (unpanned).</summary>
-    public float TeoScreenX => _room is null ? 960 : _teo.Position.X * ScreenScale;
+    /// <summary>
+    /// Teo's horizontal position on screen (unpanned): the walking Teo, or, where he's part of the room
+    /// (in bed), that sprite, so the camera keeps him clear of the text column either way.
+    /// </summary>
+    public float TeoScreenX => _room is null ? 960 : TeoInRoom().X * ScreenScale;
+
+    private Vector2 TeoInRoom()
+    {
+        if (_teo.Visible) return _teo.Position;
+        foreach (var (thing, actor) in _present)
+            if (actor is not null && thing.Sprite is not null && thing.Sprite.StartsWith("teo")) return actor.Position;
+        return new Vector2(_room.Width / 2f, _room.Height);
+    }
 
     private float ScreenScale => _room is null ? 4 : 1920f / _room.Width;
 

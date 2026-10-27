@@ -286,9 +286,9 @@ public partial class Main
         if (_column.Visible && _roomView.Visible)
         {
             // Keep Teo and whoever he's with inside the part of the screen the column leaves free.
-            float teo = _roomView.TeoVisible ? _roomView.TeoScreenX : 960;
+            float teo = _roomView.TeoScreenX;
             float other = _focus is null ? teo : _roomView.ScreenX(_focus.ToLowerInvariant()) ?? teo;
-            float right = Math.Max(teo, other) + 170;
+            float right = Math.Max(teo, other) + 240;   // room for a body, and the soft edge of the column
             _panTarget = Math.Clamp(right - free, 0, ColumnW);
         }
         else _panTarget = 0;
