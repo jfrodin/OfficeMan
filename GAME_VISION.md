@@ -178,6 +178,7 @@ Status: creator's first sketches. Names depend on the setting. Nothing here is f
 - **[REQUIRED]** Every creative asset is made specifically for this project.
 - **[REQUIRED]** No third-party asset packs, stock art, downloaded sprites, existing game graphics, copyrighted music or other externally sourced creative assets.
 - **[PREFERENCE]** Any self-contained technique is allowed: procedural graphics, code-constructed pixel art, vector/layered illustration, runtime rendering, shaders and lighting, generated spritesheets and animation, procedural textures, synthesised music and sound.
+- **[AGREED 2026-10-27]** Sound: the game is sound, not music. Each place has its own sound (the fridge, the stairwell's echo and Stojan's TV, the office's strip lights and printer, the party's voices and the hen party's speaker, the club's bass through the walls), and music heard in the world (a speaker, through a wall) does a lot of the work. Score only in a few places: the title, a few bars with the place cards, the big moments; silence is used on purpose. The music is the creator's own: two instrumental pieces exist, one melancholy that sits askew against the feeling of a scene, one more ordinary. Sound effects are made in code.
 - **[REQUIRED]** Libraries, engines, fonts and dependencies are allowed when their licences permit commercial use. Licensing obligations must be identified.
 - **[REQUIRED]** Generated content should be reproducible and maintainable where practical.
 - **[REQUIRED]** The goal is a beautiful, distinctive, enjoyable game, not a demonstration of code-generated graphics.
@@ -312,6 +313,7 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | Pointing at things, after Disco Elysium: one plain pointer everywhere. What's under it lights up (the same way for everything, in the thing's own shape) and its name shows above it; Tab marks what can be used. The choices come after the click, as text. No verb icons. | §8 |
 | 2026-10-27 | New character: the man in the block opposite (about 35, long blond hair, ex-bodybuilder ruined by steroids, micropenis). Teo meets him later; name and size of the part open. | §5 |
 | 2026-10-27 | The man opposite is Rudi, "Rudi Titan" from his competition days. | §5 |
+| 2026-10-27 | Sound: mostly the world's own sound, music only in a few places; the music is the creator's own (two instrumentals so far). | §10 |
 | 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |
 | 2026-10-27 | The look: the game's current pixel art (option A in `design/art_direction.md`), with depth from layers and furniture out on the floor. No 3D. | §9 |
 | 2026-10-27 | Playtest builds may go online for one thing: F1 notes to the playtest's own Discord server, with a screenshot and the life's log. Release builds stay fully offline. | §11 |
