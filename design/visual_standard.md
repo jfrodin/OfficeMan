@@ -43,6 +43,12 @@ other two were never rebuilt for it, and I didn't look at them in the game befor
 - Each scene has a clear focal point (where the story happens), a readable silhouette for every important object, breathing space around them, and a foreground element for depth where it helps.
 - Objects sit on the floor line or the wall plane, never floating.
 
+**Furniture on the floor** (2026-10-27, first try)
+- Not everything against the walls. Desks, tables and trolleys stand out on the floor as **prop sprites**: one frame, anchored at the front foot, sorted by depth with the people, so someone can stand behind a desk and Teo in front of it.
+- A prop's `block` in the room json (half width, depth) is the floor it takes up. Teo walks round it, and the art generator puts a soft shadow there, so the json is the one place that says where furniture stands.
+- People who work at a desk stand behind it. Things that belong on a wall (shelves, the cabinet, the noticeboard) stay there.
+- Screens on a prop can't use the emissive layer (they move with the sprite). They're drawn bright, a small light in the room json lights round them, and the room's glow layer gives the bloom.
+
 **Environmental storytelling**
 - Every object earns its place by saying something about who lives or works there. No random decoration.
 
@@ -63,7 +69,9 @@ One typography everywhere (same font, sizes 26-30, warm name colour, cool italic
 
 Characters without portrait art speak in the bar with their name only, never behind an empty silhouette.
 
-**Camera.** It doesn't move when dialogue opens. It rises only when the bar would cover Teo or the person talking to him, only by as much as needed (at most 120 px), eases there smoothly, ignores small changes, and settles back when Teo walks again.
+**Close-up** (2026-10-27, first try, column layout). When Teo talks to someone in the room, the camera moves in on the two of them (×2, or ×1.5 if they stand apart, so the pixels stay square) and back out when he walks again. F3 or Settings turns it off.
+
+**Camera (bottom bar).** It doesn't move when dialogue opens. It rises only when the bar would cover Teo or the person talking to him, only by as much as needed (at most 120 px), eases there smoothly, ignores small changes, and settles back when Teo walks again.
 
 **Resolutions.** The game renders at 1920×1080 and scales (checked at 1024×768, 1280×720, 1600×900, 2560×1080). Other aspect ratios get black bars. Body text is about 16 px high at 1024 wide: readable, but the smallest sensible window.
 

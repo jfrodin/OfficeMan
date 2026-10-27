@@ -67,6 +67,7 @@ Assistant suggestions are never recorded as [REQUIRED] or [AGREED] until the cre
 - **[PREFERENCE]** First thought: a made-up Eastern European country. All writing in English. The setting might be used to make fun of biases. Not settled.
 - **[AGREED 2026-10-18]** Office Man is a local, not a foreigner.
 - **[AGREED 2026-10-18]** Setting: a small, contemporary country that recently joined the EU. EU funding pours in; glass towers rise next to concrete housing blocks; Western consultants explain the country to itself. The permits office sits in the middle of the money flood. Present-day technology (smartphones, Teams, Instagram). Satire targets bias, especially the Western gaze, not the locals.
+- **[AGREED 2026-10-27]** The currency is the euro: the country is new in the EU and has already switched. Teo's pay, payday and whether money shows on screen are still open (proposed: it doesn't; he checks his balance on the phone).
 - **[PREFERENCE]** Names and signs use an invented language that blends several real ones, so no real country is the joke.
 - **[PREFERENCE]** A warm, bright summer as a counterpoint to the grey-Eastern-Europe image.
 - **[OPEN]** Country, city and character names.
@@ -298,3 +299,4 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-26 | The party goes on until 01:00 (was 23:30). | §8 |
 | 2026-10-26 | Lasting trait shifts made rarer: at most one a day, common moments need a second sign. | §7 |
 | 2026-10-26 | Leaving the party early: by chance, someone may try to make Teo stay. He can always go. | §8 |
+| 2026-10-27 | The currency is the euro (the country is new in the EU). | §3 |

@@ -31,6 +31,7 @@ public partial class RoomView : Control
     private Smoke _smoke = null!;
     private ClockHands _hands = null!;
     private List<RoomLayout.RoomLight> _lights = new();
+    private readonly List<Rect2> _blocks = new();
     private Vector4[] _lightPos = new Vector4[16];
 
     /// <summary>How drunk Teo is (0-4): he walks a little crooked.</summary>
@@ -66,9 +67,39 @@ public partial class RoomView : Control
         set { _pan = value; Place(); }
     }
 
+    private float _zoom = 1;
+    private Vector2 _shift;
+
+    /// <summary>
+    /// How close the camera is: 1 shows the whole room. At 1.5 or 2 one art pixel is six or eight screen pixels,
+    /// so the pixels stay square; in between (while it moves) they shimmer for a moment.
+    /// </summary>
+    public float Zoom
+    {
+        get => _zoom;
+        set { _zoom = value; Place(); }
+    }
+
+    /// <summary>Where the zoomed-in room is moved to (screen pixels, added to the pan and lift).</summary>
+    public Vector2 Shift
+    {
+        get => _shift;
+        set { _shift = value; Place(); }
+    }
+
     private void Place()
     {
-        if (_screen is not null) _screen.Position = new Vector2(-Mathf.Round(_pan), -Mathf.Round(_lift));
+        if (_screen is null) return;
+        _screen.Scale = new Vector2(_zoom, _zoom);
+        _screen.Position = new Vector2(-Mathf.Round(_pan) + Mathf.Round(_shift.X), -Mathf.Round(_lift) + Mathf.Round(_shift.Y));
+    }
+
+    /// <summary>Where a thing stands on screen (unzoomed, unpanned), by id or anchor.</summary>
+    public Vector2? ScreenAt(string anchor)
+    {
+        foreach (var (thing, actor) in _present)
+            if ((thing.Id == anchor || thing.AnchorId == anchor) && !thing.Prop) return new Vector2(thing.X, thing.Y) * ScreenScale;
+        return null;
     }
 
     /// <summary>Teo's horizontal position on screen (unpanned).</summary>
@@ -173,14 +204,18 @@ public partial class RoomView : Control
     {
         foreach (var (_, actor) in _present) actor?.QueueFree();
         _present.Clear();
+        _blocks.Clear();
         _smoke.Sources.Clear();
         foreach (var thing in _room.Things)
         {
             if (thing.When is not null && !present(thing.When)) continue;
+            if (thing.Block is { Length: 2 } b)
+                _blocks.Add(new Rect2(thing.X - b[0], thing.Y - b[1], b[0] * 2, b[1]));
             Actor? actor = null;
             if (thing.Sprite is not null)
             {
-                actor = new Actor(_texture(_art.Sprite(thing.Sprite)), _shadow) { Position = new Vector2(thing.X, thing.Y), FaceLeft = thing.FaceLeft };
+                actor = new Actor(_texture(_art.Sprite(thing.Sprite)), thing.Prop ? null : _shadow, thing.Prop ? 1 : 6)
+                    { Position = new Vector2(thing.X, thing.Y), FaceLeft = thing.FaceLeft };
                 _actors.AddChild(actor);
                 if (thing.Smoke is { Length: 2 } sm)
                     _smoke.Sources.Add(new Vector2(thing.X + (thing.FaceLeft ? -sm[0] : sm[0]), thing.Y + sm[1]));
@@ -249,7 +284,11 @@ public partial class RoomView : Control
         var t = _present.Select(x => x.thing).FirstOrDefault(x => x.AnchorId == anchor);
         if (t is null) return;
         float y = t.Wall ? _room.Walk.MinY + 4 : Math.Clamp(t.Y + 10, _room.Walk.MinY, _room.Walk.MaxY);
-        _teo.Position = new Vector2(Math.Clamp(t.X - 18, _room.Walk.MinX, _room.Walk.MaxX), y);
+        var p = new Vector2(Math.Clamp(t.X - 18, _room.Walk.MinX, _room.Walk.MaxX), y);
+        // Not inside a desk: step out in front of it.
+        foreach (var r in _blocks)
+            if (Inside(r, p)) p.Y = Math.Min(r.End.Y + 1, _room.Walk.MaxY);
+        _teo.Position = p;
         _teo.FaceLeft = false;
     }
 
@@ -257,7 +296,7 @@ public partial class RoomView : Control
     public void FaceTeo(string anchor)
     {
         foreach (var (thing, actor) in _present)
-            if (thing.AnchorId == anchor && actor is not null) actor.FaceLeft = actor.Position.X > _teo.Position.X;
+            if (thing.AnchorId == anchor && actor is not null && !thing.Prop) actor.FaceLeft = actor.Position.X > _teo.Position.X;
     }
 
     public override void _Process(double delta)
@@ -277,12 +316,24 @@ public partial class RoomView : Control
             var next = _teo.Position + dir.LimitLength(1.4f) * WalkSpeed * (float)delta;
             next.X = Math.Clamp(next.X, _room.Walk.MinX, _room.Walk.MaxX);
             next.Y = Math.Clamp(next.Y, _room.Walk.MinY, _room.Walk.MaxY);
+            // Round furniture: slide along it rather than stop dead.
+            var from = _teo.Position;
+            if (Blocked(next))
+                next = !Blocked(new Vector2(next.X, from.Y)) ? new Vector2(next.X, from.Y)
+                     : !Blocked(new Vector2(from.X, next.Y)) ? new Vector2(from.X, next.Y)
+                     : from;
             if (Math.Abs(dir.X) > 0.1f) _teo.FaceLeft = dir.X < 0;
             _teo.Position = next;
             _teo.Walking = true;
         }
         else _teo.Walking = false;
     }
+
+    private bool Blocked(Vector2 p) => _blocks.Exists(r => Inside(r, p));
+
+    // A footprint includes its front edge: Teo's feet can't stand on the desk's front foot.
+    private static bool Inside(Rect2 r, Vector2 p) =>
+        p.X > r.Position.X && p.X < r.End.X && p.Y > r.Position.Y && p.Y <= r.End.Y;
 
     /// <summary>Failing bulbs: mostly steady, sometimes a dip, now and then a stutter.</summary>
     private void Flicker()
@@ -385,7 +436,10 @@ public partial class RoomView : Control
         }
     }
 
-    /// <summary>A person on the floor: a sprite sheet with idle (0-1) and walk (2-5) frames, anchored at the feet, with a soft shadow.</summary>
+    /// <summary>
+    /// A person on the floor: a sprite sheet with idle (0-1) and walk (2-5) frames, anchored at the feet, with a soft shadow.
+    /// Furniture is an actor with one frame and no shadow (its shadow is in the room picture).
+    /// </summary>
     private partial class Actor : Sprite2D
     {
         private double _t;
@@ -395,21 +449,22 @@ public partial class RoomView : Control
 
         public bool FaceLeft { get => FlipH; set => FlipH = value; }
 
-        public Actor(Texture2D sheet, Texture2D shadow)
+        public Actor(Texture2D sheet, Texture2D? shadow, int frames = 6)
         {
             Texture = sheet;
-            Hframes = 6;
+            Hframes = frames;
             Centered = true;
             // Anchored at the feet whatever the frame size. Someone lying down (a frame wider than tall) casts no foot shadow.
-            int frameW = sheet.GetWidth() / 6, frameH = sheet.GetHeight();
+            int frameW = sheet.GetWidth() / frames, frameH = sheet.GetHeight();
             Offset = new Vector2(0, -frameH / 2);
             TextureFilter = TextureFilterEnum.Nearest;
-            if (frameH > frameW)
+            if (shadow is not null && frameH > frameW)
                 AddChild(new Sprite2D { Texture = shadow, Position = new Vector2(0, 0), ShowBehindParent = true, TextureFilter = TextureFilterEnum.Nearest });
         }
 
         public override void _Process(double delta)
         {
+            if (Hframes == 1) return;
             _t += delta;
             Frame = Walking ? 2 + (int)(_t * 8) % 4 : ((int)((_t + _offset) / 0.7) % 2);
         }

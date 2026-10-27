@@ -277,6 +277,7 @@ public partial class Main : Control
         if (e.IsActionPressed("quicksave")) { Save("quicksave"); Toast("Saved"); return; }
         if (e.IsActionPressed("quickload")) { if (Load("quicksave")) Toast("Loaded"); return; }
         if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F2 } && _mode != Mode.Menu) { ToggleTextLayout(); return; }
+        if (e is InputEventKey { Pressed: true, Echo: false, Keycode: Key.F3 } && _mode != Mode.Menu) { ToggleTalkZoom(); return; }
         if (MenuInput(e)) { GetViewport().SetInputAsHandled(); return; }
 
         switch (_mode)

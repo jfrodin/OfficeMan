@@ -19,6 +19,7 @@ public partial class Main
         public bool Fullscreen { get; set; }
         public int TextSpeed { get; set; } = 1;   // index into TextSpeeds
         public int TextLayout { get; set; }       // 0 the column on the right, 1 the bar along the bottom
+        public bool TalkZoom { get; set; } = true; // the camera moves in on a conversation (column only)
     }
 
     private static readonly (string name, double cps)[] TextSpeeds = { ("Slow", 32), ("Normal", 55), ("Fast", 90), ("Instant", 100000) };
@@ -156,6 +157,11 @@ public partial class Main
         {
             ToggleTextLayout();
             ShowSettingsMenu(2);
+        }),
+        ($"Close-up in conversations:  {(_settings.TalkZoom ? "On" : "Off")}   (F3)", () =>
+        {
+            ToggleTalkZoom();
+            ShowSettingsMenu(3);
         }),
         ("Back", ShowMainMenu),
     });

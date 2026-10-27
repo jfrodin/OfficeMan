@@ -97,7 +97,15 @@ if (sets.Contains("game"))
     foreach (var person in PixelPeople.All)
         Png.Save(PixelPeople.Sheet(person), Path.Combine(sprites, $"{person.Name}.png"));
     Png.Save(LyingPerson.Sheet(PixelPeople.Teo), Path.Combine(sprites, "teo_bed.png"));
+    // Furniture out on the floor: one frame each, placed by content/rooms/*.json.
     Png.Save(TerraceRoom.BarCounter(), Path.Combine(sprites, "terrace_bar.png"));
+    Png.Save(TerraceRoom.TicketTable(), Path.Combine(sprites, "terrace_tickets.png"));
+    foreach (var kind in new[] { "cloth", "drinks", "empty" })
+        Png.Save(TerraceRoom.BistroTable(kind), Path.Combine(sprites, $"terrace_table_{kind}.png"));
+    Png.Save(TerraceRoom.StandingTable(), Path.Combine(sprites, "terrace_standing.png"));
+    foreach (var who in new[] { "magda", "teo", "kornel", "zdenka" })
+        Png.Save(OfficeRoom.DeskSprite($"office_desk_{who}"), Path.Combine(sprites, $"office_desk_{who}.png"));
+    Png.Save(OfficeRoom.Trolley(), Path.Combine(sprites, "office_trolley.png"));
     foreach (var person in PixelPeople.Sitters)
         Png.Save(PixelPeople.SittingSheet(person), Path.Combine(sprites, $"{person.Name}_sit.png"));
     foreach (var (name, image) in Placeholders.Scenes())

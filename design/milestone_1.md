@@ -11,7 +11,7 @@ characters without the creator.
 
 ---
 
-## 1. Status (updated 2026-10-26)
+## 1. Status (updated 2026-10-27)
 
 The list to check before starting work. Update it whenever something is done or decided.
 
@@ -34,6 +34,8 @@ The list to check before starting work. Update it whenever something is done or 
 | A text column on the right (a log you can scroll back), now the default; the old bar in Settings / F2. Click moves text on; a single choice just happens | 2026-10-26 | `game/Main.Column.cs` |
 | Office: a wall clock that shows the time; Look busy shorter and varied; the dead afternoon can be skipped | 2026-10-26 | |
 | Waking at Magda's, Kornel's or the station shows that place | 2026-10-26 | |
+| Furniture out on the floor, first try: desks in the office, tables on the terrace, as sprites people stand behind and in front of; Teo walks round them | 2026-10-27 | `content/rooms`, `design/visual_standard.md` |
+| Close-up in conversations, first try: the camera moves in on Teo and whoever he's talking to (column layout; F3 or Settings to turn it off) | 2026-10-27 | `game/Main.Column.cs` |
 
 Health on 2026-10-26: 55 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
 storylet reached.
@@ -52,11 +54,13 @@ storylet reached.
 ### Needs the creator
 
 1. **Play it.** The text (first pass) and the text column are both new. Is the voice right? Column or bar?
-   (`design/text_review.md`, F2 to switch.)
-2. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
+   (`design/text_review.md`, F2 to switch.) Also new: furniture out on the floor, and the close-up (F3).
+2. **Money.** Euro is agreed. Proposed: no number on screen, Teo checks his balance on the phone. Still to decide:
+   his pay, payday, what he has on Tuesday morning, and what the gift costs (500 next to an 8-euro beer).
+3. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
    most simulated lives leave before ten (5 to 24% are there at ten). The playtest will show whether a real player
    does the same. If so: open "Go home" later.
-3. **Your notes** (`design/noted.md`): the open ones, fixed only when you ask.
+4. **Your notes** (`design/noted.md`): the open ones, fixed only when you ask.
 
 ### Known weak spots (evidence)
 

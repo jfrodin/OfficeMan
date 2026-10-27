@@ -144,7 +144,8 @@ public partial class Main
             if (_shotMenu == "settings") ShowSettingsMenu();
             else if (_shotMenu == "load") ShowLoadMenu();
         }
-        GetTree().CreateTimer(0.4).Timeout += () =>
+        // Long enough for the camera to settle (the close-up eases in).
+        GetTree().CreateTimer(1.6).Timeout += () =>
         {
             GetViewport().GetTexture().GetImage().SavePng(_shotPath ?? Path.Combine(OS.GetUserDataDir(), "shot.png"));
             GetTree().Quit();

@@ -1,5 +1,6 @@
 using OfficeMan.ArtGen.Raster;
 using OfficeMan.ArtGen.Scenes;
+using static OfficeMan.ArtGen.Rooms.RoomKit;
 
 namespace OfficeMan.ArtGen.Rooms;
 
@@ -7,7 +8,8 @@ namespace OfficeMan.ArtGen.Rooms;
 /// The Permits Section, 480×270, in layers for the room shader:
 /// albedo (unlit colour), emissive (what glows), glow (blurred emissive) and front (in front of people).
 /// Lights live in content/rooms/office.json; positions here must match it.
-/// Emissive things stay above y≈134 so people (heads from y≈136 down) never stand in front of them.
+/// The desks and the file trolley stand out on the floor as prop sprites (<see cref="DeskSprite"/>, <see cref="Trolley"/>),
+/// placed by office.json; the picture only holds their shadows and the bloom around the screens.
 /// </summary>
 public static class OfficeRoom
 {
@@ -45,8 +47,9 @@ public static class OfficeRoom
         WallThings(a, e);
         ViktorsOffice(a, e);
         DoorCabinetCooler(a, e);
-        Desks(a, e);
-        FloorThings(a);
+        Archive(a);
+        PropShadows(a, "office");
+        ScreenGlow(e);
         Foreground(f);
 
         return new Layers(a.Render(), e, Glow(e), f);
@@ -203,105 +206,144 @@ public static class OfficeRoom
         a.FillRect(65, 150, 68, 152, Metal, (x, y) => 0.4, 0);
     }
 
-    private static void Desks(SceneCanvas a, Canvas e)
+    private static void Archive(SceneCanvas a)
     {
-        int[][] desks = { new[] { 80, 142 }, new[] { 160, 222 }, new[] { 240, 302 }, new[] { 318, 380 } };
-        foreach (var d in desks) Desk(a, d[0], d[1]);
+        // Along the back wall, now the desks are out on the floor: a low run of shelves, lever-arch files for every
+        // permit since 1994. The spines fade from left to right. A box nobody has unpacked since 2019 on the end.
+        a.FillRect(84, 146, 286, 148, Wood, (x, y) => 0.6, 0);
+        a.FillRect(86, 148, 284, WallBottom, Wood, (x, y) => 0.3, 0);
+        a.FillRect(86, 161, 284, 162, Wood, (x, y) => 0.55, 0);
+        Ramp[] spines = { BlueB, GreenMetal, Paper, RedB };
+        foreach (int top in new[] { 149, 163 })
+            for (int x = 88; x < 282; x += 4)
+            {
+                if ((x * 7 + top) % 23 == 0) continue;     // one missing here and there
+                var ramp = spines[(x / 4 + top) % 4 == 0 ? 3 : (x / 12) % 3];
+                double fade = 0.55 - (x - 88) / 900.0;
+                a.FillRect(x, top, x + 3, top + 11, ramp, (xx, y) => fade + (xx == x ? 0.12 : 0), 0);
+                a.FillRect(x + 1, top + 5, x + 2, top + 7, Paper, (xx, y) => 0.85, 0);
+            }
+        a.FillRect(256, 130, 280, 146, Paper, (x, y) => 0.5 - (x > 276 ? 0.1 : 0) + (y == 130 ? 0.12 : 0), 0);
+        a.FillRect(256, 136, 280, 137, Paper, (x, y) => 0.38, 0);
+    }
 
-        // Magda: balloons on strings, the GIFT tin, a photo of two small kids, a mug that says MUM.
-        foreach (var (bx, by, ramp) in new[] { (92, 88, RedB), (104, 80, BlueB), (116, 90, RedB), (110, 100, BlueB) })
+    /// <summary>The bloom around the desk screens. The screens themselves are in the desk sprites.</summary>
+    private static void ScreenGlow(Canvas e)
+    {
+        foreach (var p in Props("office"))
+            if (p.Sprite is "office_desk_teo" or "office_desk_kornel")
+            {
+                var (sx, sy, sw, sh) = Screen(p.Sprite);
+                int x0 = p.X - DeskW / 2 + sx, y0 = p.Y - DeskH(p.Sprite) + sy;
+                Emit(e, x0, y0, x0 + sw, y0 + sh, Rgb.Hex("6aa0c8").Mix(Rgb.Hex("000000"), 0.35));
+            }
+    }
+
+    // ── Furniture on the floor (prop sprites) ──────────────────
+
+    public const int DeskW = 64;
+
+    private static int DeskH(string sprite) => sprite == "office_desk_magda" ? 120 : 70;
+
+    /// <summary>Where the screen sits in a desk sprite: x, y, width, height.</summary>
+    private static (int x, int y, int w, int h) Screen(string sprite) =>
+        (sprite == "office_desk_kornel" ? 34 : 8, DeskH(sprite) - 46, 20, 14);
+
+    /// <summary>
+    /// A desk out on the floor, seen a little from above: the top, its front edge, a modesty panel, steel feet.
+    /// The chair is pushed in behind it, so only its back shows. Whoever works here stands behind it.
+    /// Anchored at the front foot. Each desk says who sits at it.
+    /// </summary>
+    public static Canvas DeskSprite(string sprite)
+    {
+        int h = DeskH(sprite), f = h;
+        var a = new SceneCanvas(DeskW, h);
+
+        // The chair's back, behind the desk.
+        int cx = sprite == "office_desk_kornel" ? 8 : 44;
+        a.FillRect(cx, f - 42, cx + 13, f - 25, Fabric, (x, y) => (x == cx ? 0.75 : 0.52) + (y == f - 42 ? 0.15 : 0) - (y - f + 42) / 90.0, 0);
+
+        // Top, front edge, panel, feet.
+        a.FillRect(0, f - 27, DeskW, f - 21, Wood, (x, y) => y == f - 27 ? 0.66 : 0.78, 0);
+        a.FillRect(0, f - 21, DeskW, f - 19, Wood, (x, y) => 0.55, 0);
+        a.FillRect(2, f - 19, DeskW - 2, f - 3, Wood, (x, y) => 0.34 + (x is 2 or 3 ? -0.1 : 0) + Noise(x, y, 5) * 0.04, 0);
+        a.FillRect(6, f - 12, DeskW - 6, f - 11, Wood, (x, y) => 0.2, 0);
+        foreach (int lx in new[] { 2, DeskW - 5 }) a.FillRect(lx, f - 3, lx + 3, f, Metal, (x, y) => 0.45, 0);
+
+        int top = f - 24;   // where things stand on the desk
+        switch (sprite)
         {
-            foreach (var (x, y) in Circle(bx, by, 6)) a.Paint(x, y, ramp, 0.55 + (bx - x + by - y) * 0.035, 0);
-            a.Paint(bx - 2, by - 3, Paper, 1.0, 0);
-            for (int y = by + 6; y < 154; y++) a.Paint(bx + (y / 5 % 2), y, Paper, 0.75, 0);
+            case "office_desk_teo":
+                // A monitor, a keyboard, a pile, a mug.
+                DeskMonitor(a, sprite, top);
+                a.FillRect(10, top + 1, 28, top + 2, Metal, (x, y) => 0.8, 0);
+                a.FillRect(36, top - 10, 52, top + 1, Paper, (x, y) => 0.6 + ((y - top) % 2) * 0.12, 0);
+                a.FillRect(40, top - 14, 54, top - 10, Paper, (x, y) => 0.5, 0);
+                a.FillRect(30, top - 5, 34, top + 1, Paper, (x, y) => 0.85, 0);
+                a.Paint(34, top - 3, Paper, 0.85, 0);
+                break;
+            case "office_desk_kornel":
+                // A monitor, stacks squared to the edge, a pen pot with three red pens, a ruler laid parallel.
+                DeskMonitor(a, sprite, top);
+                a.FillRect(36, top + 1, 54, top + 2, Metal, (x, y) => 0.8, 0);
+                a.FillRect(6, top - 8, 22, top + 1, Paper, (x, y) => 0.8, 0);
+                a.FillRect(8, top - 10, 20, top - 8, Paper, (x, y) => 0.9, 0);
+                a.FillRect(26, top - 5, 31, top + 1, Metal, (x, y) => 0.6, 0);
+                for (int i = 0; i < 3; i++) a.FillRect(27 + i * 2, top - 10, 28 + i * 2, top - 5, RedB, (x, y) => 0.6, 0);
+                break;
+            case "office_desk_magda":
+                // Balloons tied to the GIFT tin, a photo of two small kids, a mug that says MUM.
+                foreach (var (bx, by, ramp) in new[] { (14, 10, RedB), (26, 4, BlueB), (38, 12, RedB), (30, 22, BlueB) })
+                {
+                    foreach (var (x, y) in Circle(bx, by, 6)) a.Paint(x, y, ramp, 0.55 + (bx - x + by - y) * 0.035, 0);
+                    a.Paint(bx - 2, by - 3, Paper, 1.0, 0);
+                    for (int y = by + 6; y < top - 8; y++) a.Paint(bx + (y / 5 % 2) + (40 - bx) * (y - by) / (top - by) , y, Paper, 0.75, 0);
+                }
+                a.FillRect(36, top - 9, 46, top + 1, Metal, (x, y) => 0.85 - (x > 43 ? 0.15 : 0), 0);
+                a.FillRect(38, top - 6, 44, top - 5, RedB, (x, y) => 0.7, 0);
+                a.FillRect(6, top - 12, 16, top + 1, Wood, (x, y) => 0.6, 0);
+                a.FillRect(8, top - 10, 14, top - 1, Paper, (x, y) => 0.7, 0);
+                a.FillRect(20, top - 6, 25, top + 1, Paper, (x, y) => 0.95, 0);
+                break;
+            case "office_desk_zdenka":
+                // One file, one ruler, the lamp.
+                a.FillRect(8, top - 3, 28, top + 1, Paper, (x, y) => 0.75, 0);
+                a.FillRect(30, top + 1, 50, top + 2, Metal, (x, y) => 0.95, 0);
+                a.FillRect(56, top - 22, 58, top + 1, Metal, (x, y) => 0.6, 0);
+                a.FillRect(53, top + 0, 61, top + 1, Metal, (x, y) => 0.5, 0);
+                a.FillRect(46, top - 26, 58, top - 21, GreenMetal, (x, y) => 0.6 + (y == top - 26 ? 0.15 : 0), 0);
+                for (int x = 48; x < 57; x++) a.Emit(x, top - 21, Rgb.Hex("ffe0a0"));
+                break;
         }
-        a.FillRect(126, 144, 134, 154, Metal, (x, y) => 0.85, 0);
-        a.FillRect(84, 142, 94, 154, Wood, (x, y) => 0.6, 0);
-        a.FillRect(86, 144, 92, 152, Paper, (x, y) => 0.7, 0);
-        a.FillRect(98, 148, 103, 154, Paper, (x, y) => 0.95, 0);
-
-        // Teo: a monitor, a pile, a mug.
-        Monitor(a, e, 172);
-        Keyboard(a, 168);
-        a.Paint(172, 150, Paper, 0.85, 0); a.Paint(172, 151, Paper, 0.85, 0);           // the mug's handle
-        a.FillRect(198, 142, 214, 154, Paper, (x, y) => 0.6 + ((y - 128) % 2) * 0.12, 0);
-        a.FillRect(204, 138, 216, 142, Paper, (x, y) => 0.5, 0);
-        a.FillRect(166, 148, 171, 154, Paper, (x, y) => 0.85, 0);
-
-        // Kornel: a monitor, stacks squared to the edge, a pen pot.
-        Monitor(a, e, 252);
-        Keyboard(a, 254);
-        a.FillRect(280, 146, 296, 154, Paper, (x, y) => 0.8, 0);
-        a.FillRect(282, 144, 294, 146, Paper, (x, y) => 0.9, 0);
-        a.FillRect(244, 146, 249, 154, Metal, (x, y) => 0.6, 0);
-        for (int i = 0; i < 3; i++) a.FillRect(245 + i * 2, 141, 246 + i * 2, 146, RedB, (x, y) => 0.6, 0);
-
-        // Zdenka: one file, one ruler, a lamp.
-        a.FillRect(326, 148, 344, 154, Paper, (x, y) => 0.75, 0);
-        a.FillRect(346, 152, 366, 153, Metal, (x, y) => 0.95, 0);
-        a.FillRect(372, 132, 374, 154, Metal, (x, y) => 0.6, 0);
-        a.FillRect(364, 128, 376, 134, GreenMetal, (x, y) => 0.6, 0);
-        for (int x = 366; x < 375; x++) e[x, 134] = Rgb.Hex("ffd890");
-
-        // Chairs pulled out beside each desk.
-        foreach (var d in desks) Chair(a, d[1] + 4);
+        return a.Render();
     }
 
-    private static void Desk(SceneCanvas a, int x0, int x1)
+    private static void DeskMonitor(SceneCanvas a, string sprite, int top)
     {
-        a.FillRect(x0, 154, x1, 157, Wood, (x, y) => y == 154 ? 0.85 : 0.6, 0);
-        a.FillRect(x0 + 2, 157, x1 - 2, WallBottom, Wood, (x, y) => 0.35 + (x == x0 + 2 ? -0.1 : 0) + Noise(x, y, 5) * 0.04, 0);
-        a.FillRect(x0 + 6, 164, x1 - 6, 165, Wood, (x, y) => 0.2, 0);
-        a.FillRect(x0 + 6, 174, x1 - 6, 175, Wood, (x, y) => 0.2, 0);
+        var (sx, sy, sw, sh) = Screen(sprite);
+        a.FillRect(sx - 2, sy - 2, sx + sw + 2, sy + sh + 2, Fabric, (x, y) => 0.5, 0);
+        for (int y = sy; y < sy + sh; y++)
+            for (int x = sx; x < sx + sw; x++)
+                a.Emit(x, y, Rgb.Hex("8ec0e4").Mix(Rgb.Hex("f0f6fa"), (y % 3 == 0 ? 0.35 : 0.1) + (x - sx) / 80.0));
+        int mx = sx + sw / 2;
+        a.FillRect(mx - 2, sy + sh + 2, mx + 2, top, Fabric, (x, y) => 0.4, 0);
+        a.FillRect(mx - 7, top - 1, mx + 7, top + 1, Fabric, (x, y) => 0.55, 0);
     }
 
-    private static void Monitor(SceneCanvas a, Canvas e, int x0)
+    /// <summary>The file trolley, out on the floor where it was left: files waiting on three shelves, four castors.</summary>
+    public static Canvas Trolley()
     {
-        a.FillRect(x0, 128, x0 + 24, 146, Fabric, (x, y) => 0.5, 0);
-        for (int y = 130; y < 144; y++)
-            for (int x = x0 + 2; x < x0 + 22; x++)
-                e[x, y] = Rgb.Hex("6aa0c8").Mix(Rgb.Hex("dceaf4"), (y % 3 == 0 ? 0.35 : 0.1) + (x - x0) / 80.0).Mix(Rgb.Hex("000000"), 0.35);
-        a.FillRect(x0 + 10, 146, x0 + 14, 152, Fabric, (x, y) => 0.4, 0);
-        a.FillRect(x0 + 4, 152, x0 + 20, 154, Fabric, (x, y) => 0.55, 0);
-    }
-
-    /// <summary>An office chair in side view, pulled out, facing the desk on its left.</summary>
-    private static void Chair(SceneCanvas a, int x)
-    {
-        // Backrest: a padded oval on a curved stem.
-        a.FillRect(x + 9, 141, x + 13, 157, Fabric, (xx, y) => (xx == x + 9 ? 0.75 : 0.55) - (y - 141) / 90.0 + (y == 141 ? 0.15 : 0), 0);
-        a.FillRect(x + 10, 140, x + 12, 140, Fabric, (xx, y) => 0.6, 0);
-        a.FillRect(x + 11, 157, x + 12, 162, Metal, (xx, y) => 0.45, 0);
-        // Seat cushion, armrest.
-        a.FillRect(x, 160, x + 12, 163, Fabric, (xx, y) => y == 160 ? 0.8 : 0.5, 0);
-        a.FillRect(x + 1, 164, x + 11, 164, Fabric, (xx, y) => 0.3, 0);
-        a.FillRect(x + 2, 154, x + 9, 155, Metal, (xx, y) => 0.55, 0);
-        a.FillRect(x + 8, 155, x + 9, 159, Metal, (xx, y) => 0.4, 0);
-        // Gas lift, five-star base, castors.
-        a.FillRect(x + 5, 165, x + 6, 172, Metal, (xx, y) => 0.6 + (xx == x + 5 ? 0.15 : 0), 0);
-        a.FillRect(x - 1, 173, x + 13, 174, Metal, (xx, y) => 0.35, 0);
-        foreach (int cx in new[] { x - 1, x + 6, x + 12 }) a.FillRect(cx, 175, cx + 1, 176, Fabric, (xx, y) => 0.3, 0);
-    }
-
-    private static void Keyboard(SceneCanvas a, int x0)
-    {
-        a.FillRect(x0, 152, x0 + 18, 153, Metal, (x, y) => y == 152 ? 0.75 : 0.45, 0);
-        for (int x = x0 + 1; x < x0 + 18; x += 2) a.Paint(x, 152, Metal, 0.95, 0);
-        a.FillRect(x0 + 22, 152, x0 + 24, 153, Metal, (x, y) => 0.7, 0);                // the mouse
-    }
-
-    private static void FloorThings(SceneCanvas a)
-    {
-        // The file trolley.
-        a.FillRect(306, 156, 322, 158, Metal, (x, y) => 0.6, 0);
-        for (int y = 160; y < 178; y += 4) a.FillRect(304, y, 324, y + 3, Paper, (x, yy) => 0.55 + (y % 8) * 0.03, 0);
-        a.FillRect(304, 178, 306, 186, Metal, (x, y) => 0.4, 0);
-        a.FillRect(322, 178, 324, 186, Metal, (x, y) => 0.4, 0);
-        // A bin by Teo's desk, a cable that someone will trip on, a box nobody has unpacked since 2019.
-        a.FillRect(226, 172, 236, 184, Metal, (x, y) => 0.45 - (x == 226 ? 0.1 : 0), 0);
-        a.FillRect(228, 170, 234, 172, Paper, (x, y) => 0.7, 0);
-        for (int x = 200; x < 250; x++) a.Paint(x, 180 + (int)(Math.Sin(x * 0.2) * 1.2), Fabric, 0.3, 0);
-        a.FillRect(150, 166, 164, 180, Paper, (x, y) => 0.55 - (y == 166 ? -0.1 : 0), 0);
+        var a = new SceneCanvas(22, 34);
+        a.FillRect(1, 0, 21, 2, Metal, (x, y) => 0.65, 0);
+        for (int y = 3; y < 26; y += 7)
+        {
+            a.FillRect(0, y, 22, y + 5, Paper, (x, yy) => 0.55 + (y % 14) * 0.02 + ((x * 3 + yy) % 7 == 0 ? -0.1 : 0), 0);
+            a.FillRect(0, y + 5, 22, y + 6, Metal, (x, yy) => 0.5, 0);
+        }
+        a.FillRect(0, 0, 2, 31, Metal, (x, y) => 0.45, 0);
+        a.FillRect(20, 0, 22, 31, Metal, (x, y) => 0.4, 0);
+        foreach (int x in new[] { 0, 19 }) a.FillRect(x, 31, x + 3, 34, Fabric, (xx, y) => 0.3, 0);
+        return a.Render();
     }
 
     private static void Foreground(Canvas f)

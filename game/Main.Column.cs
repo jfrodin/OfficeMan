@@ -186,7 +186,20 @@ public partial class Main
         if (_mode is Mode.Talking or Mode.Choosing) Show(_view);
     }
 
-    /// <summary>Places the column and slides the room so the people in the conversation stay in view.</summary>
+    private void ToggleTalkZoom()
+    {
+        _settings.TalkZoom = !_settings.TalkZoom;
+        SaveSettings();
+        Toast(_settings.TalkZoom ? "Close-up in conversations: on" : "Close-up in conversations: off");
+    }
+
+    private const float TalkZoom = 2;
+
+    /// <summary>
+    /// Places the column and slides the room so the people in the conversation stay in view.
+    /// With the close-up on, the camera moves in on Teo and whoever he's talking to, and back out when he walks.
+    /// Only whole steps of art pixels (×2 or ×1.5 of the room's ×4), so the pixels stay square once it settles.
+    /// </summary>
     private void LayoutColumn(double delta)
     {
         _column.Position = new Vector2(1920 - ColumnW, 0);
@@ -204,6 +217,27 @@ public partial class Main
             _panTarget = Math.Clamp(right - (1920 - ColumnW), 0, ColumnW);
         }
         else _panTarget = 0;
+
+        float zoom = 1;
+        var shift = Vector2.Zero;
+        var with = _focus is null ? null : _roomView.ScreenAt(_focus.ToLowerInvariant());
+        if (_settings.TalkZoom && _column.Visible && _roomView.Visible && _roomView.TeoVisible && with is Vector2 them
+            && _mode is Mode.Talking or Mode.Choosing)
+        {
+            // The two of them, about chest high, in the middle of the space the column leaves.
+            var teo = new Vector2(_roomView.TeoScreenX, _roomView.ScreenFeet(null) ?? 900);
+            var mid = (teo + them) / 2 - new Vector2(0, 110);
+            // Closer when they stand close; further out when they're apart, so both stay in the picture.
+            float apart = Math.Abs(teo.X - them.X);
+            zoom = apart < 400 ? TalkZoom : apart < 600 ? 1.5f : 1;
+            shift = new Vector2((1920 - ColumnW) / 2f, 560) - mid * zoom;
+            shift.X = Math.Clamp(shift.X, 1920 - 1920 * zoom - ColumnW, 0);
+            shift.Y = Math.Clamp(shift.Y, 1080 - 1080 * zoom, 0);
+            _panTarget = 0;
+        }
+        float k = (float)(1 - Math.Exp(-delta * 5));
+        _roomView.Zoom = Math.Abs(zoom - _roomView.Zoom) < 0.004f ? zoom : _roomView.Zoom + (zoom - _roomView.Zoom) * k;
+        _roomView.Shift = (shift - _roomView.Shift).Length() < 1 ? shift : _roomView.Shift + (shift - _roomView.Shift) * k;
         _roomView.Pan += (float)((_panTarget - _roomView.Pan) * (1 - Math.Exp(-delta * 7)));
     }
 }

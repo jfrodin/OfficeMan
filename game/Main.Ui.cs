@@ -155,6 +155,8 @@ public partial class Main
             return;
         }
         _roomView.Pan += (float)((0 - _roomView.Pan) * (1 - Math.Exp(-delta * 4)));
+        _roomView.Zoom = 1;
+        _roomView.Shift = Vector2.Zero;
         bool portrait = _portraitCard.Visible && _panel.Visible;
         _barMargin.AddThemeConstantOverride("margin_left", portrait ? (int)PortraitW + 90 : 150);
         _text.CustomMinimumSize = new Vector2(1920 - (portrait ? PortraitW + 90 : 150) - 150, 40);

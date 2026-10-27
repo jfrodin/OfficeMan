@@ -93,6 +93,16 @@
     "felicity_sit": "art/game/sprites/felicity_sit.png",
     "hen_blonde_sit": "art/game/sprites/hen_blonde_sit.png",
     "hen_dark_sit": "art/game/sprites/hen_dark_sit.png",
-    "terrace_bar": "art/game/sprites/terrace_bar.png"
+    "terrace_bar": "art/game/sprites/terrace_bar.png",
+    "terrace_tickets": "art/game/sprites/terrace_tickets.png",
+    "terrace_table_cloth": "art/game/sprites/terrace_table_cloth.png",
+    "terrace_table_drinks": "art/game/sprites/terrace_table_drinks.png",
+    "terrace_table_empty": "art/game/sprites/terrace_table_empty.png",
+    "terrace_standing": "art/game/sprites/terrace_standing.png",
+    "office_desk_magda": "art/game/sprites/office_desk_magda.png",
+    "office_desk_teo": "art/game/sprites/office_desk_teo.png",
+    "office_desk_kornel": "art/game/sprites/office_desk_kornel.png",
+    "office_desk_zdenka": "art/game/sprites/office_desk_zdenka.png",
+    "office_trolley": "art/game/sprites/office_trolley.png"
   }
 }

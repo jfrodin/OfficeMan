@@ -1,5 +1,7 @@
 // The Permits Section. Pictures: art/game/rooms/office*.png (480×270), drawn by tools/OfficeMan.ArtGen/Rooms/OfficeRoom.cs.
 // Things with an anchor offer the storylets tagged "# where: <anchor>". "look" is what Teo thinks when there's nothing to do.
+// The desks and the trolley stand out on the floor (props with a "block" footprint Teo walks round); people stand behind
+// their desks. The art generator reads these positions for the shadows and the screens' glow.
 // Lights: x, y, radius, intensity, colour; "dir" makes a cone (inner/outer in degrees).
 {
   "id": "office",
@@ -20,9 +22,9 @@
     { "x": 63,  "y": 8, "radius": 150, "intensity": 0.28, "color": "cfe2ff" },
     { "x": 173, "y": 8, "radius": 150, "intensity": 0.28, "color": "cfe2ff" },
     { "x": 283, "y": 8, "radius": 150, "intensity": 0.28, "color": "cfe2ff" },
-    { "x": 184, "y": 138, "radius": 34, "intensity": 0.5, "color": "9fd0ff" },
-    { "x": 264, "y": 138, "radius": 34, "intensity": 0.5, "color": "9fd0ff" },
-    { "x": 370, "y": 134, "radius": 80, "intensity": 1.1, "color": "ffc878", "dir": [0.1, 1], "inner": 28, "outer": 55 },
+    { "x": 182, "y": 199, "radius": 36, "intensity": 0.55, "color": "9fd0ff" },
+    { "x": 274, "y": 199, "radius": 36, "intensity": 0.55, "color": "9fd0ff" },
+    { "x": 336, "y": 162, "radius": 70, "intensity": 1.1, "color": "ffc878", "dir": [0, 1], "inner": 28, "outer": 55 },
     { "x": 456, "y": 62, "radius": 150, "intensity": 0.9, "color": "ffdcae", "dir": [-0.35, 1], "inner": 20, "outer": 45 },
     { "x": 15,  "y": 102, "radius": 24, "intensity": 0.5, "color": "70f0a0" }
   ],
@@ -33,20 +35,25 @@
       "look": "The filing cabinet. The bottom drawer has been stuck since 2016. Nobody knows what's in it. Zdenka knows." },
     { "id": "cooler", "name": "The water cooler", "x": 68, "y": 190,
       "look": "The water cooler. It gurgles at me like it knows something." },
-    { "id": "magda", "name": "Magda", "sprite": "magda", "x": 112, "y": 202,
+    { "id": "desk_magda", "name": "", "sprite": "office_desk_magda", "x": 112, "y": 206, "prop": true, "block": [32, 16] },
+    { "id": "desk_teo", "name": "", "sprite": "office_desk_teo", "x": 196, "y": 238, "prop": true, "block": [33, 14] },
+    { "id": "desk_kornel", "name": "", "sprite": "office_desk_kornel", "x": 262, "y": 238, "prop": true, "block": [33, 14] },
+    { "id": "desk_zdenka", "name": "", "sprite": "office_desk_zdenka", "x": 348, "y": 206, "prop": true, "block": [32, 16] },
+    { "id": "trolley_prop", "name": "", "sprite": "office_trolley", "x": 318, "y": 234, "prop": true, "block": [11, 6] },
+    { "id": "magda", "name": "Magda", "sprite": "magda", "x": 102, "y": 195,
       "look": "Magda is blowing up another balloon. Nobody asked for balloons." },
-    { "id": "kornel_hovering", "anchor": "kornel", "name": "Kornel", "sprite": "kornel", "x": 214, "y": 218,
-      "faceLeft": true, "when": "day == 0 and time < 11:15" },
-    { "id": "desk", "name": "Your desk", "x": 191, "y": 192 },
-    { "id": "kornel", "name": "Kornel", "sprite": "kornel", "x": 271, "y": 204, "when": "not (day == 0 and time < 11:15)",
+    { "id": "kornel_hovering", "anchor": "kornel", "name": "Kornel", "sprite": "kornel", "x": 150, "y": 236,
+      "when": "day == 0 and time < 11:15" },
+    { "id": "desk", "name": "Your desk", "x": 196, "y": 222 },
+    { "id": "kornel", "name": "Kornel", "sprite": "kornel", "x": 246, "y": 222, "when": "not (day == 0 and time < 11:15)",
       "look": "Kornel is lining up his pens. He catches me looking and waves, like we're at an airport." },
     { "id": "noticeboard", "name": "The noticeboard", "x": 306, "y": 190, "wall": true,
       "look": "A fire drill from 2021. A lost umbrella. A photo of the Christmas party where everyone is looking at Viktor." },
-    { "id": "trolley", "name": "The file trolley", "x": 314, "y": 192,
+    { "id": "trolley", "name": "The file trolley", "x": 318, "y": 224,
       "look": "The trolley is where files go to wait. Some wait so long they become history." },
     { "id": "poster", "name": "The EU poster", "x": 350, "y": 190, "wall": true,
       "look": "A smiling family on a bridge we haven't built yet. Co-financed by the European Union." },
-    { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka", "x": 352, "y": 204, "faceLeft": true,
+    { "id": "zdenka", "name": "Zdenka", "sprite": "zdenka", "x": 360, "y": 195, "faceLeft": true,
       "look": "Zdenka is measuring something. She doesn't look up. She knows it's me from the footsteps." },
     { "id": "clock", "name": "The clock", "x": 380, "y": 190, "wall": true,
       "look": "The clock says {clock}. It feels later." },

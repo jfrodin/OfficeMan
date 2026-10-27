@@ -1,4 +1,6 @@
+using System.Text.Json;
 using OfficeMan.ArtGen.Raster;
+using OfficeMan.ArtGen.Scenes;
 
 namespace OfficeMan.ArtGen.Rooms;
 
@@ -92,6 +94,43 @@ public static class RoomKit
                 int d = (x - cx) * (x - cx) + (y - cy) * (y - cy);
                 if (d <= r * r && d > (r - 1) * (r - 1)) yield return (x, y);
             }
+    }
+
+    /// <summary>A piece of furniture as content/rooms/&lt;id&gt;.json places it: its sprite, front foot and footprint.</summary>
+    public sealed record Placed(string Sprite, int X, int Y, int HalfW, int Depth);
+
+    /// <summary>The furniture (props with a footprint) in a room's layout, so the pictures agree with the json.</summary>
+    public static List<Placed> Props(string roomId)
+    {
+        string root = Directory.GetCurrentDirectory();
+        for (var d = new DirectoryInfo(root); d is not null; d = d.Parent)
+            if (File.Exists(Path.Combine(d.FullName, "OfficeMan.sln"))) { root = d.FullName; break; }
+        var options = new JsonDocumentOptions { CommentHandling = JsonCommentHandling.Skip, AllowTrailingCommas = true };
+        using var doc = JsonDocument.Parse(File.ReadAllText(Path.Combine(root, "content", "rooms", roomId + ".json")), options);
+        var list = new List<Placed>();
+        foreach (var t in doc.RootElement.GetProperty("things").EnumerateArray())
+        {
+            if (!t.TryGetProperty("prop", out var prop) || !prop.GetBoolean()) continue;
+            if (!t.TryGetProperty("block", out var b)) continue;
+            list.Add(new Placed(t.GetProperty("sprite").GetString()!, t.GetProperty("x").GetInt32(), t.GetProperty("y").GetInt32(),
+                b[0].GetInt32(), b[1].GetInt32()));
+        }
+        return list;
+    }
+
+    /// <summary>A soft contact shadow on the floor under each piece of furniture: darker in the middle, a little wider than it.</summary>
+    public static void PropShadows(SceneCanvas a, string roomId)
+    {
+        foreach (var p in Props(roomId))
+        {
+            double cx = p.X, cy = p.Y - p.Depth / 2.0, rx = p.HalfW + 3, ry = p.Depth / 2.0 + 2;
+            for (int y = (int)(cy - ry); y <= (int)(cy + ry); y++)
+                for (int x = (int)(cx - rx); x <= (int)(cx + rx); x++)
+                {
+                    double d = Math.Pow((x - cx) / rx, 2) + Math.Pow((y - cy) / ry, 2);
+                    if (d < 1) a.AddLight(x, y, d < 0.55 ? -0.2 : -0.1);
+                }
+        }
     }
 
     /// <summary>Digits in a 3×5 pixel font, for clocks and door numbers.</summary>

@@ -6,12 +6,12 @@ namespace OfficeMan.ArtGen.Rooms;
 
 /// <summary>
 /// Terasa Velka, the summer party: a riverside terrace, side-on, to the visual standard.
-/// Left to right: the glass door from the street with the EU plaque, Magda's ticket table, the bar under a
-/// striped awning (bottles, a mirror Ramona can watch Viktor in), Zdenka's table, a potted olive tree, the
-/// railing over the river with string lights, two more tables, and the steps down to the river walk.
-/// Behind: the river, the far bank's housing blocks and a chimney, the sky. Drawn unlit; the evening
-/// (sun, dusk, string lights, night) is in content/rooms/terrace.json. The bar counter is a prop sprite
-/// (<see cref="BarCounter"/>) so Laci can stand behind it and Teo in front of it.
+/// Left to right: the glass door from the street with the EU plaque, the bar under a striped awning (bottles,
+/// a mirror Ramona can watch Viktor in), a potted olive tree, the railing over the river with string lights, and
+/// the steps down to the river walk. Behind: the river, the far bank's housing blocks and a chimney, the sky.
+/// Drawn unlit; the evening (sun, dusk, string lights, night) is in content/rooms/terrace.json.
+/// The furniture stands out on the deck as prop sprites, placed by terrace.json, so people can be in front of it
+/// and behind it: the bar counter, Magda's ticket table, the bistro tables and a standing table.
 /// </summary>
 public static class TerraceRoom
 {
@@ -47,9 +47,10 @@ public static class TerraceRoom
         Building(a, e);
         Railing(a);
         StringLights(a, e);
-        Tables(a);
+        OliveTree(a);
         Steps(a);
         DeckFloor(a);
+        PropShadows(a, "terrace");
         Foreground(f);
 
         return new RoomLayers(a.Render(), e, Glow(e), f);
@@ -139,14 +140,6 @@ public static class TerraceRoom
         a.FillRect(32, 32, 33, 82, Metal, (x, y) => 0.35, 0);
         for (int x = 10; x < 56; x += 9) Emit(e, x, 36, x + 3, 38, Rgb.Hex("fff0c8").Mix(Rgb.Hex("000000"), 0.2));   // the chandeliers inside
 
-        // Magda's ticket table by the door: a small table, an envelope, a cash tin.
-        a.FillRect(36, 154, 56, 156, Cloth, (x, y) => 0.7, 0);
-        a.FillRect(37, 156, 55, 160, Cloth, (x, y) => 0.55, 0);
-        a.FillRect(45, 160, 47, Base, Metal, (x, y) => 0.35, 0);
-        a.FillRect(41, 176, 51, Base, Metal, (x, y) => 0.3, 0);
-        a.FillRect(39, 150, 46, 153, Cloth, (x, y) => 0.95, 0);
-        a.FillRect(48, 150, 54, 153, Metal, (x, y) => 0.6, 0);
-
         // The bar's back wall under a striped awning: shelves of bottles and a long mirror.
         a.FillRect(64, 70, 160, 78, Canvas, (x, y) => (x / 6) % 2 == 0 ? 0.6 : 0, 0);
         for (int x = 64; x < 160; x++)
@@ -210,28 +203,8 @@ public static class TerraceRoom
             }
     }
 
-    private static void Tables(SceneCanvas a)
+    private static void OliveTree(SceneCanvas a)
     {
-        // Bistro tables against the railing (tops 24 px up, like the office desks). Zdenka's first.
-        foreach (var (x0, x1, cloth) in new[] { (186, 206, true), (372, 392, false), (426, 446, false) })
-        {
-            if (cloth)
-            {
-                a.FillRect(x0, 154, x1, 156, Cloth, (x, y) => 0.8, 0);
-                a.FillRect(x0 + 1, 156, x1 - 1, 162, Cloth, (x, y) => 0.6 - (x > x1 - 4 ? 0.15 : 0), 0);
-            }
-            else a.FillRect(x0, 154, x1, 156, Metal, (x, y) => y == 154 ? 0.7 : 0.45, 0);
-            int mx = (x0 + x1) / 2;
-            a.FillRect(mx - 1, cloth ? 162 : 157, mx, Base - 2, Metal, (x, y) => 0.4, 0);
-            a.FillRect(mx - 6, Base - 2, mx + 6, Base, Metal, (x, y) => 0.35, 0);
-        }
-        // Zdenka's mineral water, with a slice of lemon; a reserved card on another table.
-        a.FillRect(190, 148, 193, 153, Glass, (x, y) => 0.75, 0);
-        a.Paint(191, 149, Brass, 0.9, 0);
-        a.FillRect(378, 149, 385, 153, Cloth, (x, y) => 0.9, 0);
-        a.FillRect(431, 146, 435, 153, Bottle, (x, y) => 0.55, 0);
-        a.FillRect(437, 149, 441, 153, Glass, (x, y) => 0.7, 0);
-
         // The potted olive tree Kornel talks to (and someone pours zhivka into).
         a.FillRect(234, 160, 250, Base, Pot, (x, y) => 0.55 - (x > 246 ? 0.15 : 0) + (y == 160 ? 0.15 : 0), 0);
         a.FillRect(241, 132, 242, 160, Wood, (x, y) => 0.45, 0);
@@ -285,7 +258,7 @@ public static class TerraceRoom
         }
     }
 
-    /// <summary>The bar counter as a prop: 92×34 per frame, six identical frames, anchored at its foot.</summary>
+    /// <summary>The bar counter as a prop: 92×34, anchored at its foot.</summary>
     public static Canvas BarCounter()
     {
         var a = new SceneCanvas(92, 34);
@@ -293,9 +266,89 @@ public static class TerraceRoom
         a.FillRect(2, 3, 90, 34, Wood, (x, y) => 0.4 + ((x - 2) % 15 == 0 ? -0.12 : 0) - (x > 86 ? 0.12 : 0), 0);
         a.FillRect(2, 30, 90, 34, Wood, (x, y) => 0.22, 0);
         a.FillRect(2, 22, 90, 23, Brass, (x, y) => 0.6, 0);      // the foot rail
-        var one = a.Render();
-        var sheet = new Canvas(92 * 6, 34);
-        for (int i = 0; i < 6; i++) sheet.Draw(one, i * 92, 0);
-        return sheet;
+        return a.Render();
+    }
+
+    /// <summary>Magda's ticket table by the door: a folding table under a cloth, the envelope, the cash tin.</summary>
+    public static Canvas TicketTable()
+    {
+        var a = new SceneCanvas(24, 30);
+        a.FillRect(0, 6, 24, 9, Cloth, (x, y) => y == 6 ? 0.9 : 0.75, 0);
+        a.FillRect(1, 9, 23, 17, Cloth, (x, y) => 0.58 - (x > 19 ? 0.12 : 0) + ((x + 2) % 6 == 0 ? -0.06 : 0), 0);
+        foreach (int lx in new[] { 3, 19 }) a.FillRect(lx, 17, lx + 2, 30, Metal, (x, y) => 0.35, 0);
+        a.FillRect(3, 1, 10, 6, Cloth, (x, y) => 0.95, 0);       // the envelope
+        a.FillRect(13, 1, 21, 6, Metal, (x, y) => 0.62 + (y == 1 ? 0.15 : 0), 0);   // the cash tin
+        return a.Render();
+    }
+
+    /// <summary>
+    /// A bistro table, its round top seen a little from above. "cloth": Zdenka's, with a white cloth and her
+    /// mineral water. "drinks": a table people are sitting at (their chairs come with them). "empty": two chairs
+    /// pushed back and what the last people left.
+    /// </summary>
+    public static Canvas BistroTable(string kind)
+    {
+        bool chairs = kind == "empty";
+        int w = chairs ? 48 : 24, ox = chairs ? 12 : 0;
+        var a = new SceneCanvas(w, 34);
+        if (chairs)
+            foreach (var (cx, flip) in new[] { (2, false), (38, true) })
+            {
+                // A folding bistro chair in profile, turned away from the table a little.
+                int back = flip ? cx + 7 : cx;
+                a.FillRect(back, 8, back + 2, 34, Metal, (x, y) => 0.45, 0);
+                a.FillRect(cx, 20, cx + 9, 22, Wood, (x, y) => y == 20 ? 0.7 : 0.5, 0);
+                a.FillRect(flip ? cx : cx + 7, 22, (flip ? cx : cx + 7) + 2, 34, Metal, (x, y) => 0.35, 0);
+                for (int y = 9; y < 18; y += 3) a.FillRect(back, y, back + 2, y + 1, Wood, (x, yy) => 0.6, 0);
+            }
+        // The top: an oval rim and its surface.
+        for (int y = 10; y < 15; y++)
+        {
+            int inset = y == 10 || y == 14 ? 3 : y == 11 ? 1 : 0;
+            a.FillRect(ox + inset, y, ox + 24 - inset, y + 1, kind == "cloth" ? Cloth : Metal,
+                (x, yy) => kind == "cloth" ? 0.92 - (yy - 10) * 0.04 : yy == 14 ? 0.4 : 0.66 + (yy - 10) * 0.02, 0);
+        }
+        if (kind == "cloth")
+            a.FillRect(ox + 1, 15, ox + 23, 21, Cloth, (x, y) => 0.6 - (x > ox + 19 ? 0.15 : 0) + ((x - ox) % 5 == 0 ? -0.06 : 0), 0);
+        a.FillRect(ox + 11, kind == "cloth" ? 21 : 15, ox + 13, 32, Metal, (x, y) => 0.4, 0);
+        a.FillRect(ox + 5, 32, ox + 19, 34, Metal, (x, y) => 0.35, 0);
+
+        switch (kind)
+        {
+            case "cloth":   // Zdenka's mineral water, with a slice of lemon
+                a.FillRect(ox + 5, 4, ox + 8, 11, Glass, (x, y) => 0.75, 0);
+                a.Paint(ox + 6, 5, Brass, 0.9, 0);
+                break;
+            case "drinks":  // a bottle in a cooler, glasses
+                a.FillRect(ox + 4, 2, ox + 8, 11, Bottle, (x, y) => 0.55 + (x == ox + 4 ? 0.2 : 0), 0);
+                a.FillRect(ox + 3, 7, ox + 9, 11, Metal, (x, y) => 0.7, 0);
+                foreach (int gx in new[] { 12, 17 }) a.FillRect(ox + gx, 6, ox + gx + 3, 11, Glass, (x, y) => 0.7, 0);
+                break;
+            case "empty":   // two empty glasses and a paper napkin
+                foreach (int gx in new[] { 6, 14 }) a.FillRect(ox + gx, 7, ox + gx + 3, 11, Glass, (x, y) => 0.7 - (y == 7 ? 0 : 0.1), 0);
+                a.FillRect(ox + 9, 10, ox + 13, 11, Cloth, (x, y) => 0.95, 0);
+                break;
+        }
+        return a.Render();
+    }
+
+    /// <summary>A standing table in a white stretch cover, pinched at the waist: where you put a drink down and stay talking.</summary>
+    public static Canvas StandingTable()
+    {
+        var a = new SceneCanvas(22, 46);
+        for (int y = 6; y < 10; y++)
+        {
+            int inset = y == 6 || y == 9 ? 2 : 0;
+            a.FillRect(inset, y, 22 - inset, y + 1, Cloth, (x, yy) => 0.95 - (yy - 6) * 0.05, 0);
+        }
+        for (int y = 10; y < 46; y++)
+        {
+            double t = Math.Abs(y - 28) / 18.0;
+            int half = (int)(3 + 8 * t * t);
+            a.FillRect(11 - half, y, 11 + half, y + 1, Cloth, (x, yy) => 0.7 - (x > 11 + half - 3 ? 0.18 : 0) - (x < 11 - half + 2 ? 0.08 : 0), 0);
+        }
+        foreach (int gx in new[] { 4, 14 }) a.FillRect(gx, 1, gx + 3, 7, Glass, (x, y) => 0.75, 0);
+        a.Paint(5, 3, Amber, 0.8, 0);
+        return a.Render();
     }
 }

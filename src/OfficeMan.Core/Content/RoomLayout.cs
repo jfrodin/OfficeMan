@@ -113,10 +113,16 @@ public sealed class RoomLayout
         public bool FaceLeft { get; set; }
 
         /// <summary>
-        /// Furniture drawn as a sprite so people can stand behind it and in front of it (a bar counter).
-        /// Never interactable.
+        /// Furniture drawn as a sprite so people can stand behind it and in front of it (a bar counter, a desk).
+        /// A single frame, anchored at its front foot. Never interactable: put a separate thing next to it for that.
         /// </summary>
         public bool Prop { get; set; }
+
+        /// <summary>
+        /// The floor this thing takes up: half its width and its depth, from (X, Y) back. Teo walks round it.
+        /// The art generator also reads it to put a shadow on the floor under the thing.
+        /// </summary>
+        public int[]? Block { get; set; }
 
         /// <summary>A lit cigarette: offset (x, y) from the feet, facing right. Smoke rises from it.</summary>
         public float[]? Smoke { get; set; }
