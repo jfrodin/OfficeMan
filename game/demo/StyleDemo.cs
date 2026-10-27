@@ -9,7 +9,8 @@ namespace OfficeMan.Game.Demo;
 /// so the creator can choose the art direction by eye (design/art_direction.md).
 ///   godot --path game --rendering-method forward_plus res://demo/StyleDemo.tscn -- --style c1 --shot out.png
 /// Styles: c1 flat colour and strong light; c2 two inks, dithered; c3 the same 3D rendered small, as pixels;
-/// h as c1, but with the game's drawn people standing in the room instead of the simple figures.
+/// h as c1, but with the game's drawn people standing in the room instead of the simple figures; hp is h rendered
+/// small like c3, so the room and the people share one pixel size.
 /// Everything is boxes, spheres and cylinders, placed by hand below; people are simple faceless figures.
 /// Units are metres: x to the right, y up, z towards the camera; the back wall stands at z = 0.
 /// </summary>
@@ -28,7 +29,7 @@ public partial class StyleDemo : Node
             if (args[i] == "--shot") _shot = args[i + 1];
         }
 
-        var size = _style switch { "c3" => new Vector2I(480, 270), "c2" => new Vector2I(640, 360), _ => new Vector2I(1920, 1080) };
+        var size = _style switch { "c3" or "hp" => new Vector2I(480, 270), "c2" => new Vector2I(640, 360), _ => new Vector2I(1920, 1080) };
         var vp = new SubViewport
         {
             Size = size, OwnWorld3D = true, RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
@@ -45,7 +46,7 @@ public partial class StyleDemo : Node
             StretchMode = TextureRect.StretchModeEnum.Scale, Size = new Vector2(1920, 1080),
             TextureFilter = CanvasItem.TextureFilterEnum.Nearest,
         };
-        if (_style is "c2" or "c3") screen.Material = new ShaderMaterial { Shader = new Shader { Code = _style == "c2" ? DitherShader : PixelShader } };
+        if (_style is "c2" or "c3" or "hp") screen.Material = new ShaderMaterial { Shader = new Shader { Code = _style == "c2" ? DitherShader : PixelShader } };
         var layer = new CanvasLayer();
         layer.AddChild(screen);
         AddChild(layer);
@@ -104,7 +105,7 @@ public partial class StyleDemo : Node
         ZdenkasLamp(w, 9.25f, 1.9f);
         Trolley(w, 9.6f, 4.8f);
 
-        if (_style == "h")
+        if (_style is "h" or "hp")
         {
             // Hybrid: the game's own drawn people, standing in the 3D room and lit by it.
             Figure(w, "magda", new Vector3(2.8f, 0, 1.25f));

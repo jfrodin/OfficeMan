@@ -18,7 +18,7 @@ Made by `game/demo/StyleDemo.cs` (a dev tool, not part of the game):
 
     godot --path game --rendering-method forward_plus res://demo/StyleDemo.tscn -- --style c1 --shot out.png
 
-Pictures in `art/out/style/` (scratch, not committed): `a.png`, `c1.png`, `c2.png`, `c3.png`, `h.png`.
+Pictures in `art/out/style/` (scratch, not committed): `a.png`, `c1.png`, `c2.png`, `c3.png`, `h.png`, `hp.png`.
 
 | | Look | Depth | Cost |
 |---|---|---|---|
@@ -27,6 +27,7 @@ Pictures in `art/out/style/` (scratch, not committed): `a.png`, `c1.png`, `c2.pn
 | C2 | Real 3D drawn in two inks with a print dither (Return of the Obra Dinn) | Real | As C1; very distinctive, harder to read |
 | C3 | Real 3D rendered small, shown as big pixels | Real | As C1; keeps the pixel feel |
 | H | C1's 3D room, with the game's drawn people standing in it as flat figures facing the camera (Octopath Traveler, Paper Mario) | Real for the room | Rooms as C1; people stay 2D drawings, no 3D modelling or animation |
+| HP | H rendered small like C3, so the room and the people share one pixel size | Real for the room | As H; today's sprites fit without redrawing |
 
 The 3D pictures are a quick sketch: boxes, cylinders and spheres, no textures, people as faceless mannequins. They
 show the light and the depth, not the finished detail.
@@ -34,5 +35,7 @@ show the light and the depth, not the finished detail.
 2026-10-27, the creator on C1: looks completely unfinished, people as cylinders are not acceptable. Good 3D people
 are the most expensive thing to make with our means (modelling, rigging, animation), so H was made: 3D rooms, 2D people.
 
-Recommendation: H. If 3D is chosen, the game switches from the compatibility
+The creator likes the feel of H (2026-10-27); the original pixel art has its charm too. The choice is between A and H.
+
+Recommendation: HP, or H with people redrawn larger. If 3D is chosen, the game switches from the compatibility
 renderer to Forward+ (needs a graphics card from roughly the last eight years).
