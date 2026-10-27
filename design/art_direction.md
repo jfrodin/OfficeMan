@@ -40,5 +40,7 @@ The creator likes the feel of H (2026-10-27); the original pixel art has its cha
 
 The creator asked for the people to be redrawn rather than the room made smaller: HF.
 
+Still open (2026-10-27): A, H, HP or HF. The creator liked how clean H looked and will think it over before choosing.
+
 Recommendation: HF. If 3D is chosen, the game switches from the compatibility
 renderer to Forward+ (needs a graphics card from roughly the last eight years).
