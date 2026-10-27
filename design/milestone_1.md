@@ -35,7 +35,7 @@ The list to check before starting work. Update it whenever something is done or 
 | Office: a wall clock that shows the time; Look busy shorter and varied; the dead afternoon can be skipped | 2026-10-26 | |
 | Waking at Magda's, Kornel's or the station shows that place | 2026-10-26 | |
 | Furniture out on the floor, first try: desks in the office, tables on the terrace, as sprites people stand behind and in front of; Teo walks round them | 2026-10-27 | `content/rooms`, `design/visual_standard.md` |
-| Money: Teo starts with 520 euro (a guess); out of money at the bar he borrows, runs a tab or takes water; no taxi after the club if he can't pay; Wednesday remembers who he owes | 2026-10-27 | `content/ink` |
+| Money: Teo starts with 70 euro (a guess); out of money at the bar he borrows, runs a tab or takes water; no taxi after the club if he can't pay; Wednesday remembers who he owes | 2026-10-27 | `content/ink` |
 | Close-up in conversations, first try: the camera moves in on Teo and whoever he's talking to (column layout; F3 or Settings to turn it off) | 2026-10-27 | `game/Main.Column.cs` |
 
 Health on 2026-10-26: 55 tests pass. 1000 simulated lives per play style (six styles): 0 crashes, 0 dead ends, every
@@ -57,7 +57,7 @@ storylet reached.
 1. **Play it.** The text (first pass) and the text column are both new. Is the voice right? Column or bar?
    (`design/text_review.md`, F2 to switch.) Also new: furniture out on the floor, and the close-up (F3).
 2. **Money.** Euro is agreed; broke changes the evening, doesn't end it (built). Proposed: no number on screen, the
-   bank tells him in the morning. Still to decide: his pay, payday, the 520 he starts with, and what the gift costs.
+   bank tells him in the morning. Still to decide: his pay, payday, the 70 he starts with (gift 50, agreed), and what the gift costs.
    Running out is rare (under 3% of lives even when he starts nearly broke) because the bar opens for everyone at
    18:40. Proposal: Viktor opens the bar only on some evenings, which also fixes the same-headline problem.
 3. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,

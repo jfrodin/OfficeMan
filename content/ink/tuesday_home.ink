@@ -6,7 +6,7 @@
 # phase: home_morning
 # kind: scene
 // What Teo has until payday on Friday. A first guess; the creator decides pay and payday (design/noted.md).
-~ qset("money", 520)
+~ qset("money", 70)
 {
 - mood() >= 1:
     I wake up before the alarm and I feel fine. Rested, even.
@@ -33,9 +33,9 @@ A door slams. Then the daughter's music through the wall: bass, and a girl singi
 
 = phone
 Two messages.
-Magda, to the office group: <i>PARTY TONITE!!! dont forget gift money 500 each!!! see u all xx</i>
+Magda, to the office group: <i>PARTY TONITE!!! dont forget gift money 50 each!!! see u all xx</i>
 Gift for who? Nobody's leaving. Nobody's getting married. Magda will have a reason by lunch.
-And one from the bank, which I didn't ask for: <i>Balance: 520.00 EUR</i>. Payday is Friday.
+And one from the bank, which I didn't ask for: <i>Balance: 70.00 EUR</i>. Payday is Friday.
 Kornel, just to me: <i>Good morning Teo. Would you like to share a taxi to the venue? I have calculated that it is cheaper.</i>
 He's calculated it. There's a spreadsheet somewhere with my name on it.
 * [Reply: "Sure."]
