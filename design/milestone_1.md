@@ -61,7 +61,9 @@ storylet reached.
 2. **Money.** Euro is agreed; broke changes the evening, doesn't end it (built). Proposed: no number on screen, the
    bank tells him in the morning. Still to decide: his pay, payday, the 70 he starts with (gift 50, agreed), and what the gift costs.
    Running out is rare (under 3% of lives even when he starts nearly broke) because the bar opens for everyone at
-   18:40. Proposal: Viktor opens the bar only on some evenings, which also fixes the same-headline problem.
+   18:40. Agreed and built (2026-10-27): the open bar depends on Viktor's evening; it now comes in about 57% of lives.
+   The creator wants more ways the bar can go; proposals (Magda opens the bank, Ramona pays to show Viktor up, the
+   developer pays, Kornel or Teo buys a round, Viktor buys late, Zdenka stops him) wait for the creator's choice.
 3. **When can Teo go home from the party?** "Go home" is on offer from 18:30; someone may now stop him once. Still,
    most simulated lives leave before ten (5 to 24% are there at ten). The playtest will show whether a real player
    does the same. If so: open "Go home" later.
@@ -72,7 +74,7 @@ storylet reached.
 | Problem | Evidence | Fixed by |
 |---|---|---|
 | Most lives leave the party early | 59 to 94% of lives go home through the stairwell; of those still there at ten, 36 to 63% | Partly: stopped at the gate. Open (see "Needs the creator") |
-| The same headline every time | "The two-ticket rule lasted one hour and forty minutes": 94 to 99% of lives | Open: the open bar could depend on Viktor's evening |
+| The same headline every time | "The two-ticket rule lasted one hour and forty minutes": 94 to 99% of lives, now 56 to 59% | Partly: the open bar depends on Viktor's evening (2026-10-27). More outcomes wanted |
 | Memory stays private | By Wednesday only witnesses know anything | Step 4 |
 | Some failures just close a door | Several refusals and failed checks lead nowhere | Step 5 |
 | ~~The world doesn't move without Teo~~ | | Step 3, done |

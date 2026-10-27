@@ -303,3 +303,4 @@ Discovery round 2 started 2026-10-18. Updated 2026-10-26; what's being built and
 | 2026-10-27 | Running out of money changes the evening, it doesn't end it: people lend, tabs run, Teo walks home. | §8 |
 | 2026-10-27 | No frozen scenes: Teo never lands straight in a conversation. He talks to someone only after walking up to them, after they visibly walk up to him, or as the continuation of something he chose (leaving with Ramona carries on in her car). Moving between places by cutting from picture to picture is fine; no big continuous world. Order and scope to agree. | §8 |
 | 2026-10-27 | The gift collection is 50 euro each, not 500. Teo starts Tuesday with 70 euro until Friday (a guess, to tune). | §3 |
+| 2026-10-27 | The open bar isn't a given: it depends on Viktor's evening (if Ramona snubs him he needs to look big). Otherwise the two-ticket rule holds and money matters. More ways the bar can go are wanted; which ones is open. | §8 |

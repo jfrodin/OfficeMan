@@ -68,18 +68,30 @@ A black car pulls up at the kerb. The kind of black that costs extra.
 Ramona Baranyi gets out like the pavement owes her money.
 ~ set_doing("ramona", "bar")
 She's Viktor's age. White dress, big sunglasses at a quarter to six, and a handbag worth about a year of my salary.
-Viktor goes to kiss her cheek. She turns her head a perfect amount, so he gets air.
-RAMONA: Darling. You didn't say it was outdoors.
-VIKTOR: It's summer, Ramona.
-RAMONA: I'm aware of the season.
+// How she greets him sets Viktor's evening, and whether he opens the bar (viktor_rounds).
+{ chance("ramona_snubs", 60):
+    ~ flag("ramona_snubbed")
+    ~ feel("viktor", -1)
+    Viktor goes to kiss her cheek. She turns her head a perfect amount, so he gets air.
+    RAMONA: Darling. You didn't say it was outdoors.
+    VIKTOR: It's summer, Ramona.
+    RAMONA: I'm aware of the season.
+- else:
+    Viktor goes to kiss her cheek. She lets him. Both sides, slowly, like it's a favour he'll hear about later.
+    RAMONA: Darling. Outdoors. How brave of you.
+    VIKTOR: For you, Ramona, I'd hold it in a car park.
+    She doesn't laugh. But she takes the arm he offers, and he stands up straighter, like a man who's won something.
+}
 At the ticket table, Magda has stopped smiling. Nobody else would notice. I notice because I'm looking at her. I don't know where else to look.
 -> DONE
 
 
+// Not every evening: only when Viktor needs to look big (viktor_rounds).
 === tickets_collapse
 # phase: party
 # kind: interrupt
 # at: 18:40
+# when: viktor_buys
 # priority: 30
 At twenty to seven, the ticket system collapses.
 Viktor does it. He slaps the bar, says something to Laci, and suddenly there are trays of little glasses. Zhivka: plum spirit that tastes like a grandmother's revenge.
@@ -201,11 +213,14 @@ I haven't got one. Two tickets, and I've used them both. It's like a ration book
 
 // The money's gone (the gift took most of it). Being broke changes the evening; it doesn't end it.
 = broke
+{ not is("broke"):
+    ~ headline("Teo ran out of money at his own office party.")
+}
 ~ flag("broke")
-~ headline("Teo ran out of money at his own office party.")
 I put what's in my wallet on the bar. Coins, mostly. It isn't eight euro. It isn't near.
 Laci looks at the coins and then somewhere else, to be polite.
-* {regard("kornel") >= 0} [Ask Kornel to lend you ten.]
+// He can borrow from each of them once; water is always there.
++ {regard("kornel") >= 0 && not is("owes_kornel")} [Ask Kornel to lend you ten.]
     ~ flag("owes_kornel")
     ~ remember("kornel", "lent_money")
     ~ qadd("money", 2)
@@ -213,14 +228,14 @@ Laci looks at the coins and then somewhere else, to be polite.
     KORNEL: Of course. Is ten enough? Take ten.
     He types something into his phone afterwards. He doesn't hide it.
     ~ have_drink(1)
-* [Ask Laci to put it on a tab.]
++ {not is("owes_laci")} [Ask Laci to put it on a tab.]
     LACI: There's no tab. It's a private party.
     He looks at the door to the kitchen. Then he pours it anyway and slides a napkin across with a pen.
     LACI: Name and number. You pay me Friday.
     I write it down. My handwriting looks like someone else's.
     ~ flag("owes_laci")
     ~ have_drink(1)
-* [Ask for water, as if that's what you came for. #cautious]
++ [Ask for water, as if that's what you came for. #cautious]
     ~ qadd("alcohol", -1)
     LACI: Water.
     He gives it to me in a wine glass, so nobody can tell. He's done this before, for someone.

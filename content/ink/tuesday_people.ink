@@ -5,6 +5,25 @@
 // overheard line. At most one person comes looking for Teo per evening (came_to_teo).
 // ═════════════════════════════════════════════════════════════
 
+// ── Viktor: the rounds ───────────────────────────────────────
+// Whether he opens the bar depends on his evening so far: if Ramona gave him air, he needs to look big.
+// If not, the two-ticket rule holds, and he spends on her and himself instead.
+=== viktor_rounds
+# phase: party
+# kind: offstage
+# at: 18:35
+{ (feels("viktor") < 0 && chance("viktor_buys_sore", 85)) || (feels("viktor") >= 0 && chance("viktor_buys_anyway", 20)):
+    ~ flag("viktor_buys")
+- else:
+    { is("ramona_snubbed"):
+        VIKTOR: Laci. Something cold. Just for me. #heard:at the bar #from:right
+    - else:
+        VIKTOR: Laci! The good bottle. Two glasses. Two. #heard:at the bar #from:right
+    }
+}
+-> DONE
+
+
 // ── Magda: get Viktor tonight ────────────────────────────────
 
 === magda_drinks
