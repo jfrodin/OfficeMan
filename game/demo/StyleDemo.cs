@@ -8,7 +8,8 @@ namespace OfficeMan.Game.Demo;
 /// Dev tool, not part of the game: the office built as a small 3D scene in code, rendered in one of several looks,
 /// so the creator can choose the art direction by eye (design/art_direction.md).
 ///   godot --path game --rendering-method forward_plus res://demo/StyleDemo.tscn -- --style c1 --shot out.png
-/// Styles: c1 flat colour and strong light; c2 two inks, dithered; c3 the same 3D rendered small, as pixels.
+/// Styles: c1 flat colour and strong light; c2 two inks, dithered; c3 the same 3D rendered small, as pixels;
+/// h as c1, but with the game's drawn people standing in the room instead of the simple figures.
 /// Everything is boxes, spheres and cylinders, placed by hand below; people are simple faceless figures.
 /// Units are metres: x to the right, y up, z towards the camera; the back wall stands at z = 0.
 /// </summary>
@@ -31,7 +32,7 @@ public partial class StyleDemo : Node
         var vp = new SubViewport
         {
             Size = size, OwnWorld3D = true, RenderTargetUpdateMode = SubViewport.UpdateMode.Always,
-            Msaa3D = _style == "c1" ? Viewport.Msaa.Msaa4X : Viewport.Msaa.Disabled,
+            Msaa3D = _style is "c1" or "h" ? Viewport.Msaa.Msaa4X : Viewport.Msaa.Disabled,
         };
         AddChild(vp);
         var world = new Node3D();
@@ -74,7 +75,7 @@ public partial class StyleDemo : Node
             TonemapMode = Godot.Environment.ToneMapper.Filmic, TonemapExposure = 1.15f,
             GlowEnabled = true, GlowIntensity = 0.5f, GlowBloom = 0.05f,
             FogEnabled = true, FogLightColor = new Color("c4ae8c"), FogDensity = 0.004f,
-            SsaoEnabled = _style == "c1", SsaoIntensity = 1.6f,
+            SsaoEnabled = _style is "c1" or "h", SsaoIntensity = 1.6f,
         };
         w.AddChild(new WorldEnvironment { Environment = env });
 
@@ -87,7 +88,7 @@ public partial class StyleDemo : Node
         var cam = new Camera3D { Fov = 32, Current = true };
         w.AddChild(cam);
         cam.Fov = 30;
-        cam.LookAtFromPosition(new Vector3(6.9f, 2.6f, 13.5f), new Vector3(6.7f, 0.8f, 2.2f), Vector3.Up);
+        cam.LookAtFromPosition(Camera, new Vector3(6.7f, 0.8f, 2.2f), Vector3.Up);
 
         Shell(w);
         Outside(w);
@@ -103,11 +104,23 @@ public partial class StyleDemo : Node
         ZdenkasLamp(w, 9.25f, 1.9f);
         Trolley(w, 9.6f, 4.8f);
 
-        Person(w, new Vector3(2.8f, 0, 1.25f), shirt: new Color("e070a0"), legs: new Color("2a2030"), hair: new Color("c83050"), bigHair: true, skirt: true);
-        Person(w, new Vector3(8.95f, 0, 1.25f), shirt: new Color("8a8c88"), legs: new Color("6a6c68"), hair: new Color("c0c0bc"), bun: true, skirt: true);
-        Person(w, new Vector3(7.3f, 0, 3.55f), shirt: new Color("cfcab4"), legs: new Color("a08a68"), hair: new Color("9a7a50"), glasses: true);
-        Person(w, new Vector3(4.3f, 0, 5.6f), shirt: new Color("e4e2dc"), legs: new Color("2a3040"), hair: new Color("2e2018"));
-        Person(w, new Vector3(12.6f, 0, 1.4f), shirt: new Color("2a3050"), legs: new Color("2a3050"), hair: new Color("3a2a1c"), skin: Tan);
+        if (_style == "h")
+        {
+            // Hybrid: the game's own drawn people, standing in the 3D room and lit by it.
+            Figure(w, "magda", new Vector3(2.8f, 0, 1.25f));
+            Figure(w, "zdenka_sit", new Vector3(8.45f, 0, 1.45f));
+            Figure(w, "kornel", new Vector3(7.3f, 0, 3.55f));
+            Figure(w, "teo", new Vector3(5.9f, 0, 6.6f));
+            Figure(w, "viktor", new Vector3(11.9f, 0, 1.6f));
+        }
+        else
+        {
+            Person(w, new Vector3(2.8f, 0, 1.25f), shirt: new Color("e070a0"), legs: new Color("2a2030"), hair: new Color("c83050"), bigHair: true, skirt: true);
+            Person(w, new Vector3(8.95f, 0, 1.25f), shirt: new Color("8a8c88"), legs: new Color("6a6c68"), hair: new Color("c0c0bc"), bun: true, skirt: true);
+            Person(w, new Vector3(7.3f, 0, 3.55f), shirt: new Color("cfcab4"), legs: new Color("a08a68"), hair: new Color("9a7a50"), glasses: true);
+            Person(w, new Vector3(4.3f, 0, 5.6f), shirt: new Color("e4e2dc"), legs: new Color("2a3040"), hair: new Color("2e2018"));
+            Person(w, new Vector3(12.6f, 0, 1.4f), shirt: new Color("2a3050"), legs: new Color("2a3050"), hair: new Color("3a2a1c"), skin: Tan);
+        }
 
         Foreground(w);
     }
@@ -260,6 +273,47 @@ public partial class StyleDemo : Node
         foreach (float dx in new[] { -0.33f, 0.33f })
             Box(w, new Vector3(x + dx, 0.5f, z + 0.2f), new Vector3(0.03f, 1.0f, 0.03f), Metal);
     }
+
+    /// <summary>
+    /// A drawn person from the game (art/game/sprites, first idle frame of the sheet), as a flat figure that always
+    /// faces the camera, stands on the floor, catches the room's light and casts a shadow.
+    /// </summary>
+    private static void Figure(Node3D w, string sprite, Vector3 at)
+    {
+        string path = System.IO.Path.Combine(ProjectSettings.GlobalizePath("res://"), "..", "art", "game", "sprites", sprite + ".png");
+        var sheet = ImageTexture.CreateFromImage(Image.LoadFromFile(path));
+        const int frames = 6;
+        const float pixel = 1.78f / 52;
+        var size = new Vector2(sheet.GetWidth() / frames, sheet.GetHeight()) * pixel;
+        var m = new StandardMaterial3D
+        {
+            AlbedoTexture = sheet, Uv1Scale = new Vector3(1f / frames, 1, 1),
+            Transparency = BaseMaterial3D.TransparencyEnum.AlphaScissor, AlphaScissorThreshold = 0.5f,
+            TextureFilter = BaseMaterial3D.TextureFilterEnum.Nearest, CullMode = BaseMaterial3D.CullModeEnum.Disabled,
+            Roughness = 1, DiffuseMode = BaseMaterial3D.DiffuseModeEnum.Toon, SpecularMode = BaseMaterial3D.SpecularModeEnum.Disabled,
+        };
+        var s = new MeshInstance3D
+        {
+            Mesh = new QuadMesh { Size = size, CenterOffset = new Vector3(0, size.Y / 2, 0) }, MaterialOverride = m, Position = at,
+        };
+        w.AddChild(s);
+        // A soft shadow under the feet, as in the game today, so the figure stands on the floor.
+        var blob = new StandardMaterial3D
+        {
+            AlbedoColor = new Color(0.05f, 0.04f, 0.04f, 0.45f), Transparency = BaseMaterial3D.TransparencyEnum.Alpha,
+            ShadingMode = BaseMaterial3D.ShadingModeEnum.Unshaded,
+        };
+        w.AddChild(new MeshInstance3D
+        {
+            Mesh = new CylinderMesh { TopRadius = 0.32f, BottomRadius = 0.32f, Height = 0.005f }, MaterialOverride = blob,
+            Position = at + new Vector3(0, 0.004f, 0), Scale = new Vector3(1, 1, 0.6f), CastShadow = GeometryInstance3D.ShadowCastingSetting.Off,
+        });
+        // Turned to face the camera once, not billboarded: a billboard also turns to face the sun when shadows
+        // are drawn, and then casts none.
+        s.LookAt(new Vector3(Camera.X, at.Y, Camera.Z), Vector3.Up, useModelFront: true);
+    }
+
+    private static readonly Vector3 Camera = new(6.9f, 2.6f, 13.5f);
 
     /// <summary>A simple faceless figure, about 1.75 m: tapered legs and body, arms, head, hair.</summary>
     private void Person(Node3D w, Vector3 at, Color shirt, Color legs, Color hair, bool bigHair = false, bool bun = false,
