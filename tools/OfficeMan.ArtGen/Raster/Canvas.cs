@@ -23,6 +23,7 @@ public sealed class Canvas
     public int Height { get; }
     private readonly Rgb[] _px;
     private readonly bool[] _set;
+    private byte[]? _alpha;   // only for soft edges (icons); otherwise a set pixel is opaque
 
     public Canvas(int width, int height)
     {
@@ -42,10 +43,24 @@ public sealed class Canvas
             if (!InBounds(x, y)) return;
             _px[y * Width + x] = value;
             _set[y * Width + x] = true;
+            if (_alpha is not null) _alpha[y * Width + x] = 255;
         }
     }
 
     public bool IsSet(int x, int y) => InBounds(x, y) && _set[y * Width + x];
+
+    /// <summary>Opacity of a set pixel, 0-255; 255 unless set with <see cref="SetSoft"/>.</summary>
+    public byte Alpha(int x, int y) => !IsSet(x, y) ? (byte)0 : _alpha?[y * Width + x] ?? 255;
+
+    /// <summary>Sets a pixel that is only partly opaque, for anti-aliased edges.</summary>
+    public void SetSoft(int x, int y, Rgb c, byte alpha)
+    {
+        if (!InBounds(x, y) || alpha == 0) return;
+        this[x, y] = c;
+        if (alpha == 255 && _alpha is null) return;
+        _alpha ??= Enumerable.Repeat((byte)255, Width * Height).ToArray();
+        _alpha[y * Width + x] = alpha;
+    }
 
     public void Clear(int x, int y)
     {
@@ -59,12 +74,17 @@ public sealed class Canvas
                 this[x, y] = c;
     }
 
-    /// <summary>Copies every set pixel of <paramref name="layer"/> onto this canvas.</summary>
+    /// <summary>Copies every set pixel of <paramref name="layer"/> onto this canvas (soft pixels are blended).</summary>
     public void Draw(Canvas layer, int ox = 0, int oy = 0)
     {
         for (int y = 0; y < layer.Height; y++)
             for (int x = 0; x < layer.Width; x++)
-                if (layer.IsSet(x, y)) this[x + ox, y + oy] = layer[x, y];
+            {
+                if (!layer.IsSet(x, y)) continue;
+                byte a = layer.Alpha(x, y);
+                if (a == 255 || !IsSet(x + ox, y + oy)) this[x + ox, y + oy] = layer[x, y];
+                else this[x + ox, y + oy] = this[x + ox, y + oy].Mix(layer[x, y], a / 255.0);
+            }
     }
 
     /// <summary>
@@ -88,7 +108,8 @@ public sealed class Canvas
         var big = new Canvas(Width * factor, Height * factor);
         for (int y = 0; y < big.Height; y++)
             for (int x = 0; x < big.Width; x++)
-                big[x, y] = this[x / factor, y / factor];
+                if (_alpha is null) big[x, y] = this[x / factor, y / factor];
+                else if (IsSet(x / factor, y / factor)) big.SetSoft(x, y, this[x / factor, y / factor], Alpha(x / factor, y / factor));
         return big;
     }
 

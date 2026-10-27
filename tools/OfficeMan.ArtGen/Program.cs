@@ -11,6 +11,7 @@ using OfficeMan.ArtGen.Sprites;
 //   dotnet run --project tools/OfficeMan.ArtGen -- <sets>    any of: game, sprites, cast, flat, reference
 //     game       rooms, sprites, temporary portraits and scene pictures → art/game/ (committed; see content/art.json)
 //     sprites    preview sheets of the pixel people → art/out/
+//     icons      proposal: the Windows icon, three designs → art/out/icons/
 //     people     proposal: the people redrawn at high resolution → art/out/people/
 //     cast       the temporary cast portraits on one sheet → art/out/
 //     flat       the portrait proposal in the drawn_flat style → art/out/flat/
@@ -112,6 +113,41 @@ if (sets.Contains("game"))
     foreach (var (name, image) in Placeholders.Scenes())
         Png.Save(image.Scaled(6), Path.Combine(scenes, $"{name}.png"));
     Console.WriteLine($"Wrote game art to {gameDir}");
+}
+
+// Proposal: the Windows icon. One row per design: on a light and a dark background, at 256, 48, 32 and 16 px,
+// then 32 and 16 blown up ×6 to judge the pixels.
+if (sets.Contains("icons"))
+{
+    string dir = Path.Combine(outDir, "icons");
+    Directory.CreateDirectory(dir);
+    const int gap = 24, rowH = 256 + 2 * gap;
+    int halfW = gap + (256 + 48 + 32 + 16 + 32 * 6 + 16 * 6) + 6 * gap;
+    var sheet = new Canvas(halfW * 2, rowH * OfficeMan.ArtGen.Icons.AppIcons.Names.Length);
+    for (int r = 0; r < OfficeMan.ArtGen.Icons.AppIcons.Names.Length; r++)
+    {
+        string name = OfficeMan.ArtGen.Icons.AppIcons.Names[r];
+        var icons = OfficeMan.ArtGen.Icons.AppIcons.Sizes.ToDictionary(z => z, z => OfficeMan.ArtGen.Icons.AppIcons.Draw(name, z));
+        foreach (var (z, icon) in icons) Png.Save(icon, Path.Combine(dir, $"{name}_{z}.png"));
+        for (int half = 0; half < 2; half++)
+        {
+            var bg = Rgb.Hex(half == 0 ? "eef0f2" : "1f2226");
+            for (int y = r * rowH; y < (r + 1) * rowH; y++)
+                for (int x = half * halfW; x < (half + 1) * halfW; x++) sheet[x, y] = bg;
+            int x0 = half * halfW + gap, mid = r * rowH + rowH / 2;
+            foreach (var z in OfficeMan.ArtGen.Icons.AppIcons.Sizes)
+            {
+                sheet.Draw(icons[z], x0, mid - z / 2);
+                x0 += z + gap;
+            }
+            foreach (var z in new[] { 32, 16 })
+            {
+                sheet.Draw(icons[z].Scaled(6), x0, mid - z * 3);
+                x0 += z * 6 + gap;
+            }
+        }
+    }
+    Png.Save(sheet, Path.Combine(outDir, "icons_sheet.png"));
 }
 
 // Proposal: the people redrawn at high resolution as flat shapes, for the hybrid look (design/art_direction.md).

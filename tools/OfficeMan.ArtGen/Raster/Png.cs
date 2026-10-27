@@ -29,7 +29,7 @@ public static class Png
                 raw.WriteByte(c.R);
                 raw.WriteByte(c.G);
                 raw.WriteByte(c.B);
-                raw.WriteByte(canvas.IsSet(x, y) ? (byte)255 : (byte)0);
+                raw.WriteByte(canvas.Alpha(x, y));
             }
         }
 
